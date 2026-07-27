@@ -1,0 +1,60 @@
+---
+// src/pages/index.astro — 首页 MVP
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Life OS">
+  <section class="hero">
+    <div class="avatar">A</div>
+    <h1 class="user-name">Amanda</h1>
+    <p class="user-date">2026年7月27日</p>
+    <p class="user-prompt">今天，你想记录什么？</p>
+    <button class="btn-add">+ 添加人生瞬间</button>
+  </section>
+
+  <section class="today">
+    <h2 class="section-title">今日轨迹</h2>
+
+    <div class="moment-list">
+      <article class="moment-card">
+        <span class="moment-type">📚 阅读</span>
+        <h3>《时间游戏》</h3>
+      </article>
+
+      <article class="moment-card">
+        <span class="moment-type">🏋 健身</span>
+        <h3>力量训练 60 分钟</h3>
+      </article>
+
+      <article class="moment-card">
+        <span class="moment-type">☕ 社交</span>
+        <h3>朋友聚餐</h3>
+      </article>
+    </div>
+  </section>
+
+  <section class="ai-today">
+    <h2 class="section-title">AI 今日一句话</h2>
+    <div class="ai-card">
+      <p>“今天的你，在持续构建长期能力。”</p>
+    </div>
+  </section>
+
+  <section class="growth">
+    <h2 class="section-title">本月成长</h2>
+    <div class="bar-list">
+      <div class="bar-row">
+        <span class="bar-label">学习</span>
+        <div class="bar-track"><div class="bar-fill blue" style="width: 87%"></div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">健康</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 65%"></div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">社交</span>
+        <div class="bar-track"><div class="bar-fill gold" style="width: 72%"></div></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
