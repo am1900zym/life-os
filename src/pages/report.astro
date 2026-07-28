@@ -1,0 +1,95 @@
+---
+// src/pages/report.astro — 年度报告页面
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="年度报告 — Life OS">
+  <section class="page-header">
+    <h1>2026</h1>
+    <p class="subtitle">Amanda 的一年</p>
+  </section>
+
+  <!-- 数据统计条 -->
+  <section class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">365</span>
+      <span class="stat-label">天</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">236</span>
+      <span class="stat-label">个瞬间</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">843</span>
+      <span class="stat-label">张照片</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">18</span>
+      <span class="stat-label">本书</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">142</span>
+      <span class="stat-label">次训练</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">6</span>
+      <span class="stat-label">次旅行</span>
+    </div>
+  </section>
+
+  <!-- 年度关键词 -->
+  <section class="keywords">
+    <h2 class="section-title">这一年关键词</h2>
+    <div class="keyword-list">
+      <span class="keyword-tag blue">AI</span>
+      <span class="keyword-tag green">成长</span>
+      <span class="keyword-tag gold">创造</span>
+      <span class="keyword-tag purple">探索</span>
+    </div>
+  </section>
+
+  <!-- 成长雷达图 -->
+  <section class="radar">
+    <h2 class="section-title">个人成长雷达</h2>
+    <div class="radar-wrap">
+      <svg viewBox="0 0 200 200" class="radar-svg">
+        <!-- 五边形网格 -->
+        <polygon points="100,15 175,65 150,160 50,160 25,65" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+        <polygon points="100,40 155,75 135,145 65,145 45,75" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+        <polygon points="100,65 135,85 120,130 80,130 65,85" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+        <!-- 轴线 -->
+        <line x1="100" y1="100" x2="100" y2="15" stroke="#E5EAF4" stroke-width="1"/>
+        <line x1="100" y1="100" x2="175" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+        <line x1="100" y1="100" x2="150" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+        <line x1="100" y1="100" x2="50" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+        <line x1="100" y1="100" x2="25" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+        <!-- 数据多边形 -->
+        <polygon points="100,22 160,72 130,150 60,142 35,70" fill="rgba(79,124,247,0.2)" stroke="#4F7CF7" stroke-width="2"/>
+        <!-- 数据点 -->
+        <circle cx="100" cy="22" r="3" fill="#4F7CF7"/>
+        <circle cx="160" cy="72" r="3" fill="#4F7CF7"/>
+        <circle cx="130" cy="150" r="3" fill="#4F7CF7"/>
+        <circle cx="60" cy="142" r="3" fill="#4F7CF7"/>
+        <circle cx="35" cy="70" r="3" fill="#4F7CF7"/>
+        <!-- 标签 -->
+        <text x="100" y="10" text-anchor="middle" font-size="9" fill="#8A93A6">学习 85</text>
+        <text x="175" y="62" text-anchor="start" font-size="9" fill="#8A93A6">创造 70</text>
+        <text x="150" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">健康 75</text>
+        <text x="50" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">社交 80</text>
+        <text x="15" y="62" text-anchor="end" font-size="9" fill="#8A93A6">体验 90</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- AI 年度总结 -->
+  <section class="ai-report">
+    <h2 class="section-title">AI 眼中的你</h2>
+    <div class="ai-card large">
+      <p class="ai-year">2026 年的你：</p>
+      <p class="ai-transform">从“学习者”逐渐成为“创造者”。</p>
+      <div class="divider"></div>
+      <p class="ai-change">你的最大变化：</p>
+      <p>开始主动构建自己的系统。</p>
+    </div>
+  </section>
+</BaseLayout>

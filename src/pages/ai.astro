@@ -1,0 +1,49 @@
+---
+// src/pages/ai.astro — AI 助手页面
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="AI 助手 — Life OS">
+  <section class="page-header">
+    <h1>🤖 Life AI</h1>
+    <p class="subtitle">理解你人生上下文的 AI</p>
+  </section>
+
+  <section class="ai-context">
+    <p class="ai-greeting">你好，<strong>Amanda</strong></p>
+    <p class="ai-knows">我了解你的：</p>
+    <div class="context-tags">
+      <span class="ctx-tag blue">📚 阅读</span>
+      <span class="ctx-tag green">🏋 健康</span>
+      <span class="ctx-tag gold">💻 学习</span>
+      <span class="ctx-tag purple">👥 关系</span>
+    </div>
+  </section>
+
+  <!-- 聊天区域 -->
+  <section class="chat-area">
+    <div class="chat-bubble ai">
+      <p>今天想聊什么？我在这里陪你探索人生的下一段旅程。</p>
+    </div>
+
+    <div class="chat-bubble ai">
+      <p>试试这些问题：</p>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn blue">“总结我的 2026”</button>
+      <button class="quick-btn green">“我的优势是什么？”</button>
+      <button class="quick-btn gold">“最近应该关注什么？”</button>
+      <button class="quick-btn purple">“我和朋友的关系变化？”</button>
+      <button class="quick-btn cyan">“帮我规划未来一年”</button>
+    </div>
+  </section>
+
+  <!-- 输入框 -->
+  <section class="chat-input">
+    <div class="input-box">
+      <input type="text" placeholder="问 AI 任何关于你人生的问题..." />
+      <button class="send-btn">发送</button>
+    </div>
+  </section>
+</BaseLayout>
