@@ -1,31 +1,34 @@
 ---
-// src/pages/index.astro — 首页 MVP
+// src/pages/index.astro — 首页（接入 Supabase 实时数据）
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const today = new Date().toLocaleDateString('zh-CN', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
 ---
 
 <BaseLayout title="Life OS">
   <section class="hero">
     <div class="avatar">A</div>
     <h1 class="user-name">Amanda</h1>
-    <p class="user-date">2026年7月27日</p>
+    <p class="user-date">{today}</p>
     <p class="user-prompt">今天，你想记录什么？</p>
     <button class="btn-add">+ 添加人生瞬间</button>
   </section>
 
   <section class="today">
     <h2 class="section-title">今日轨迹</h2>
-
-    <div class="moment-list">
+    <p class="data-status" id="data-status"></p>
+    <div class="moment-list" id="moment-list">
+      <!-- 兜底演示数据：未配置 Supabase 或数据为空时显示 -->
       <article class="moment-card">
         <span class="moment-type">📚 阅读</span>
         <h3>《时间游戏》</h3>
       </article>
-
       <article class="moment-card">
         <span class="moment-type">🏋 健身</span>
         <h3>力量训练 60 分钟</h3>
       </article>
-
       <article class="moment-card">
         <span class="moment-type">☕ 社交</span>
         <h3>朋友聚餐</h3>
@@ -58,3 +61,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .data-status { font-size: 12px; color: #8A93A6; margin: 0 0 12px; }
+  .data-status.live { color: #4F7CF7; font-weight: 500; }
+  .data-status.demo { color: #B0B7C4; }
+  .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabaseClient';
+
+  const list = document.getElementById('moment-list') as HTMLElement | null;
+  const status = document.getElementById('data-status') as HTMLElement | null;
+
+  function escapeHtml(s: unknown): string {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+    )[c]);
+  }
+
+  function renderMoments(moments: any[]) {
+    if (!list) return;
+    list.innerHTML = moments.map((m) => `
+      <article class="moment-card">
+        <span class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</span>
+        <h3>${escapeHtml(m.title)}</h3>
+        ${m.body ? `<p class="moment-body">${escapeHtml(m.body)}</p>` : ''}
+      </article>
+    `).join('');
+    if (status) {
+      status.textContent = `● 已接入 Supabase · 共 ${moments.length} 条瞬间`;
+      status.className = 'data-status live';
+    }
+  }
+
+  function showDemo(reason?: string) {
+    if (status) {
+      status.textContent = reason
+        ? `○ 演示数据（${reason}）`
+        : '○ 演示数据（未配置 Supabase 或暂无记录）';
+      status.className = 'data-status demo';
+    }
+  }
+
+  async function loadMoments() {
+    if (!supabase) { showDemo('Supabase 未配置'); return; }
+    const { data, error } = await supabase
+      .from('moments')
+      .select('*')
+      .order('occurred_at', { ascending: false })
+      .limit(30);
+    if (error) { console.error('[LifeOS] 加载瞬间失败:', error); showDemo('读取失败'); return; }
+    if (!data || data.length === 0) { showDemo('暂无记录'); return; }
+    renderMoments(data);
+  }
+
+  loadMoments();
+</script>
