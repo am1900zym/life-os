@@ -1,0 +1,106 @@
+---
+// src/pages/friends.astro — 朋友轨道页面
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="朋友轨道 — Life OS">
+  <section class="page-header">
+    <h1>朋友人生</h1>
+    <p class="subtitle">看见朋友的人生，而不是只看朋友圈</p>
+  </section>
+
+  <!-- 选择朋友 -->
+  <section class="friend-selector">
+    <div class="friend-chip checked">
+      <span class="chip-avatar">G</span>
+      <span class="chip-name">G</span>
+    </div>
+    <div class="friend-chip checked">
+      <span class="chip-avatar">H</span>
+      <span class="chip-name">H</span>
+    </div>
+    <button class="btn-generate">[生成共同轨道]</button>
+  </section>
+
+  <!-- 多人并行轨道 -->
+  <section class="multi-tracks">
+    <h2 class="section-title">2026 并行时间轴</h2>
+
+    <!-- Amanda -->
+    <div class="friend-track">
+      <div class="track-header">
+        <span class="track-avatar">A</span>
+        <span class="track-name">Amanda</span>
+      </div>
+      <div class="track-items">
+        <div class="track-item">
+          <span class="item-type">📚 AI学习</span>
+          <div class="item-bar"><div class="item-fill blue" style="width: 75%"></div></div>
+        </div>
+        <div class="track-item">
+          <span class="item-type">🏋 健身</span>
+          <div class="item-bar"><div class="item-fill green" style="width: 30%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G -->
+    <div class="friend-track">
+      <div class="track-header">
+        <span class="track-avatar">G</span>
+        <span class="track-name">G</span>
+      </div>
+      <div class="track-items">
+        <div class="track-item">
+          <span class="item-type">🎵 演唱会</span>
+          <div class="item-bar"><div class="item-fill gold" style="width: 45%"></div></div>
+        </div>
+        <div class="track-item">
+          <span class="item-type">💼 工作</span>
+          <div class="item-bar"><div class="item-fill purple" style="width: 60%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- H -->
+    <div class="friend-track">
+      <div class="track-header">
+        <span class="track-avatar">H</span>
+        <span class="track-name">H</span>
+      </div>
+      <div class="track-items">
+        <div class="track-item">
+          <span class="item-type">🔬 科研</span>
+          <div class="item-bar"><div class="item-fill cyan" style="width: 55%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 共同瞬间 -->
+  <section class="shared-moments">
+    <h2 class="section-title">共同瞬间</h2>
+
+    <div class="moment-card highlight">
+      <div class="shared-badge">Amanda + G</div>
+      <div class="moment-date">2026.05</div>
+      <h3>香港演唱会旅行</h3>
+      <p class="moment-meta">📷 28 张照片</p>
+      <div class="ai-summary">
+        <span class="ai-label">AI 总结</span>
+        <p>“这是你们关系中的重要连接节点。”</p>
+      </div>
+    </div>
+
+    <div class="moment-card highlight">
+      <div class="shared-badge">Amanda + H</div>
+      <div class="moment-date">2026.03</div>
+      <h3>周末徒步</h3>
+      <p class="moment-meta">📷 15 张照片</p>
+      <div class="ai-summary">
+        <span class="ai-label">AI 总结</span>
+        <p>“你们在自然中建立了更深层的信任。”</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

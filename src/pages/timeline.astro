@@ -1,0 +1,146 @@
+---
+// src/pages/timeline.astro — 人生轨道页面
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="人生轨道 — Life OS">
+  <section class="page-header">
+    <h1>Amanda Life Timeline</h1>
+    <p class="subtitle">2026 年 · 时间轴总览</p>
+  </section>
+
+  <!-- 年份切换 -->
+  <div class="year-selector">
+    <button class="year-btn active">2026</button>
+    <button class="year-btn">2025</button>
+    <button class="year-btn">2024</button>
+  </div>
+
+  <!-- 轨道总览模式 -->
+  <section class="tracks-overview">
+    <div class="track-row">
+      <span class="track-label">📚 学习</span>
+      <div class="track-line">
+        <div class="track-dot blue"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot blue"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot blue"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot blue"></div>
+      </div>
+    </div>
+
+    <div class="track-row">
+      <span class="track-label">🏋 健康</span>
+      <div class="track-line">
+        <div class="track-dot green"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot green"></div>
+        <div class="track-segment long"></div>
+        <div class="track-dot green"></div>
+      </div>
+    </div>
+
+    <div class="track-row">
+      <span class="track-label">✈️ 旅行</span>
+      <div class="track-line">
+        <div class="track-segment short"></div>
+        <div class="track-dot gold"></div>
+        <div class="track-segment long"></div>
+        <div class="track-dot gold"></div>
+      </div>
+    </div>
+
+    <div class="track-row">
+      <span class="track-label">👥 关系</span>
+      <div class="track-line">
+        <div class="track-segment short"></div>
+        <div class="track-dot purple"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot purple"></div>
+        <div class="track-segment"></div>
+        <div class="track-dot purple"></div>
+      </div>
+    </div>
+
+    <div class="track-row">
+      <span class="track-label">💻 创造</span>
+      <div class="track-line">
+        <div class="track-segment medium"></div>
+        <div class="track-dot cyan"></div>
+        <div class="track-segment short"></div>
+        <div class="track-dot cyan"></div>
+      </div>
+    </div>
+
+    <div class="track-row">
+      <span class="track-label">🌟 体验</span>
+      <div class="track-line">
+        <div class="track-segment long"></div>
+        <div class="track-dot rose"></div>
+        <div class="track-segment medium"></div>
+        <div class="track-dot rose"></div>
+        <div class="track-segment short"></div>
+        <div class="track-dot rose"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 详细时间轴 -->
+  <section class="timeline-detail">
+    <h2 class="section-title">5月 · 重要瞬间</h2>
+
+    <div class="moment-card">
+      <div class="moment-date">2026.05.20</div>
+      <h3>香港演唱会旅行</h3>
+      <p class="moment-meta">📷 12 张照片 · 👥 G</p>
+      <p class="moment-feeling">“第一次意识到，人与人的连接需要主动创造。”</p>
+      <div class="ai-tag">🔗 与心理学主题相关</div>
+    </div>
+
+    <div class="moment-card">
+      <div class="moment-date">2026.05.08</div>
+      <h3>完成 Hermes Agent 部署</h3>
+      <p class="moment-meta">💻 技术突破 · 24小时</p>
+      <p class="moment-feeling">“从 0 到 1 搭建个人 AI 助手系统。”</p>
+      <div class="ai-tag">🔗 与 AI 学习轨迹相关</div>
+    </div>
+  </section>
+
+  <!-- 人生地图模式入口 -->
+  <section class="life-map">
+    <h2 class="section-title">能量分布</h2>
+    <div class="map-grid">
+      <div class="map-item">
+        <span class="map-label">学习</span>
+        <div class="map-dot blue"></div>
+        <span class="map-score">85</span>
+      </div>
+      <div class="map-item">
+        <span class="map-label">创造</span>
+        <div class="map-dot cyan"></div>
+        <span class="map-score">70</span>
+      </div>
+      <div class="map-item">
+        <span class="map-label">健康</span>
+        <div class="map-dot green"></div>
+        <span class="map-score">75</span>
+      </div>
+      <div class="map-item">
+        <span class="map-label">社交</span>
+        <div class="map-dot purple"></div>
+        <span class="map-score">80</span>
+      </div>
+      <div class="map-item">
+        <span class="map-label">体验</span>
+        <div class="map-dot rose"></div>
+        <span class="map-score">90</span>
+      </div>
+      <div class="map-item center">
+        <span class="map-label">Amanda</span>
+        <div class="map-avatar">A</div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
