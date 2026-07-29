@@ -1,106 +1,145 @@
 ---
-// src/pages/friends.astro — 朋友轨道页面
+// src/pages/ai.astro — AI 助手页面（本地规则引擎 MVP）
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="朋友轨道 — Life OS">
+<BaseLayout title="AI 助手 — Life OS">
   <section class="page-header">
-    <h1>朋友人生</h1>
-    <p class="subtitle">看见朋友的人生，而不是只看朋友圈</p>
+    <h1>🤖 Life AI</h1>
+    <p class="subtitle">理解你人生上下文的 AI</p>
   </section>
 
-  <!-- 选择朋友 -->
-  <section class="friend-selector">
-    <div class="friend-chip checked">
-      <span class="chip-avatar">G</span>
-      <span class="chip-name">G</span>
-    </div>
-    <div class="friend-chip checked">
-      <span class="chip-avatar">H</span>
-      <span class="chip-name">H</span>
-    </div>
-    <button class="btn-generate">[生成共同轨道]</button>
-  </section>
-
-  <!-- 多人并行轨道 -->
-  <section class="multi-tracks">
-    <h2 class="section-title">2026 并行时间轴</h2>
-
-    <!-- Amanda -->
-    <div class="friend-track">
-      <div class="track-header">
-        <span class="track-avatar">A</span>
-        <span class="track-name">Amanda</span>
-      </div>
-      <div class="track-items">
-        <div class="track-item">
-          <span class="item-type">📚 AI学习</span>
-          <div class="item-bar"><div class="item-fill blue" style="width: 75%"></div></div>
-        </div>
-        <div class="track-item">
-          <span class="item-type">🏋 健身</span>
-          <div class="item-bar"><div class="item-fill green" style="width: 30%"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- G -->
-    <div class="friend-track">
-      <div class="track-header">
-        <span class="track-avatar">G</span>
-        <span class="track-name">G</span>
-      </div>
-      <div class="track-items">
-        <div class="track-item">
-          <span class="item-type">🎵 演唱会</span>
-          <div class="item-bar"><div class="item-fill gold" style="width: 45%"></div></div>
-        </div>
-        <div class="track-item">
-          <span class="item-type">💼 工作</span>
-          <div class="item-bar"><div class="item-fill purple" style="width: 60%"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- H -->
-    <div class="friend-track">
-      <div class="track-header">
-        <span class="track-avatar">H</span>
-        <span class="track-name">H</span>
-      </div>
-      <div class="track-items">
-        <div class="track-item">
-          <span class="item-type">🔬 科研</span>
-          <div class="item-bar"><div class="item-fill cyan" style="width: 55%"></div></div>
-        </div>
-      </div>
+  <section class="ai-context">
+    <p class="ai-greeting">你好，<strong>Amanda</strong></p>
+    <p class="ai-knows">我了解你的：</p>
+    <div class="context-tags">
+      <span class="ctx-tag blue">📚 阅读</span>
+      <span class="ctx-tag green">🏋 健康</span>
+      <span class="ctx-tag gold">💻 学习</span>
+      <span class="ctx-tag purple">👥 关系</span>
     </div>
   </section>
 
-  <!-- 共同瞬间 -->
-  <section class="shared-moments">
-    <h2 class="section-title">共同瞬间</h2>
-
-    <div class="moment-card highlight">
-      <div class="shared-badge">Amanda + G</div>
-      <div class="moment-date">2026.05</div>
-      <h3>香港演唱会旅行</h3>
-      <p class="moment-meta">📷 28 张照片</p>
-      <div class="ai-summary">
-        <span class="ai-label">AI 总结</span>
-        <p>“这是你们关系中的重要连接节点。”</p>
-      </div>
+  <!-- 聊天区域 -->
+  <section class="chat-area">
+    <div class="chat-bubble ai" id="chat-history">
+      <p>今天想聊什么？我在这里陪你探索人生的下一段旅程。</p>
+      <p class="hint">试试下方快捷问题，或直接输入你的问题。</p>
     </div>
 
-    <div class="moment-card highlight">
-      <div class="shared-badge">Amanda + H</div>
-      <div class="moment-date">2026.03</div>
-      <h3>周末徒步</h3>
-      <p class="moment-meta">📷 15 张照片</p>
-      <div class="ai-summary">
-        <span class="ai-label">AI 总结</span>
-        <p>“你们在自然中建立了更深层的信任。”</p>
-      </div>
+    <div class="quick-actions">
+      <button class="quick-btn blue" data-prompt="summarize">“总结我的 2026”</button>
+      <button class="quick-btn green" data-prompt="strength">“我的优势是什么？”</button>
+      <button class="quick-btn gold" data-prompt="focus">“最近应该关注什么？”</button>
+      <button class="quick-btn purple" data-prompt="friends">“我和朋友的关系变化？”</button>
+      <button class="quick-btn cyan" data-prompt="plan">“帮我规划未来一年”</button>
+    </div>
+  </section>
+
+  <!-- 输入框 -->
+  <section class="chat-input">
+    <div class="input-box">
+      <input type="text" id="user-input" placeholder="问 AI 任何关于你人生的问题..." />
+      <button class="send-btn" id="send-btn">发送</button>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .hint { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+  .data-status { font-size: 12px; color: #8A93A6; margin: 0 0 12px; }
+  .data-status.live { color: #4F7CF7; font-weight: 500; }
+  .data-status.demo { color: #B0B7C4; }
+  .data-status.error { color: #EF4444; }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabaseClient';
+
+  const chatHistory = document.getElementById('chat-history');
+  const userInput = document.getElementById('user-input') as HTMLInputElement | null;
+  const sendBtn = document.getElementById('send-btn');
+
+  function addBubble(text: string, who: 'user' | 'ai') {
+    if (!chatHistory) return;
+    const div = document.createElement('div');
+    div.className = 'chat-bubble ' + who;
+    div.innerHTML = `<p>${text.replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] as string))}</p>`;
+    chatHistory.appendChild(div);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+
+  async function loadMoments() {
+    if (!supabase) return [];
+    const { data, error } = await supabase
+      .from('moments')
+      .select('*')
+      .order('occurred_at', { ascending: false })
+      .limit(200);
+    if (error) { console.error('[AI] moments load error', error); return []; }
+    return data ?? [];
+  }
+
+  const PROMPTS: Record<string, string> = {
+    summarize: '总结我的 2026',
+    strength: '我的优势是什么？',
+    focus: '最近应该关注什么？',
+    friends: '我和朋友的关系变化？',
+    plan: '帮我规划未来一年',
+  };
+
+  async function handlePrompt(promptKey?: string) {
+    const moments = await loadMoments();
+    const counts: Record<string, number> = {};
+    for (const m of moments) {
+      const t = m.type ?? '💡 想法';
+      counts[t] = (counts[t] || 0) + 1;
+    }
+    const total = moments.length || 0;
+    const books = Object.entries(counts).filter(([k]) => k.includes('📚') || k.includes('📖')).reduce((s, [, v]) => s + v, 0);
+    const workouts = Object.entries(counts).filter(([k]) => k.includes('🏋')).reduce((s, [, v]) => s + v, 0);
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '暂无数据';
+
+    const key = promptKey || 'custom';
+    const text = typeof userInput!.value === 'string' ? userInput!.value.trim() : '';
+    userInput!.value = '';
+
+    const q = text || PROMPTS[key] || '总结我的人生';
+
+    addBubble(q, 'user');
+
+    let reply = '';
+    if (key === 'summarize') {
+      reply = total > 0
+        ? `2026 年你共有 ${total} 个瞬间，最常记录的是「${top}」。如果继续坚持当前节奏，到年底大概率会是「能持续输出」的节奏。`
+        : '目前还没有足够的数据做总结。先在首页多记录一些瞬间吧。';
+    } else if (key === 'strength') {
+      reply = top
+        ? `你的当前优势明显在「${top}」方向。另外你在 ${books > 0 ? '📚 阅读' : '💡 记录'} 维度也有持续投入，这通常是长期成长的最大杠杆。`
+        : '暂无数据，先记录一些瞬间我才能帮你定位优势。';
+    } else if (key === 'focus') {
+      reply = workouts > 0
+        ? '你已经在「健康」这件事上有证据。建议接下来固定一个输出习惯，哪怕每周一次复盘，都比零散知识更有系统性。'
+        : '你目前的记录维度还比较分散。建议接下来先聚焦一个方向连续建立 2 周再切换。';
+    } else if (key === 'friends') {
+      reply = '目前朋友关系维度数据不足。你可以在「👥」一栏手动标记与朋友相关的瞬间，后续我会自动帮你统计关系频率。';
+    } else if (key === 'plan') {
+      reply = '基于你当前的上限：先锁 1 个主目标，用 3 个月验证可行，再扩张。你现在同时在做的事太多，砍掉一个才能给真正重要的事留出空间。';
+    } else {
+      reply = '我暂时只能基于你当前已有记录做粗粒度分析。未来接入大模型 summarizer 后，这句回复会变成更有针对性的建议。';
+    }
+
+    setTimeout(() => addBubble(reply, 'ai'), 300 + Math.random() * 200);
+  }
+
+  if (sendBtn) {
+    sendBtn.addEventListener('click', () => handlePrompt());
+  }
+  if (userInput) {
+    userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handlePrompt(); });
+  }
+  document.querySelectorAll<HTMLButtonElement>('.quick-btn').forEach((btn) => {
+    const key = btn.getAttribute('data-prompt') || undefined;
+    btn.addEventListener('click', () => handlePrompt(key));
+  });
+</script>
