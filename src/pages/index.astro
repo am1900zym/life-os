@@ -61,7 +61,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="modal-card">
       <div class="modal-header">
         <h3>记录一个瞬间</h3>
-        <button type="button" class="modal-close" onclick="document.getElementById('add-modal').hidden=true" aria-label="关闭">✕</button>
+        <button type="button" class="modal-close" onclick="var m=document.getElementById('add-modal');m.hidden=true;m.style.display='none'" aria-label="关闭">✕</button>
       </div>
       <form id="add-form">
         <label>
@@ -222,12 +222,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const mediaInput = document.getElementById('media-files') as HTMLInputElement | null;
   const fileList = document.getElementById('file-list');
 
-  function openModal() { if (modal) modal.hidden = false; }
-  function closeModal() { if (modal) { modal.hidden = true; if (formStatus) formStatus.textContent = ''; } }
+  function openModal() { const m = document.getElementById('add-modal'); if (m) { m.hidden = false; m.style.display = ''; } }
+  function closeModal() { const m = document.getElementById('add-modal'); if (m) { m.hidden = true; m.style.display = 'none'; } }
   (window as any)._lifeosCloseModal = closeModal;
 
   if (btnAdd) btnAdd.addEventListener('click', openModal);
-  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  if (btnCancel) btnCancel.addEventListener('click', () => { const m = document.getElementById('add-modal'); if (m) { m.hidden = true; m.style.display = 'none'; } });
   if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
   if (modal) modal.addEventListener('click', (e) => { if ((e.target as HTMLElement) === modal) closeModal(); });
 
