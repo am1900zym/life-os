@@ -58,7 +58,7 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
   </section>
 
   <!-- 添加瞬间表单 -->
-  <div class="modal-overlay" id="add-modal" hidden>
+  <div class="modal-overlay" id="add-modal" hidden style="display:none">
     <div class="modal-card modal-wide">
       <div class="modal-header">
         <h3>记录一个瞬间</h3>
@@ -190,9 +190,7 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
   const CURRENT = { userId: 'local-' + DEFAULT_USER_ID, nickname: 'Amanda', color: '#4F7CF7' };
 
   function escapeHtml(s: unknown): string {
-    return String(s ?? '').replace(/[&<>"']/g, (c) => (
-      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
-    ))[c];
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
   }
 
   // ====== 通用：打开/关闭 overlay ======
