@@ -59,7 +59,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <!-- 添加瞬间表单（默认隐藏） -->
   <div class="modal-overlay" id="add-modal" hidden>
     <div class="modal-card">
-      <h3>记录一个瞬间</h3>
+      <div class="modal-header">
+        <h3>记录一个瞬间</h3>
+        <button type="button" class="modal-close" id="btn-close-x" aria-label="关闭">✕</button>
+      </div>
       <form id="add-form">
         <label>
           类型
@@ -120,7 +123,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-radius: 16px; padding: 18px 18px 22px;
     box-shadow: 0 10px 30px rgba(15,23,42,0.18);
   }
-  .modal-card h3 { margin: 0 0 12px; font-size: 18px; }
+  .modal-card h3 { margin: 0; font-size: 18px; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 8px; border: 0; background: #F4F6FA; color: #6B7280;
+    font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: #E5EAF4; color: #1F2937; }
   .modal-card label {
     display: flex; flex-direction: column; gap: 6px;
     font-size: 13px; color: #3B4257; margin-bottom: 10px;
@@ -207,6 +216,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const modal = document.getElementById('add-modal') as HTMLElement | null;
   const btnAdd = document.getElementById('btn-add');
   const btnCancel = document.getElementById('btn-cancel');
+  const btnCloseX = document.getElementById('btn-close-x');
   const form = document.getElementById('add-form') as HTMLFormElement | null;
   const formStatus = document.getElementById('form-status');
   const mediaInput = document.getElementById('media-files') as HTMLInputElement | null;
@@ -217,6 +227,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   if (btnAdd) btnAdd.addEventListener('click', openModal);
   if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
   if (modal) modal.addEventListener('click', (e) => { if ((e.target as HTMLElement) === modal) closeModal(); });
 
   // 显示已选文件
