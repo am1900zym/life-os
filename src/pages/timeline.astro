@@ -1,12 +1,12 @@
 ---
-// src/pages/timeline.astro — 人生轨道页面
+// src/pages/timeline.astro — 人生轨道页面（接入 Supabase 实时数据）
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="人生轨道 — Life OS">
   <section class="page-header">
     <h1>Amanda Life Timeline</h1>
-    <p class="subtitle">2026 年 · 时间轴总览</p>
+    <p class="subtitle" id="current-year">2026 年 · 时间轴总览</p>
   </section>
 
   <!-- 年份切换 -->
@@ -16,126 +16,89 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <button class="year-btn">2024</button>
   </div>
 
-  <!-- 轨道总览模式 -->
+  <!-- 轨道总览模式（由真实数据统计生成） -->
   <section class="tracks-overview">
     <div class="track-row">
       <span class="track-label">📚 学习</span>
-      <div class="track-line">
-        <div class="track-dot blue"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot blue"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot blue"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot blue"></div>
-      </div>
+      <div class="track-line" id="track-learning"></div>
     </div>
-
     <div class="track-row">
       <span class="track-label">🏋 健康</span>
-      <div class="track-line">
-        <div class="track-dot green"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot green"></div>
-        <div class="track-segment long"></div>
-        <div class="track-dot green"></div>
-      </div>
+      <div class="track-line" id="track-health"></div>
     </div>
-
     <div class="track-row">
       <span class="track-label">✈️ 旅行</span>
-      <div class="track-line">
-        <div class="track-segment short"></div>
-        <div class="track-dot gold"></div>
-        <div class="track-segment long"></div>
-        <div class="track-dot gold"></div>
-      </div>
+      <div class="track-line" id="track-travel"></div>
     </div>
-
     <div class="track-row">
       <span class="track-label">👥 关系</span>
-      <div class="track-line">
-        <div class="track-segment short"></div>
-        <div class="track-dot purple"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot purple"></div>
-        <div class="track-segment"></div>
-        <div class="track-dot purple"></div>
-      </div>
+      <div class="track-line" id="track-social"></div>
     </div>
-
     <div class="track-row">
       <span class="track-label">💻 创造</span>
-      <div class="track-line">
-        <div class="track-segment medium"></div>
-        <div class="track-dot cyan"></div>
-        <div class="track-segment short"></div>
-        <div class="track-dot cyan"></div>
-      </div>
+      <div class="track-line" id="track-creation"></div>
     </div>
-
     <div class="track-row">
       <span class="track-label">🌟 体验</span>
-      <div class="track-line">
-        <div class="track-segment long"></div>
-        <div class="track-dot rose"></div>
-        <div class="track-segment medium"></div>
-        <div class="track-dot rose"></div>
-        <div class="track-segment short"></div>
-        <div class="track-dot rose"></div>
+      <div class="track-line" id="track-experience"></div>
+    </div>
+  </section>
+
+  <!-- 详细时间轴（由真实数据生成） -->
+  <section class="timeline-detail">
+    <h2 class="section-title" id="month-title">轨迹</h2>
+    <div id="timeline-moments">
+      <!-- 兜底演示数据 -->
+      <div class="moment-card">
+        <div class="moment-date">2026.05.20</div>
+        <h3>香港演唱会旅行</h3>
+        <p class="moment-meta">📷 12 张照片 · 👥 G</p>
+        <p class="moment-feeling">“第一次意识到，人与人的连接需要主动创造。”</p>
+        <div class="ai-tag">🔗 与心理学主题相关</div>
+      </div>
+      <div class="moment-card">
+        <div class="moment-date">2026.05.08</div>
+        <h3>完成 Hermes Agent 部署</h3>
+        <p class="moment-meta">💻 技术突破 · 24小时</p>
+        <p class="moment-feeling">“从 0 到 1 搭建个人 AI 助手系统。”</p>
+        <div class="ai-tag">🔗 与 AI 学习轨迹相关</div>
       </div>
     </div>
   </section>
 
-  <!-- 详细时间轴 -->
-  <section class="timeline-detail">
-    <h2 class="section-title">5月 · 重要瞬间</h2>
-
-    <div class="moment-card">
-      <div class="moment-date">2026.05.20</div>
-      <h3>香港演唱会旅行</h3>
-      <p class="moment-meta">📷 12 张照片 · 👥 G</p>
-      <p class="moment-feeling">“第一次意识到，人与人的连接需要主动创造。”</p>
-      <div class="ai-tag">🔗 与心理学主题相关</div>
-    </div>
-
-    <div class="moment-card">
-      <div class="moment-date">2026.05.08</div>
-      <h3>完成 Hermes Agent 部署</h3>
-      <p class="moment-meta">💻 技术突破 · 24小时</p>
-      <p class="moment-feeling">“从 0 到 1 搭建个人 AI 助手系统。”</p>
-      <div class="ai-tag">🔗 与 AI 学习轨迹相关</div>
-    </div>
-  </section>
-
-  <!-- 人生地图模式入口 -->
+  <!-- 人生地图模式（由真实数据统计） -->
   <section class="life-map">
     <h2 class="section-title">能量分布</h2>
-    <div class="map-grid">
+    <div class="map-grid" id="map-grid">
       <div class="map-item">
         <span class="map-label">学习</span>
         <div class="map-dot blue"></div>
-        <span class="map-score">85</span>
+        <span class="map-score" id="score-learning">--</span>
       </div>
       <div class="map-item">
         <span class="map-label">创造</span>
         <div class="map-dot cyan"></div>
-        <span class="map-score">70</span>
+        <span class="map-score" id="score-creation">--</span>
       </div>
       <div class="map-item">
         <span class="map-label">健康</span>
         <div class="map-dot green"></div>
-        <span class="map-score">75</span>
+        <span class="map-score" id="score-health">--</span>
       </div>
       <div class="map-item">
         <span class="map-label">社交</span>
         <div class="map-dot purple"></div>
-        <span class="map-score">80</span>
+        <span class="map-score" id="score-social">--</span>
       </div>
       <div class="map-item">
         <span class="map-label">体验</span>
         <div class="map-dot rose"></div>
-        <span class="map-score">90</span>
+        <span class="map-score" id="score-experience">--</span>
+      </div>
+      <div class="map-item">
+        <span class="map-label">旅行</span>
+        <div class="map-dot gold"></div>
+        <span class="map-score" id="score-travel">--</span>
       </div>
       <div class="map-item center">
         <span class="map-label">Amanda</span>
@@ -144,3 +107,130 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+  .moment-feeling { font-style: italic; color: #6B7280; }
+  .data-status { font-size: 12px; color: #8A93A6; margin: 0 0 12px; }
+  .data-status.live { color: #4F7CF7; font-weight: 500; }
+  .data-status.demo { color: #B0B7C4; }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabaseClient';
+
+  const TYPE_MAP: Record<string, { label: string; keys: string[] }> = {
+    '📚 阅读': { label: '学习', keys: ['📚', '学习'] },
+    '📖 阅读': { label: '学习', keys: ['📖', '学习'] },
+    '🏋 健身': { label: '健康', keys: ['🏋', '健身', '运动'] },
+    '💪 健康': { label: '健康', keys: ['💪', '健康'] },
+    '☕ 社交': { label: '社交', keys: ['☕', '社交'] },
+    '✈️ 旅行': { label: '旅行', keys: ['✈️', '旅行', '旅游'] },
+    '💻 学习': { label: '创造', keys: ['💻', '学习', '编码', '编程'] },
+    '🧑💻 创造': { label: '创造', keys: ['🧑💻', '创造'] },
+    '💡 想法': { label: '体验', keys: ['💡', '想法'] },
+    '🌟 体验': { label: '体验', keys: ['🌟', '体验'] },
+  };
+
+  function classifyCategory(typeText: string): string {
+    for (const [k, v] of Object.entries(TYPE_MAP)) {
+      if (typeText.includes(k)) return v.label;
+    }
+    return '体验';
+  }
+
+  // 渲染轨道总览
+  function renderTracks(moments: any[]) {
+    const counts: Record<string, number> = {
+      学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0,
+    };
+    for (const m of moments) {
+      counts[classifyCategory(m.type ?? '💡 想法')] = (counts[classifyCategory(m.type ?? '💡 想法')] || 0) + 1;
+    }
+    const max = Math.max(1, ...Object.values(counts));
+    const fill = (n: number) => Math.max(12, Math.round((n / max) * 100));
+    const categoryTrack: Record<string, HTMLElement | null> = {
+      学习: document.getElementById('track-learning'),
+      健康: document.getElementById('track-health'),
+      旅行: document.getElementById('track-travel'),
+      社交: document.getElementById('track-social'),
+      创造: document.getElementById('track-creation'),
+      体验: document.getElementById('track-experience'),
+    };
+    for (const [cat, el] of Object.entries(categoryTrack)) {
+      if (!el) continue;
+      el.innerHTML = counts[cat] > 0
+        ? `<div class="track-dot"></div><div class="track-segment" style="width:${fill(counts[cat])}%"></div>`.repeat(Math.min(6, Math.max(1, counts[cat])))
+        : '';
+    }
+    // 能量分布分数
+    const mapScores: Record<string, HTMLElement | null> = {
+      学习: document.getElementById('score-learning'),
+      创造: document.getElementById('score-creation'),
+      健康: document.getElementById('score-health'),
+      社交: document.getElementById('score-social'),
+      体验: document.getElementById('score-experience'),
+      旅行: document.getElementById('score-travel'),
+    };
+    const total = moments.length || 1;
+    for (const [cat, el] of Object.entries(mapScores)) {
+      if (!el) continue;
+      el.textContent = `${Math.round((counts[cat] / total) * 100)}`;
+    }
+  }
+
+  // 渲染时间轴（按月分组）
+  function renderTimeline(moments: any[]) {
+    const container = document.getElementById('timeline-moments');
+    if (!container) return;
+    if (moments.length === 0) {
+      container.innerHTML = '<p class="data-status demo">暂无时间轴记录</p>';
+      return;
+    }
+    const byMonth: Record<string, any[]> = {};
+    for (const m of moments) {
+      const d = new Date(m.occurred_at ?? m.created_at);
+      const key = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+      (byMonth[key] = byMonth[key] || []).push(m);
+    }
+    const months = Object.keys(byMonth).sort((a, b) => b.localeCompare(a));
+    const title = document.getElementById('month-title');
+    if (title) title.textContent = months.length > 0 ? `${months[0]} · 重要瞬间` : '重要瞬间';
+    container.innerHTML = months.map((month) => byMonth[month].map((m) => `
+      <div class="moment-card">
+        <div class="moment-date">${new Date(m.occurred_at ?? m.created_at).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.')}</div>
+        <h3>${escapeHtml(m.title)}</h3>
+        ${m.body ? `<p class="moment-feeling">“${escapeHtml(m.body)}”</p>` : ''}
+        <p class="moment-meta">${escapeHtml(m.type ?? '💡 想法')}</p>
+      </div>
+    `).join('')).join('');
+  }
+
+  function escapeHtml(s: unknown): string {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
+    )[c]);
+  }
+
+  async function load() {
+    if (!supabase) {
+      console.warn('[Timeline] Supabase 未配置，使用演示数据');
+      renderTracks([
+        { type: '📚 阅读' }, { type: '🏋 健身' }, { type: '☕ 社交' },
+        { type: '✈️ 旅行' }, { type: '💻 学习' }, { type: '🌟 体验' },
+      ]);
+      return;
+    }
+    const { data, error } = await supabase
+      .from('moments')
+      .select('*')
+      .order('occurred_at', { ascending: false })
+      .limit(200);
+    if (error) { console.error('[Timeline] 读取失败:', error); return; }
+    const moments = data ?? [];
+    renderTracks(moments);
+    renderTimeline(moments);
+  }
+
+  load();
+</script>
