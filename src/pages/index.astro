@@ -1,6 +1,7 @@
 ---
-// src/pages/index.astro — 首页（接入 Supabase 实时数据 + 添加瞬间表单）
-import BaseLayout from '../layouts/BaseLayout.astro';
+// src/pages/index.astro — 首页（接入 Supabase 实时数据 + 添加瞬间 + 详情弹窗含评论）
+const CURRENT_NICKNAME = 'Amanda';
+const CURRENT_AVATAR_COLOR = '#4F7CF7';
 ---
 
 <BaseLayout title="Life OS">
@@ -56,16 +57,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <!-- 添加瞬间表单（默认隐藏） -->
+  <!-- 添加瞬间表单 -->
   <div class="modal-overlay" id="add-modal" hidden>
-    <div class="modal-card">
+    <div class="modal-card modal-wide">
       <div class="modal-header">
         <h3>记录一个瞬间</h3>
-        <button type="button" class="modal-close" onclick="var m=document.getElementById('add-modal');m.hidden=true;m.style.display='none'" aria-label="关闭">✕</button>
+        <button type="button" class="modal-close" onclick="var m=document.getElementById('add-modal');m.hidden=true;m.style.display='none'">✕</button>
       </div>
       <form id="add-form">
-        <label>
-          类型
+        <label>类型
           <select name="type" required>
             <option value="📚 阅读">📚 阅读</option>
             <option value="📖 阅读">📖 阅读</option>
@@ -79,20 +79,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <option value="🌟 体验">🌟 体验</option>
           </select>
         </label>
-        <label>
-          标题
+        <label>标题
           <input name="title" placeholder="发生了什么" required />
         </label>
-        <label>
-          心得 / 细节
+        <label>心得 / 细节
           <textarea name="body" rows="3" placeholder="你的感受或细节..."></textarea>
         </label>
-        <label>
-          发生日期
+        <label>发生日期
           <input type="date" name="occurred_at" />
         </label>
-        <label>
-          图片 / 视频
+        <label>图片 / 视频
           <input type="file" id="media-files" accept="image/*,video/*" multiple />
           <span class="file-hint">支持多选图片或视频</span>
           <ul class="file-list" id="file-list"></ul>
@@ -105,6 +101,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </form>
     </div>
   </div>
+
+  <!-- 瞬间详情弹窗（查看 / 编辑 / 删除 / 评论） -->
+  <div class="modal-overlay" id="detail-modal" hidden>
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <h3 id="detail-title">瞬间详情</h3>
+        <button type="button" class="modal-close" onclick="var m=document.getElementById('detail-modal');m.hidden=true;m.style.display='none'">✕</button>
+      </div>
+      <div id="detail-body"></div>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
@@ -112,17 +119,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .data-status.live { color: #4F7CF7; font-weight: 500; }
   .data-status.demo { color: #B0B7C4; }
   .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+  .moment-card { cursor: pointer; }
 
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(15,23,42,0.45);
-    display: flex; align-items: flex-end; justify-content: center;
-    padding: 16px; z-index: 999;
+    display: flex; align-items: flex-end; justify-content: center; padding: 16px; z-index: 999;
   }
-  .modal-card {
-    background: #fff; width: 100%; max-width: 520px;
-    border-radius: 16px; padding: 18px 18px 22px;
-    box-shadow: 0 10px 30px rgba(15,23,42,0.18);
-  }
+  .modal-card { background: #fff; width: 100%; max-width: 520px; border-radius: 16px; padding: 18px 18px 22px; box-shadow: 0 10px 30px rgba(15,23,42,0.18); }
+  .modal-wide { max-width: 640px; }
   .modal-card h3 { margin: 0; font-size: 18px; }
   .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .modal-close {
@@ -130,60 +134,90 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
   }
   .modal-close:hover { background: #E5EAF4; color: #1F2937; }
-  .modal-card label {
-    display: flex; flex-direction: column; gap: 6px;
-    font-size: 13px; color: #3B4257; margin-bottom: 10px;
-  }
-  .modal-card input,
-  .modal-card select,
-  .modal-card textarea {
-    border: 1px solid #E5EAF4; border-radius: 10px; padding: 10px 12px;
-    font-size: 15px; background: #F7F9FF; color: #1F2937;
+  .modal-card label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #3B4257; margin-bottom: 10px; }
+  .modal-card input, .modal-card select, .modal-card textarea {
+    border: 1px solid #E5EAF4; border-radius: 10px; padding: 10px 12px; font-size: 15px; background: #F7F9FF; color: #1F2937;
   }
   .modal-card input[type="date"] { color: #4B5563; }
-  .form-actions {
-    display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;
-  }
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
   .file-hint { font-size: 12px; color: #8A93A6; margin-top: 4px; }
   .file-list { font-size: 13px; color: #4B5563; margin: 6px 0 0; padding: 0; list-style: none; }
   .file-list li { padding: 3px 0; }
-  .btn-primary {
-    background: #4F7CF7; color: #fff; border: 0; padding: 10px 16px;
-    border-radius: 10px; font-size: 14px; cursor: pointer;
-  }
-  .btn-secondary {
-    background: #EEF2FF; color: #4F56CF; border: 0; padding: 10px 16px;
-    border-radius: 10px; font-size: 14px; cursor: pointer;
-  }
-  .form-status {
-    font-size: 12px; color: #6B7280; margin: 10px 0 0; min-height: 16px;
-    text-align: right;
-  }
+  .btn-primary { background: #4F7CF7; color: #fff; border: 0; padding: 10px 16px; border-radius: 10px; font-size: 14px; cursor: pointer; }
+  .btn-secondary { background: #EEF2FF; color: #4F56CF; border: 0; padding: 10px 16px; border-radius: 10px; font-size: 14px; cursor: pointer; }
+  .btn-danger { background: #FEE2E2; color: #EF4444; border: 0; padding: 10px 16px; border-radius: 10px; font-size: 14px; cursor: pointer; }
+  .form-status { font-size: 12px; color: #6B7280; margin: 10px 0 0; min-height: 16px; text-align: right; }
   .btn-add { cursor: pointer; }
+
+  /* Detail modal */
+  .detail-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .detail-visibility { font-size: 12px; padding: 3px 8px; border-radius: 6px; background: #EEF2FF; color: #4F56CF; }
+  .detail-date { font-size: 12px; color: #8A93A6; }
+  .detail-media { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 10px 0; }
+  .detail-media img, .detail-media video { width: 100%; border-radius: 10px; max-height: 220px; object-fit: cover; }
+  .detail-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; border-top: 1px solid #E5EAF4; padding-top: 10px; }
+  .detail-edit-form { display: none; }
+  .detail-edit-form.open { display: block; }
+
+  /* Comments */
+  .comments-section { margin-top: 18px; border-top: 1px solid #E5EAF4; padding-top: 12px; }
+  .comments-title { font-size: 14px; color: #3B4257; margin: 0 0 10px; font-weight: 600; }
+  .comment-list { display: flex; flex-direction: column; gap: 10px; }
+  .comment-item { display: flex; gap: 10px; align-items: flex-start; }
+  .comment-avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 600;
+  }
+  .comment-bubble { flex: 1; }
+  .comment-bubble .cb-name { font-size: 13px; font-weight: 500; color: #1F2937; }
+  .comment-bubble .cb-text { font-size: 13px; color: #4B5563; background: #F4F6FA; padding: 6px 10px; border-radius: 10px; margin-top: 2px; display: inline-block; max-width: 100%; }
+  .comment-bubble .cb-time { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+  .comment-form { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; }
+  .comment-form input { flex: 1; border: 1px solid #E5EAF4; border-radius: 10px; padding: 8px 10px; font-size: 14px; background: #F7F9FF; }
+  .comment-form button { border: 0; background: #4F7CF7; color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+
+  .detail-edit-form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #3B4257; margin-bottom: 10px; }
+  .detail-edit-form input, .detail-edit-form select, .detail-edit-form textarea {
+    border: 1px solid #E5EAF4; border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #F7F9FF; color: #1F2937;
+  }
 </style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
 
   const DEFAULT_USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
+  const CURRENT = { userId: 'local-' + DEFAULT_USER_ID, nickname: 'Amanda', color: '#4F7CF7' };
 
   function escapeHtml(s: unknown): string {
     return String(s ?? '').replace(/[&<>"']/g, (c) => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
-    )[c]);
+    ))[c];
   }
 
+  // ====== 通用：打开/关闭 overlay ======
+  function openOverlay(id: string) {
+    const m = document.getElementById(id);
+    if (m) { m.hidden = false; m.style.display = ''; }
+  }
+  function closeOverlay(id: string) {
+    const m = document.getElementById(id);
+    if (m) { m.hidden = true; m.style.display = 'none'; }
+  }
+
+  // ====== 列表渲染 ======
   function renderMoments(moments: any[]) {
     const list = document.getElementById('moment-list');
     const status = document.getElementById('data-status');
     if (!list) return;
-    list.innerHTML = moments.map((m) => `
-      <article class="moment-card">
+    const items = (moments || []).map((m) => `
+      <article class="moment-card" data-id="${escapeHtml(m.id)}">
         <span class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</span>
         <h3>${escapeHtml(m.title)}</h3>
         ${m.body ? `<p class="moment-body">${escapeHtml(m.body)}</p>` : ''}
       </article>
     `).join('');
+    list.innerHTML = items || '<p style="color:#8A93A6;font-size:14px;">暂无记录</p>';
     if (status) {
       status.textContent = `● 已接入 Supabase · 共 ${moments.length} 条瞬间`;
       status.className = 'data-status live';
@@ -193,9 +227,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   function showDemo(reason?: string) {
     const status = document.getElementById('data-status');
     if (status) {
-      status.textContent = reason
-        ? `○ 演示数据（${reason}）`
-        : '○ 演示数据（未配置 Supabase 或暂无记录）';
+      status.textContent = reason ? `○ 演示数据（${reason}）` : '○ 演示数据（未配置 Supabase 或暂无记录）';
       status.className = 'data-status demo';
     }
   }
@@ -208,30 +240,161 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       .order('occurred_at', { ascending: false })
       .limit(30);
     if (error) { console.error('[LifeOS] 加载瞬间失败:', error); showDemo('读取失败'); return; }
-    if (!data || data.length === 0) { showDemo('暂无记录'); return; }
-    renderMoments(data);
+    renderMoments(data || []);
   }
 
-  // === 添加瞬间 ===
+  // ====== 打开详情 ======
+  async function openDetail(id: string) {
+    if (!supabase) return;
+    const { data } = await supabase.from('moments').select('*').eq('id', id).single();
+    if (!data) return;
+    const wrap = document.getElementById('detail-body');
+    if (!wrap) return;
+    wrap.innerHTML = `
+      <div class="detail-meta">
+        <span class="detail-visibility">${escapeHtml(data.visibility === 'public' ? '公开' : '私密')}</span>
+        <span class="detail-date">${escapeHtml(new Date(data.occurred_at).toLocaleString('zh-CN'))}</span>
+      </div>
+      <div class="detail-media">
+        ${(data.media_urls || []).map((u: string) => {
+          if (u.match(/\.(mp4|mov|webm)/i)) return `<video controls src="${escapeHtml(u)}"></video>`;
+          return `<img src="${escapeHtml(u)}" alt="" loading="lazy" />`;
+        }).join('')}
+      </div>
+      <div class="detail-text">
+        <strong>${escapeHtml(data.title)}</strong>
+        ${data.body ? `<p>${escapeHtml(data.body)}</p>` : ''}
+      </div>
+      <div class="detail-actions">
+        <button class="btn-secondary" id="detail-edit-btn">编辑</button>
+        <button class="btn-danger" id="detail-delete-btn">删除</button>
+        <button class="btn-secondary" id="detail-close-btn">关闭</button>
+      </div>
+      <div class="detail-edit-form" id="detail-edit-form"></div>
+
+      <div class="comments-section">
+        <p class="comments-title">评论</p>
+        <div class="comment-list" id="comment-list"></div>
+        <div class="comment-form">
+          <input id="comment-input" placeholder="添加评论..." />
+          <button id="comment-submit">发送</button>
+        </div>
+      </div>
+    `;
+    openOverlay('detail-modal');
+
+    // 关闭
+    document.getElementById('detail-close-btn').addEventListener('click', () => closeOverlay('detail-modal'));
+
+    // 删除
+    document.getElementById('detail-delete-btn').addEventListener('click', async () => {
+      if (!confirm('确定删除这条瞬间吗？')) return;
+      const { error } = await supabase.from('moments').delete().eq('id', data.id);
+      if (error) { alert('删除失败：' + error.message); return; }
+      closeOverlay('detail-modal');
+      loadMoments();
+    });
+
+    // 编辑切换
+    document.getElementById('detail-edit-btn').addEventListener('click', () => {
+      const form = document.getElementById('detail-edit-form');
+      if (!form) return;
+      const isOpen = form.classList.contains('open');
+      if (isOpen) { form.classList.remove('open'); return; }
+      form.classList.add('open');
+      form.innerHTML = `
+        <label>标题
+          <input id="edit-title" value="${escapeHtml(data.title)}" />
+        </label>
+        <label>心得
+          <textarea id="edit-body" rows="3">${escapeHtml(data.body || '')}</textarea>
+        </label>
+        <label>可见性
+          <select id="edit-visibility">
+            <option value="private" ${data.visibility==='private'?'selected':''}>私密</option>
+            <option value="public" ${data.visibility==='public'?'selected':''}>公开</option>
+          </select>
+        </label>
+        <label>发生日期
+          <input type="date" id="edit-date" value="${data.occurred_at ? new Date(data.occurred_at).toISOString().slice(0,10) : ''}" />
+        </label>
+        <div class="detail-actions">
+          <button class="btn-secondary" id="edit-cancel">取消</button>
+          <button class="btn-primary" id="edit-save">保存</button>
+        </div>
+      `;
+      document.getElementById('edit-cancel').addEventListener('click', () => form.classList.remove('open'));
+      document.getElementById('edit-save').addEventListener('click', async () => {
+        const occurred_at = new Date((document.getElementById('edit-date') as HTMLInputElement)?.value || data.occurred_at).toISOString();
+        const { error } = await supabase.from('moments').update({
+          title: (document.getElementById('edit-title') as HTMLInputElement)?.value || data.title,
+          body: (document.getElementById('edit-body') as HTMLTextAreaElement)?.value || data.body,
+          visibility: (document.getElementById('edit-visibility') as HTMLSelectElement)?.value || data.visibility,
+          occurred_at,
+        }).eq('id', data.id);
+        if (error) { alert('保存失败：' + error.message); return; }
+        closeOverlay('detail-modal');
+        loadMoments();
+      });
+    });
+
+    // 评论
+    await loadComments(data.id);
+    const commentInput = document.getElementById('comment-input') as HTMLInputElement | null;
+    const submitBtn = document.getElementById('comment-submit');
+    submitBtn?.addEventListener('click', async () => {
+      const body = commentInput?.value?.trim();
+      if (!body) return;
+      const { error } = await supabase.from('comments').insert({
+        moment_id: data.id,
+        user_id: CURRENT.userId,
+        author_name: CURRENT.nickname,
+        author_avatar_color: CURRENT.color,
+        body,
+      });
+      if (error) { alert('评论失败：' + error.message); return; }
+      if (commentInput) commentInput.value = '';
+      await loadComments(data.id);
+    });
+  }
+
+  async function loadComments(momentId: string) {
+    const list = document.getElementById('comment-list');
+    if (!list || !supabase) return;
+    const { data } = await supabase.from('comments').select('*').eq('moment_id', momentId).order('created_at', { ascending: true });
+    const comments = data || [];
+    list.innerHTML = comments.length === 0 ? '<p style="font-size:12px;color:#9CA3AF;">暂无评论</p>' : comments.map((c) => `
+      <div class="comment-item">
+        <div class="comment-avatar" style="background:${escapeHtml(c.author_avatar_color || '#4F7CF7')}">${escapeHtml((c.author_name || '?')[0] as string)}</div>
+        <div class="comment-bubble">
+          <div class="cb-name">${escapeHtml(c.author_name || '匿名')}</div>
+          <div class="cb-text">${escapeHtml(c.body)}</div>
+          <div class="cb-time">${escapeHtml(new Date(c.created_at).toLocaleString('zh-CN'))}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ====== 事件代理 ======
+  document.getElementById('moment-list')?.addEventListener('click', (e) => {
+    const card = (e.target as HTMLElement).closest('.moment-card') as HTMLElement | null;
+    if (!card) return;
+    const id = card.getAttribute('data-id');
+    if (id) openDetail(id);
+  });
+
+  // ====== 添加瞬间 ======
   const modal = document.getElementById('add-modal') as HTMLElement | null;
   const btnAdd = document.getElementById('btn-add');
   const btnCancel = document.getElementById('btn-cancel');
-  const btnCloseX = document.getElementById('btn-close-x');
   const form = document.getElementById('add-form') as HTMLFormElement | null;
   const formStatus = document.getElementById('form-status');
   const mediaInput = document.getElementById('media-files') as HTMLInputElement | null;
   const fileList = document.getElementById('file-list');
 
-  function openModal() { const m = document.getElementById('add-modal'); if (m) { m.hidden = false; m.style.display = ''; } }
-  function closeModal() { const m = document.getElementById('add-modal'); if (m) { m.hidden = true; m.style.display = 'none'; } }
-  (window as any)._lifeosCloseModal = closeModal;
+  if (btnAdd) btnAdd.addEventListener('click', () => openOverlay('add-modal'));
+  if (btnCancel) btnCancel.addEventListener('click', () => closeOverlay('add-modal'));
 
-  if (btnAdd) btnAdd.addEventListener('click', openModal);
-  if (btnCancel) btnCancel.addEventListener('click', () => { const m = document.getElementById('add-modal'); if (m) { m.hidden = true; m.style.display = 'none'; } });
-  if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
-  if (modal) modal.addEventListener('click', (e) => { if ((e.target as HTMLElement) === modal) closeModal(); });
-
-  // 显示已选文件
   if (mediaInput) {
     mediaInput.addEventListener('change', () => {
       if (!fileList) return;
@@ -240,7 +403,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     });
   }
 
-  // 上传文件到 Supabase Storage
   async function uploadMedia(files: File[]): Promise<string[]> {
     if (!supabase || files.length === 0) return [];
     const urls: string[] = [];
@@ -248,9 +410,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const ext = file.name.split('.').pop() || 'bin';
       const path = `moments/${DEFAULT_USER_ID}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error } = await supabase.storage.from('life-os').upload(path, file, {
-        cacheControl: '3600',
-        upsert: false,
-        contentType: file.type || 'application/octet-stream',
+        cacheControl: '3600', upsert: false, contentType: file.type || 'application/octet-stream',
       });
       if (error) { console.error('[LifeOS] 上传失败:', error); continue; }
       const { data } = supabase.storage.from('life-os').getPublicUrl(path);
@@ -263,41 +423,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!supabase) { if (formStatus) formStatus.textContent = 'Supabase 未配置，无法保存'; return; }
-
       const fd = new FormData(form);
       const type = String(fd.get('type') || '').trim();
       const title = String(fd.get('title') || '').trim();
       const body = String(fd.get('body') || '').trim();
       const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : new Date().toISOString();
-
       if (!type || !title) { if (formStatus) formStatus.textContent = '请填写类型和标题'; return; }
-
       if (formStatus) formStatus.textContent = '保存中...';
-
       const files = mediaInput?.files ? Array.from(mediaInput.files) : [];
       const mediaUrls = files.length > 0 ? await uploadMedia(files) : [];
-
-      const { error } = await supabase
-        .from('moments')
-        .insert({
-          user_id: DEFAULT_USER_ID,
-          type,
-          title,
-          body: body || null,
-          occurred_at,
-          visibility: 'private',
-          media_urls: mediaUrls.length > 0 ? mediaUrls : [],
-        });
-
-      if (error) {
-        console.error('[LifeOS] 插入失败:', error);
-        if (formStatus) formStatus.textContent = '保存失败：' + escapeHtml(error.message);
-        return;
-      }
+      const { error } = await supabase.from('moments').insert({
+        user_id: DEFAULT_USER_ID, type, title, body: body || null, occurred_at, visibility: 'private', media_urls: mediaUrls.length > 0 ? mediaUrls : [],
+      });
+      if (error) { if (formStatus) formStatus.textContent = '保存失败：' + escapeHtml(error.message); return; }
       if (formStatus) formStatus.textContent = '已保存';
-      form.reset();
-      if (fileList) fileList.innerHTML = '';
-      setTimeout(() => { closeModal(); loadMoments(); }, 300);
+      form.reset(); if (fileList) fileList.innerHTML = '';
+      setTimeout(() => { closeOverlay('add-modal'); loadMoments(); }, 300);
     });
   }
 
