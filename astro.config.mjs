@@ -5,5 +5,5 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   output: 'static',
-  site: 'https://life-os.example.com'
+  site: 'https://life-os-3zx.pages.dev'
 });
