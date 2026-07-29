@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro — 首页（接入 Supabase 实时数据 + 添加瞬间 + 详情弹窗含评论）
+import BaseLayout from '../layouts/BaseLayout.astro';
 const CURRENT_NICKNAME = 'Amanda';
 const CURRENT_AVATAR_COLOR = '#4F7CF7';
 ---
@@ -204,12 +204,15 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
   }
 
   // ====== 列表渲染 ======
+  // 挂到 window 供 inline onclick 使用
+  (window as any)._lifeosOpenDetail = (id: string) => openDetail(id);
+
   function renderMoments(moments: any[]) {
     const list = document.getElementById('moment-list');
     const status = document.getElementById('data-status');
     if (!list) return;
     const items = (moments || []).map((m) => `
-      <article class="moment-card" data-id="${escapeHtml(m.id)}">
+      <article class="moment-card" data-id="${escapeHtml(m.id)}" onclick="window._lifeosOpenDetail('${escapeHtml(m.id)}')">
         <span class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</span>
         <h3>${escapeHtml(m.title)}</h3>
         ${m.body ? `<p class="moment-body">${escapeHtml(m.body)}</p>` : ''}
@@ -373,13 +376,7 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
     `).join('');
   }
 
-  // ====== 事件代理 ======
-  document.getElementById('moment-list')?.addEventListener('click', (e) => {
-    const card = (e.target as HTMLElement).closest('.moment-card') as HTMLElement | null;
-    if (!card) return;
-    const id = card.getAttribute('data-id');
-    if (id) openDetail(id);
-  });
+  // 点击卡片事件已通过 inline onclick 绑定到 moment-card
 
   // ====== 添加瞬间 ======
   const modal = document.getElementById('add-modal') as HTMLElement | null;
