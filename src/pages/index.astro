@@ -88,6 +88,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           发生日期
           <input type="date" name="occurred_at" />
         </label>
+        <label>
+          图片 / 视频
+          <input type="file" id="media-files" accept="image/*,video/*" multiple />
+          <span class="file-hint">支持多选图片或视频</span>
+          <ul class="file-list" id="file-list"></ul>
+        </label>
         <div class="form-actions">
           <button type="button" class="btn-secondary" id="btn-cancel">取消</button>
           <button type="submit" class="btn-primary">保存</button>
@@ -129,6 +135,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .form-actions {
     display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;
   }
+  .file-hint { font-size: 12px; color: #8A93A6; margin-top: 4px; }
+  .file-list { font-size: 13px; color: #4B5563; margin: 6px 0 0; padding: 0; list-style: none; }
+  .file-list li { padding: 3px 0; }
   .btn-primary {
     background: #4F7CF7; color: #fff; border: 0; padding: 10px 16px;
     border-radius: 10px; font-size: 14px; cursor: pointer;
@@ -200,6 +209,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const btnCancel = document.getElementById('btn-cancel');
   const form = document.getElementById('add-form') as HTMLFormElement | null;
   const formStatus = document.getElementById('form-status');
+  const mediaInput = document.getElementById('media-files') as HTMLInputElement | null;
+  const fileList = document.getElementById('file-list');
 
   function openModal() { if (modal) modal.hidden = false; }
   function closeModal() { if (modal) { modal.hidden = true; if (formStatus) formStatus.textContent = ''; } }
@@ -207,6 +218,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   if (btnAdd) btnAdd.addEventListener('click', openModal);
   if (btnCancel) btnCancel.addEventListener('click', closeModal);
   if (modal) modal.addEventListener('click', (e) => { if ((e.target as HTMLElement) === modal) closeModal(); });
+
+  // 显示已选文件
+  if (mediaInput) {
+    mediaInput.addEventListener('change', () => {
+      if (!fileList) return;
+      const files = Array.from(mediaInput.files || []);
+      fileList.innerHTML = files.map((f) => `<li>● ${escapeHtml(f.name)} (${(f.size / 1024).toFixed(1)} KB)</li>`).join('');
+    });
+  }
+
+  // 上传文件到 Supabase Storage
+  async function uploadMedia(files: File[]): Promise<string[]> {
+    if (!supabase || files.length === 0) return [];
+    const urls: string[] = [];
+    for (const file of files) {
+      const ext = file.name.split('.').pop() || 'bin';
+      const path = `moments/${DEFAULT_USER_ID}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from('life-os').upload(path, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type || 'application/octet-stream',
+      });
+      if (error) { console.error('[LifeOS] 上传失败:', error); continue; }
+      const { data } = supabase.storage.from('life-os').getPublicUrl(path);
+      if (data?.publicUrl) urls.push(data.publicUrl);
+    }
+    return urls;
+  }
 
   if (form) {
     form.addEventListener('submit', async (e) => {
@@ -222,6 +261,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (!type || !title) { if (formStatus) formStatus.textContent = '请填写类型和标题'; return; }
 
       if (formStatus) formStatus.textContent = '保存中...';
+
+      const files = mediaInput?.files ? Array.from(mediaInput.files) : [];
+      const mediaUrls = files.length > 0 ? await uploadMedia(files) : [];
+
       const { error } = await supabase
         .from('moments')
         .insert({
@@ -231,6 +274,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           body: body || null,
           occurred_at,
           visibility: 'private',
+          media_urls: mediaUrls.length > 0 ? mediaUrls : [],
         });
 
       if (error) {
@@ -240,6 +284,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
       if (formStatus) formStatus.textContent = '已保存';
       form.reset();
+      if (fileList) fileList.innerHTML = '';
       setTimeout(() => { closeModal(); loadMoments(); }, 300);
     });
   }
