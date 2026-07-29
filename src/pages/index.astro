@@ -1,26 +1,21 @@
 ---
-// src/pages/index.astro — 首页（接入 Supabase 实时数据）
+// src/pages/index.astro — 首页（接入 Supabase 实时数据 + 添加瞬间表单）
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const today = new Date().toLocaleDateString('zh-CN', {
-  year: 'numeric', month: 'long', day: 'numeric'
-});
 ---
 
 <BaseLayout title="Life OS">
   <section class="hero">
     <div class="avatar">A</div>
     <h1 class="user-name">Amanda</h1>
-    <p class="user-date">{today}</p>
+    <p class="user-date">{import.meta.env.PUBLIC_NOW_DATE || new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'})}</p>
     <p class="user-prompt">今天，你想记录什么？</p>
-    <button class="btn-add">+ 添加人生瞬间</button>
+    <button class="btn-add" id="btn-add">+ 添加人生瞬间</button>
   </section>
 
   <section class="today">
     <h2 class="section-title">今日轨迹</h2>
     <p class="data-status" id="data-status"></p>
     <div class="moment-list" id="moment-list">
-      <!-- 兜底演示数据：未配置 Supabase 或数据为空时显示 -->
       <article class="moment-card">
         <span class="moment-type">📚 阅读</span>
         <h3>《时间游戏》</h3>
@@ -60,6 +55,47 @@ const today = new Date().toLocaleDateString('zh-CN', {
       </div>
     </div>
   </section>
+
+  <!-- 添加瞬间表单（默认隐藏） -->
+  <div class="modal-overlay" id="add-modal" hidden>
+    <div class="modal-card">
+      <h3>记录一个瞬间</h3>
+      <form id="add-form">
+        <label>
+          类型
+          <select name="type" required>
+            <option value="📚 阅读">📚 阅读</option>
+            <option value="📖 阅读">📖 阅读</option>
+            <option value="🏋 健身">🏋 健身</option>
+            <option value="💪 健康">💪 健康</option>
+            <option value="☕ 社交">☕ 社交</option>
+            <option value="✈️ 旅行">✈️ 旅行</option>
+            <option value="💻 学习">💻 学习</option>
+            <option value="🧑💻 创造">🧑💻 创造</option>
+            <option value="💡 想法">💡 想法</option>
+            <option value="🌟 体验">🌟 体验</option>
+          </select>
+        </label>
+        <label>
+          标题
+          <input name="title" placeholder="发生了什么" required />
+        </label>
+        <label>
+          心得 / 细节
+          <textarea name="body" rows="3" placeholder="你的感受或细节..."></textarea>
+        </label>
+        <label>
+          发生日期
+          <input type="date" name="occurred_at" />
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="btn-cancel">取消</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+        <p class="form-status" id="form-status"></p>
+      </form>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
@@ -67,13 +103,51 @@ const today = new Date().toLocaleDateString('zh-CN', {
   .data-status.live { color: #4F7CF7; font-weight: 500; }
   .data-status.demo { color: #B0B7C4; }
   .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.45);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 16px; z-index: 999;
+  }
+  .modal-card {
+    background: #fff; width: 100%; max-width: 520px;
+    border-radius: 16px; padding: 18px 18px 22px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.18);
+  }
+  .modal-card h3 { margin: 0 0 12px; font-size: 18px; }
+  .modal-card label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 13px; color: #3B4257; margin-bottom: 10px;
+  }
+  .modal-card input,
+  .modal-card select,
+  .modal-card textarea {
+    border: 1px solid #E5EAF4; border-radius: 10px; padding: 10px 12px;
+    font-size: 15px; background: #F7F9FF; color: #1F2937;
+  }
+  .modal-card input[type="date"] { color: #4B5563; }
+  .form-actions {
+    display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;
+  }
+  .btn-primary {
+    background: #4F7CF7; color: #fff; border: 0; padding: 10px 16px;
+    border-radius: 10px; font-size: 14px; cursor: pointer;
+  }
+  .btn-secondary {
+    background: #EEF2FF; color: #4F56CF; border: 0; padding: 10px 16px;
+    border-radius: 10px; font-size: 14px; cursor: pointer;
+  }
+  .form-status {
+    font-size: 12px; color: #6B7280; margin: 10px 0 0; min-height: 16px;
+    text-align: right;
+  }
+  .btn-add { cursor: pointer; }
 </style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
 
-  const list = document.getElementById('moment-list') as HTMLElement | null;
-  const status = document.getElementById('data-status') as HTMLElement | null;
+  const DEFAULT_USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
 
   function escapeHtml(s: unknown): string {
     return String(s ?? '').replace(/[&<>"']/g, (c) => (
@@ -82,6 +156,8 @@ const today = new Date().toLocaleDateString('zh-CN', {
   }
 
   function renderMoments(moments: any[]) {
+    const list = document.getElementById('moment-list');
+    const status = document.getElementById('data-status');
     if (!list) return;
     list.innerHTML = moments.map((m) => `
       <article class="moment-card">
@@ -97,6 +173,7 @@ const today = new Date().toLocaleDateString('zh-CN', {
   }
 
   function showDemo(reason?: string) {
+    const status = document.getElementById('data-status');
     if (status) {
       status.textContent = reason
         ? `○ 演示数据（${reason}）`
@@ -115,6 +192,56 @@ const today = new Date().toLocaleDateString('zh-CN', {
     if (error) { console.error('[LifeOS] 加载瞬间失败:', error); showDemo('读取失败'); return; }
     if (!data || data.length === 0) { showDemo('暂无记录'); return; }
     renderMoments(data);
+  }
+
+  // === 添加瞬间 ===
+  const modal = document.getElementById('add-modal') as HTMLElement | null;
+  const btnAdd = document.getElementById('btn-add');
+  const btnCancel = document.getElementById('btn-cancel');
+  const form = document.getElementById('add-form') as HTMLFormElement | null;
+  const formStatus = document.getElementById('form-status');
+
+  function openModal() { if (modal) modal.hidden = false; }
+  function closeModal() { if (modal) { modal.hidden = true; if (formStatus) formStatus.textContent = ''; } }
+
+  if (btnAdd) btnAdd.addEventListener('click', openModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  if (modal) modal.addEventListener('click', (e) => { if ((e.target as HTMLElement) === modal) closeModal(); });
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!supabase) { if (formStatus) formStatus.textContent = 'Supabase 未配置，无法保存'; return; }
+
+      const fd = new FormData(form);
+      const type = String(fd.get('type') || '').trim();
+      const title = String(fd.get('title') || '').trim();
+      const body = String(fd.get('body') || '').trim();
+      const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : new Date().toISOString();
+
+      if (!type || !title) { if (formStatus) formStatus.textContent = '请填写类型和标题'; return; }
+
+      if (formStatus) formStatus.textContent = '保存中...';
+      const { error } = await supabase
+        .from('moments')
+        .insert({
+          user_id: DEFAULT_USER_ID,
+          type,
+          title,
+          body: body || null,
+          occurred_at,
+          visibility: 'private',
+        });
+
+      if (error) {
+        console.error('[LifeOS] 插入失败:', error);
+        if (formStatus) formStatus.textContent = '保存失败：' + escapeHtml(error.message);
+        return;
+      }
+      if (formStatus) formStatus.textContent = '已保存';
+      form.reset();
+      setTimeout(() => { closeModal(); loadMoments(); }, 300);
+    });
   }
 
   loadMoments();
