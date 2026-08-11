@@ -281,7 +281,7 @@ a { color: var(--blue); }
    ============================================================ */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(15, 23, 42, 0.48);
+  background: rgba(0, 0, 0, 0.52);
   display: flex; align-items: center; justify-content: center;
   padding: 24px; z-index: 999;
 }
@@ -292,6 +292,7 @@ a { color: var(--blue); }
   border: 1px solid #e5e7eb;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 22px 24px;
+  overflow-y: auto; max-height: calc(100vh - 48px);
 }
 .modal-wide { max-width: 640px; }
 .modal-card h3 { margin: 0; font-size: var(--text-lg); }

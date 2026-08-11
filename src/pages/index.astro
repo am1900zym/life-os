@@ -215,7 +215,8 @@ import { supabaseClient } from '../lib/supabaseClient';
   #photo-preview.visible { opacity: 1; visibility: visible; }
 </style>
 <script>
-  // 照片悬浮预览
+  // 暴露 openDetail 给卡片点击（完整版在 BaseLayout 中定义，这里不覆盖）
+  // 照片预览
   const preview = document.getElementById('photo-preview');
   document.addEventListener('click', (e) => {
     const img = e.target.closest('img[data-preview]');
@@ -233,38 +234,4 @@ import { supabaseClient } from '../lib/supabaseClient';
       setTimeout(() => document.addEventListener('click', closeHandler), 0);
     }
   });
-</script>
-
-<!-- 详情弹窗（编辑模式） -->
-<script>
-  window.openDetail = function(moment) {
-    // 此方法已存在于 BaseLayout.astro 中，调用它打开详情modal
-    if (typeof window._originalOpenDetail === 'function') {
-      window._originalOpenDetail(moment);
-    } else {
-      // fallback: 展示原有的详情
-      const detailModal = document.getElementById('detail-modal');
-      if (!detailModal) return;
-      detailModal.hidden = false;
-      detailModal.style.display = '';
-      document.getElementById('detail-title').textContent = moment.title;
-      const mediaHtml = Array.isArray(moment.media_urls) && moment.media_urls.length
-        ? `<div class="detail-media">${moment.media_urls.map(u => 
-            /\\.(mp4|mov)$/i.test(u) ? `<video src="${u}" controls></video>` : 
-            `<img src="${u}" alt="media" data-preview/>`
-          ).join('')}</div>`
-        : '';
-      document.getElementById('detail-body').innerHTML = `
-        <div class="detail-meta">
-          <span class="detail-visibility">${moment.visibility === 'public' ? '公开' : '私密'}</span>
-          <span class="detail-date">${new Date(moment.occurred_at).toLocaleString('zh-CN')}</span>
-        </div>
-        ${mediaHtml}
-        <p class="detail-text">${moment.body || ''}</p>
-        <div class="detail-tags">${Array.isArray(moment.tags) ? moment.tags.map(t => `<span class="moment-tag">${t}</span>`).join('') : ''}</div>
-      `;
-      detailModal.hidden = false;
-      detailModal.style.display = 'flex';
-    }
-  };
 </script>

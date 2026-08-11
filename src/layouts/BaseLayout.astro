@@ -203,17 +203,22 @@ qaForm?.addEventListener('submit', async (e) => {
             const type = String(fd.get('type') || '').trim();
             const title = String(fd.get('title') || '').trim();
             const body = String(fd.get('body') || '').trim();
-            const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : new Date().toISOString();
+            const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at')).trim()).toISOString() : new Date().toISOString();
             if (!type || !title) { qaStatus.textContent = '请填写类型和标题'; return; }
             qaStatus.textContent = '保存中...';
             const media = await uploadMedia(Array.from(qaForm.querySelectorAll('input[type=file]')[0]?.files || []));
             const { error } = await supabase.from('moments').insert({
               user_id: DEFAULT_USER_ID, type, title, body: body || null, occurred_at, visibility: 'private', media_urls: media,
             });
-            if (error) { qaStatus.textContent = '保存失败：' + error.message; return; }
-            qaStatus.textContent = '已保存';
+            if (error) {
+              qaStatus.textContent = '保存失败：' + error.message;
+              qaStatus.className = 'form-status error';
+              return;
+            }
+            qaStatus.textContent = '✓ 已保存';
+            qaStatus.className = 'form-status success';
             qaForm.reset();
-            setTimeout(() => { closeQuickAdd(); qaStatus.textContent = ''; }, 300);
+            setTimeout(() => { closeQuickAdd(); qaStatus.textContent = ''; qaStatus.className = 'form-status'; }, 800);
             window.dispatchEvent(new CustomEvent('lifeos:refresh'));
           });
 
@@ -274,15 +279,26 @@ qaForm?.addEventListener('submit', async (e) => {
               </div>
               ${Array.isArray(moment.media_urls) && moment.media_urls.length ? `
                 <div class="detail-media">
-                  ${moment.media_urls.map((u) => /\.(mp4|mov)$/i.test(u) ? `<video src="${u}" controls></video>` : `<img src="${u}" alt="media" />`).join('')}
+                  ${moment.media_urls.map((u) => /\\.(mp4|mov)$/i.test(u) ? `<video src="${u}" controls></video>` : `<img src="${u}" alt="media" />`).join('')}
                 </div>
               ` : ''}
               <p class="detail-text">${moment.body || ''}</p>
               <div class="detail-actions">
-                <button type="button" class="btn-secondary" onclick="closeDetail()">关闭</button>
+                <button type="button" class="btn-danger" onclick="deleteCurrent()">删除</button>
                 <button type="button" class="btn-primary" onclick="enableEdit()">编辑</button>
               </div>
               <form class="detail-edit-form" id="detail-edit-form">
+                <label>类型
+                  <select name="type" required>
+                    <option value="📚 阅读">📚 阅读</option>
+                    <option value="🏋 健身">🏋 健身</option>
+                    <option value="☕ 社交">☕ 社交</option>
+                    <option value="✈️ 旅行">✈️ 旅行</option>
+                    <option value="💻 学习">💻 学习</option>
+                    <option value="💡 想法">💡 想法</option>
+                    <option value="🌟 体验">🌟 体验</option>
+                  </select>
+                </label>
                 <label>标题
                   <input name="title" value="${moment.title.replace(/"/g, '&quot;')}" required />
                 </label>
@@ -297,6 +313,9 @@ qaForm?.addEventListener('submit', async (e) => {
                     <option value="private">私密</option>
                     <option value="public">公开</option>
                   </select>
+                </label>
+                <label>标签 (用逗号分隔)
+                  <input name="tags" value="${Array.isArray(moment.tags) ? moment.tags.join(',') : ''}" placeholder="如：学习, 重要" />
                 </label>
                 <div class="form-actions">
                   <button type="button" class="btn-secondary" onclick="cancelEdit()">取消</button>
@@ -323,11 +342,15 @@ qaForm?.addEventListener('submit', async (e) => {
               const { supabase } = await import('../lib/supabaseClient');
               if (!supabase || !currentDetail) return;
               const fd = new FormData(editForm);
+              const tagsRaw = String(fd.get('tags') || '');
+              const tags = tagsRaw.split(/[,，]/).map((t) => t.trim()).filter(Boolean);
               const { error } = await supabase.from('moments').update({
+                type: String(fd.get('type') || '💡 想法').trim(),
                 title: String(fd.get('title') || '').trim(),
                 body: String(fd.get('body') || '').trim() || null,
                 occurred_at: String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : currentDetail.occurred_at,
                 visibility: String(fd.get('visibility') || 'private').trim(),
+                tags,
               }).eq('id', currentDetail.id);
               if (error) { alert('保存失败：' + error.message); return; }
               window.dispatchEvent(new CustomEvent('lifeos:refresh'));
@@ -378,6 +401,20 @@ qaForm?.addEventListener('submit', async (e) => {
             detailModal.style.display = 'none';
             currentDetail = null;
           }
+
+          window.deleteCurrent = async function () {
+            if (!currentDetail) return;
+            if (!confirm('确定删除这条记录吗？此操作不可撤销。')) return;
+            const { supabase } = await import('../lib/supabaseClient');
+            if (!supabase) { alert('Supabase 未配置'); return; }
+            const { error } = await supabase.from('moments').delete().eq('id', currentDetail.id);
+            if (error) { alert('删除失败：' + error.message); return; }
+            closeDetail();
+            window.dispatchEvent(new CustomEvent('lifeos:refresh'));
+          };
+
+          // 暴露 openDetail 给页面内卡片点击使用
+          window.openDetail = openDetail;
 
           function escapeHtml(s) {
             return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
