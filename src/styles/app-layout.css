@@ -93,21 +93,12 @@
 }
 .nav-link:hover { color: #0d253d; }
 .nav-link.active {
-  background: #EBF1FF;
-  color: #4F7CF7;
-  font-weight: 600;
-  box-shadow: 0 0 0 1px rgba(79,124,247,0.35) inset;
-}
-.nav-link.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 3px;
-  border-radius: 999px;
   background: #4F7CF7;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: none;
 }
+.nav-link.active::before { display: none; }
 .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
 
 .sidebar-footer { margin-top: 6px; }
