@@ -1,0 +1,152 @@
+---
+// src/pages/dental/red.astro — 收藏 / 精选 / 阅读清单
+// 参考 Alohomora.live/red/：收藏的论文 + 期刊/分类筛选 + 作者首字母标签
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { dentalPapers, journalCategories } from '../../data/dentalData';
+
+// 模拟已收藏的论文 (默认收藏全部, 实际应从 Supabase dental_saved 表读)
+const SAVED_IDS = new Set(dentalPapers.map((p) => p.id));
+const DEFAULT_USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
+
+// 分类标签 (参考 Alohomora 的 精选/Top5/AEA/综述/金融/会计)
+const filterTags = [
+  { key: 'all', label: '全部', color: 'c-blue' },
+  { key: 'star', label: '精选', color: 'c-gold' },
+  { key: 'Top5', label: 'Top5', color: 'c-rose' },
+  { key: '研究', label: '研究', color: 'c-blue' },
+  { key: '综述', label: '综述', color: 'c-green' },
+  { key: '临床', label: '临床', color: 'c-cyan' },
+  { key: '实验室', label: '实验室', color: 'c-purple' },
+  { key: '政策', label: '政策', color: 'c-teal' },
+];
+
+// 每篇论文的分类标记
+const paperCategory = (p) => p.type === '综述' ? '综述' : p.type === '临庾' ? '临床' : p.type;
+// Top5 标记 (简化: 标记部分论文为精华)
+const TOP5_IDS = new Set(['p2', 'p1', 'p6', 'p9', 'p10']);
+
+// 作者首字母 (参考 Alohomora 用 S/T/A/L/C 等)
+const authorInitial = (authors) => {
+  const first = (authors || '').split(',')[0]?.trim();
+  if (!first) return '?';
+  // 取姓氏姓
+  const parts = first.split(' ');
+  return parts.length > 1 ? parts[parts.length - 1][0] : parts[0][0];
+};
+
+const filterColors = {
+  'c-blue': { bg: 'var(--blue-ghost)', color: 'var(--blue)', border: 'var(--blue-soft)' },
+  'c-gold': { bg: 'var(--gold-bg)', color: 'var(--gold)', border: 'var(--gold)' },
+  'c-rose': { bg: 'var(--rose-bg)', color: 'var(--rose)', border: 'var(--rose)' },
+  'c-green': { bg: 'var(--green-bg)', color: 'var(--green)', border: 'var(--green)' },
+  'c-cyan': { bg: 'var(--cyan-bg)', color: 'var(--cyan)', border: 'var(--cyan)' },
+  'c-purple': { bg: 'var(--purple-bg)', color: 'var(--purple)', border: 'var(--purple)' },
+  'c-teal': { bg: 'var(--teal-bg)', color: 'var(--teal)', border: 'var(--teal)' },
+};
+---
+
+<DentalLayout title="收藏 — 口腔视界" active="/dental/red" pageTitle="收藏" pageSub="你的阅读清单 · 精选 · Top5 · 分类浏览。">
+
+  <!-- 筛选标签 -->
+  <div class="meta-line" style="margin-bottom:16px">
+    <div class="filter-tags" id="red-filter-tags" style="display:flex;gap:8px;flex-wrap:wrap">
+      {filterTags.map((t) => (
+        <span class={`filter-tag ${t.color}`} data-filter={t.key} style="cursor:pointer">
+          {t.label}
+        </span>
+      ))}
+    </div>
+    <span style="font-size:12.5px;color:var(--muted)" id="red-filter-status">全部 {SAVED_IDS.size} 篇</span>
+  </div>
+
+  <!-- 论文列表 -->
+  <div class="entry-list" id="red-list">
+    {dentalPapers.map((p) => (
+      <article class="red-item" data-id={p.id} data-type={p.type} data-top5={TOP5_IDS.has(p.id)}>
+        <div class="entry-icon" style="width:28px;height:28px;border-radius:7px;font-size:13px">{authorInitial(p.authors)}</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class="entry-cat c-blue">{p.journal}</span>
+            {TOP5_IDS.has(p.id) && <span class="entry-cat c-rose">Top5</span>}
+            <span class="entry-date">{p.date}</span>
+            <span class="star-toggle" style="margin-left:auto;cursor:pointer;font-size:16px;color:var(--gold)" data-action="unstar" title="取消收藏">⭐</span>
+          </div>
+          <h3 class="entry-title"><a href={p.url} target="_blank" rel="noopener">{p.title}</a></h3>
+          <p class="entry-desc">{p.abstract}</p>
+          <div class="paper-tags">
+            {p.tags.map((t) => <span class="paper-tag">{t}</span>)}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</DentalLayout>
+
+<script is:inline>
+  // ===== 收藏逻辑 (Supabase + localStorage 双写) =====
+  const RED_FILTER_TAGS = document.getElementById('red-filter-tags');
+  const RED_LIST = document.getElementById('red-list');
+  const RED_STATUS = document.getElementById('red-filter-status');
+  const USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
+
+  // 加载已收藏 (Supabase 优先, localStorage 兜底)
+  let savedSet = new Set(JSON.parse(localStorage.getItem('dental_saved') || '[]'));
+
+  // 同步到 Supabase
+  async function syncSaved() {
+    try {
+      const mod = await import('../lib/supabaseClient');
+      if (!mod.supabase) return;
+      for (const id of savedSet) {
+        await mod.supabase.from('dental_saved').upsert({
+          user_id: USER_ID, ref_type: 'paper', ref_id: id, pmid: id, is_starred: true,
+        }, { onConflict: 'user_id,ref_type,ref_id' });
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function updateSaved(idStr, save) {
+    if (save) savedSet.add(idStr); else savedSet.delete(idStr);
+    localStorage.setItem('dental_saved', JSON.stringify([...savedSet]));
+    syncSaved();
+  }
+
+  // 点击取消收藏 (star)
+  RED_LIST?.querySelectorAll('.star-toggle').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const item = btn.closest('.red-item');
+      const id = item.getAttribute('data-id');
+      updateSaved(id, false);
+      item.style.opacity = '0.3';
+      setTimeout(() => item.remove(), 200);
+      RED_STATUS.textContent = `还收藏了 ${savedSet.size} 篇`;
+    });
+  });
+
+  // 筛选
+  RED_FILTER_TAGS?.querySelectorAll('[data-filter]').forEach((tag) => {
+    tag.addEventListener('click', () => {
+      RED_FILTER_TAGS.querySelectorAll('[data-filter]').forEach((t) => t.classList.remove('active'));
+      tag.classList.add('active');
+      const key = tag.getAttribute('data-filter');
+      let count = 0;
+      document.querySelectorAll('.red-item').forEach((item) => {
+        const type = item.getAttribute('data-type');
+        const top5 = item.getAttribute('data-top5') === 'true';
+        let show = false;
+        if (key === 'all') show = true;
+        else if (key === 'star') show = savedSet.has(item.getAttribute('data-id'));
+        else if (key === 'Top5') show = top5;
+        else show = type === key;
+        item.style.display = show ? '' : 'none';
+        if (show) count++;
+      });
+      RED_STATUS.textContent = key === 'all' ? `全部 ${count} 篇` : `${tag.textContent} ${count} 篇`;
+    });
+  });
+
+  // 初始化: 默认激活 "全部"
+  const firstTag = RED_FILTER_TAGS?.querySelector('[data-filter="all"]');
+  firstTag?.classList.add('active');
+</script>

@@ -107,3 +107,21 @@ create index if not exists idx_dental_papers_date on public.dental_papers(publis
 create index if not exists idx_dental_papers_journal on public.dental_papers(journal);
 create index if not exists idx_dental_nursing_cat on public.dental_nursing(category);
 create index if not exists idx_dental_cases_specialty on public.dental_cases(specialty);
+
+-- 7. dental_saved — 用户收藏/保存的论文与内容 (参考 Alohomora /red/ "我的收藏")
+create table if not exists public.dental_saved (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.profiles(id) on delete cascade,
+  ref_type text not null default 'paper',  -- paper/book/case/video/nursing/scan
+  ref_id text not null,                    -- 对应 dental_papers.id / dental_books.id 等
+  pmid text,                               -- PubMed PMID (论文专用, 用于去重)
+  is_starred boolean default true,         -- 精选 (Alohomora 中的 ★)
+  note text,                               -- 用户备注
+  created_at timestamptz default now(),
+  unique(user_id, ref_type, ref_id)
+);
+alter table public.dental_saved enable row level security;
+create policy "saved read" on public.dental_saved for select using (auth.uid() = user_id or user_id is null);
+create policy "saved write" on public.dental_saved for all using (auth.uid() = user_id or user_id is null);
+create index if not exists idx_dental_saved_user on public.dental_saved(user_id, is_starred, created_at desc);
+create index if not exists idx_dental_saved_pmid on public.dental_saved(pmid);

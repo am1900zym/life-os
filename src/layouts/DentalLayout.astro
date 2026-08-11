@@ -54,9 +54,15 @@ const schedule = [
       <div class="header-inner">
         <a class="brand" href="/dental">口腔视界 <span class="brand-en">DentaScope</span></a>
         <nav class="header-nav">
-          {navItems.map((item) => (
-            <a href={item.href} class:list={['hnav-link', { active: active === item.href }]}>{item.label}</a>
-          ))}
+          <a href="/dental" class:list={['hnav-link', { active: active === '/dental' }]}>今日</a>
+          <a href="/dental/papers" class:list={['hnav-link', { active: active === '/dental/papers' }]}>论文</a>
+          <a href="/dental/cases" class:list={['hnav-link', { active: active === '/dental/cases' }]}>病例</a>
+          <a href="/dental/nursing" class:list={['hnav-link', { active: active === '/dental/nursing' }]}>护理</a>
+          <a href="/dental/videos" class:list={['hnav-link', { active: active === '/dental/videos' }]}>视频</a>
+          <a href="/dental/books" class:list={['hnav-link', { active: active === '/dental/books' }]}>书库</a>
+          <a href="/dental/scan" class:list={['hnav-link', { active: active === '/dental/scan' }]}>影像</a>
+          <a href="/dental/review" class:list={['hnav-link', { active: active === '/dental/review' }]}>复习</a>
+          <a href="/dental/red" class:list={['hnav-link', { active: active === '/dental/red' }]}>收藏</a>
         </nav>
         <div class="header-actions">
           <button class="theme-toggle" id="theme-toggle" type="button">☾ 深色</button>
