@@ -10,6 +10,7 @@
   --blue-light: #7BA4F9;
   --blue-ghost: rgba(79,124,247,0.08);
   --blue-soft: rgba(79,124,247,0.18);
+  --blue-ring: rgba(79,124,247,0.25);
 
   /* ---- Neutrals ---- */
   --bg: #F4F6FA;
@@ -78,12 +79,12 @@ html, body {
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(79,124,247,0.08), transparent 28%),
     var(--bg);
-  padding: var(--gap-lg) var(--gap-md) 140px;
+  padding: var(--gap-lg) var(--gap-md) 148px;
 }
 
 img, video { max-width: 100%; display: block; border-radius: var(--radius-md); }
@@ -105,17 +106,18 @@ a { color: var(--blue); }
    Buttons — 蓝调统一
    ============================================================ */
 .btn-primary {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--blue); color: #fff; border: 0;
   padding: 10px 16px; border-radius: var(--radius-md);
   font-size: var(--text-sm); font-weight: 600; cursor: pointer;
-  transition: background .15s ease, transform .05s ease;
+  transition: background .15s ease, transform .05s ease, box-shadow .15s ease;
+  box-shadow: 0 6px 18px rgba(79,124,247,0.18);
 }
-.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:hover { background: var(--blue-dark); box-shadow: 0 8px 22px rgba(79,124,247,0.22); }
 .btn-primary:active { transform: translateY(1px); }
 
 .btn-secondary {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--blue-ghost); color: var(--blue); border: 1px solid var(--blue-soft);
   padding: 10px 16px; border-radius: var(--radius-md);
   font-size: var(--text-sm); font-weight: 600; cursor: pointer;
@@ -124,7 +126,7 @@ a { color: var(--blue); }
 .btn-secondary:hover { background: var(--blue-soft); }
 
 .btn-danger {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border);
   padding: 10px 16px; border-radius: var(--radius-md);
   font-size: var(--text-sm); font-weight: 600; cursor: pointer;
@@ -138,7 +140,7 @@ a { color: var(--blue); }
 .hero {
   position: relative;
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: var(--gap-xl) var(--gap-lg);
+  padding: 28px var(--gap-lg);
   background: linear-gradient(135deg, #4F7CF7 0%, #7BA4F9 100%);
   border-radius: var(--radius-xl);
   color: white;
@@ -184,7 +186,7 @@ a { color: var(--blue); }
 /* ============================================================
    Moment Cards — 白卡片体系
    ============================================================ */
-.moment-list { display: flex; flex-direction: column; gap: var(--gap-sm); }
+.moment-list { display: flex; flex-direction: column; gap: 10px; }
 .moment-card {
   background: var(--surface);
   border-radius: var(--radius-lg);
@@ -257,6 +259,7 @@ a { color: var(--blue); }
   color: var(--placeholder);
   transition: all .15s ease;
 }
+.nav-item:hover { color: var(--blue); background: var(--blue-ghost); }
 .nav-item.active {
   color: var(--blue);
   background: var(--blue-ghost);
@@ -317,7 +320,7 @@ a { color: var(--blue); }
 .detail-edit-form select:focus,
 .detail-edit-form textarea:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(79,124,247,0.12);
+  box-shadow: 0 0 0 3px var(--blue-ring);
 }
 .modal-card input[type="date"] { color: var(--text-secondary); }
 
@@ -370,7 +373,7 @@ a { color: var(--blue); }
   padding: 10px 12px; font-size: var(--text-base); background: #F7F9FF; color: var(--text);
   outline: none;
 }
-.comment-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(79,124,247,0.12); }
+.comment-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-ring); }
 .comment-form button {
   border: 0; background: var(--blue); color: #fff;
   padding: 10px 14px; border-radius: var(--radius-md);
