@@ -318,7 +318,7 @@ qaForm?.addEventListener('submit', async (e) => {
                   <input name="tags" value="${Array.isArray(moment.tags) ? moment.tags.join(',') : ''}" placeholder="如：学习, 重要" />
                 </label>
                 <div class="form-actions">
-                  <button type="button" class="btn-secondary" onclick="cancelEdit()">取消</button>
+                  <button type="button" class="btn-secondary" onclick="window.cancelEdit()">取消</button>
                   <button type="submit" class="btn-primary">保存修改</button>
                 </div>
               </form>
@@ -334,9 +334,10 @@ qaForm?.addEventListener('submit', async (e) => {
             detailModal.hidden = false;
             detailModal.style.display = '';
 
-            const editForm = document.getElementById('detail-edit-form');
             window.enableEdit = () => editForm?.classList.add('open');
             window.cancelEdit = () => editForm?.classList.remove('open');
+            const editForm = document.getElementById('detail-edit-form');
+            void editForm; // Ensure editForm reference exists
             editForm?.addEventListener('submit', async (e) => {
               e.preventDefault();
               const { supabase } = await import('../lib/supabaseClient');
