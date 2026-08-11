@@ -145,7 +145,7 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
             <div id="detail-body"></div>
             <div class="form-actions">
               <button type="button" class="btn-danger" onclick="deleteCurrent()">删除</button>
-              <button type="button" class="btn-primary" id="detail-edit-btn">编辑</button>
+              <button type="button" class="btn-primary" id="detail-edit-btn" onclick="enableEdit()">编辑</button>
             </div>
           </div>
         </div>
@@ -287,10 +287,6 @@ qaForm?.addEventListener('submit', async (e) => {
                 </div>
               ` : ''}
               <p class="detail-text">${moment.body || ''}</p>
-              <div class="detail-actions">
-                <button type="button" class="btn-danger" onclick="deleteCurrent()">删除</button>
-                <button type="button" class="btn-primary" onclick="enableEdit()">编辑</button>
-              </div>
               <form class="detail-edit-form" id="detail-edit-form">
                 <label>类型
                   <select name="type" required>
