@@ -1,0 +1,111 @@
+---
+// src/pages/dental/review.astro — 复习：知识点速查 + 自测题
+import DentalLayout from '../../layouts/DentalLayout.astro';
+
+// 高频考点（口腔护理 + 口腔医学基础）
+const quizQuestions = [
+  {
+    q: '儿童使用氟化钠漱口液的最低年龄是？',
+    options: ['3 岁', '4 岁', '6 岁', '8 岁'],
+    answer: 2,
+    explain: '6 岁以上儿童可使用 0.05% 氟化钠漱口液，每日 1 次，含漱 1 分钟后吐出。',
+  },
+  {
+    q: '拔牙术后纱卷加压咬合时间一般为？',
+    options: ['10 分钟', '20 分钟', '30 分钟', '60 分钟'],
+    answer: 2,
+    explain: '常规纱卷加压咬合 30 分钟；持续出血需检查牙槽窝并联系医生。',
+  },
+  {
+    q: '糖尿病患者择期口腔治疗前空腹血糖建议值为？',
+    options: ['≤5.6 mmol/L', '≤7.8 mmol/L', '≤10.0 mmol/L', '≤12.0 mmol/L'],
+    answer: 1,
+    explain: '空腹血糖建议 ≤7.8mmol/L，餐后 2 小时 ≤10mmol/L。',
+  },
+  {
+    q: '根管充填"恰填"的标准是？',
+    options: ['距根尖 3mm 以上', '距根尖 2mm 以内', '距根尖 1mm 以内', '超出根尖 1mm'],
+    answer: 2,
+    explain: '恰填指充填物致密且距根尖 1mm 以内，根尖周无透射影。',
+  },
+  {
+    q: '四手操作中护士与医生的理想间距是？',
+    options: ['30cm', '40cm', '50cm', '60cm'],
+    answer: 2,
+    explain: '护士与医生间距约 50cm，器械传递在患者口腔外 10cm 范围内完成。',
+  },
+  {
+    q: '老年患者择期治疗的血压警戒值（收缩压）是？',
+    options: ['≥140 mmHg', '≥160 mmHg', '≥180 mmHg', '≥200 mmHg'],
+    answer: 2,
+    explain: '收缩压 ≥180mmHg 或舒张压 ≥110mmHg 应暂缓择期治疗并转诊内科。',
+  },
+];
+---
+
+<DentalLayout title="复习 — 口腔视界" active="/dental/review" pageTitle="每日自测" pageSub="口腔护理高频考点 — 每天 6 题，巩固记忆。">
+
+  <section class="tarot-zone" style="text-align:left">
+    <div class="tarot-title" style="text-align:center">考点自测</div>
+    <p class="tarot-sub" style="text-align:center">点击选项作答，查看解析</p>
+
+    <div id="quiz-list" style="display:flex;flex-direction:column;gap:16px">
+      {quizQuestions.map((item, qi) => (
+        <div class="entry-item" style="flex-direction:column;gap:10px" data-q={qi}>
+          <div class="entry-top">
+            <span class="entry-cat c-blue">第 {qi + 1} 题</span>
+          </div>
+          <h3 class="entry-title" style="font-size:15.5px">{item.q}</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" data-options>
+            {item.options.map((opt, oi) => (
+              <button
+                type="button"
+                class="quiz-opt"
+                data-oi={oi}
+                style="padding:9px 12px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);font-size:13.5px;cursor:pointer;text-align:left;font-family:var(--font-sans);transition:all .15s ease"
+              >{String.fromCharCode(65 + oi)}. {opt}</button>
+            ))}
+          </div>
+          <p class="quiz-explain" data-explain style="display:none;margin:0;font-size:13px;color:var(--text-secondary);background:var(--blue-ghost);border:1px solid var(--blue-soft);border-radius:10px;padding:10px 12px">💡 {item.explain}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+</DentalLayout>
+
+<script is:inline>
+  // ===== 自测逻辑 =====
+  const QUIZ = [
+    { answer: 2, explain: '6 岁以上儿童可使用 0.05% 氟化钠漱口液，每日 1 次，含漱 1 分钟后吐出。' },
+    { answer: 2, explain: '常规纱卷加压咬合 30 分钟；持续出血需检查牙槽窝并联系医生。' },
+    { answer: 1, explain: '空腹血糖建议 ≤7.8mmol/L，餐后 2 小时 ≤10mmol/L。' },
+    { answer: 2, explain: '恰填指充填物致密且距根尖 1mm 以内，根尖周无透射影。' },
+    { answer: 2, explain: '护士与医生间距约 50cm，器械传递在患者口腔外 10cm 范围内完成。' },
+    { answer: 2, explain: '收缩压 ≥180mmHg 或舒张压 ≥110mmHg 应暂缓择期治疗并转诊内科。' },
+  ];
+
+  document.querySelectorAll('[data-q]').forEach((card) => {
+    const qi = Number(card.getAttribute('data-q'));
+    const explain = card.querySelector('[data-explain]');
+    card.querySelectorAll('.quiz-opt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const oi = Number(btn.getAttribute('data-oi'));
+        card.querySelectorAll('.quiz-opt').forEach((b) => {
+          b.style.borderColor = 'var(--border-strong)';
+          b.style.background = 'var(--surface)';
+          b.style.color = 'var(--text-secondary)';
+        });
+        if (oi === QUIZ[qi].answer) {
+          btn.style.borderColor = '#2DA878';
+          btn.style.background = '#E8F7F0';
+          btn.style.color = '#1E6B4A';
+        } else {
+          btn.style.borderColor = '#D65D7E';
+          btn.style.background = '#FBEDF2';
+          btn.style.color = '#A33B57';
+        }
+        if (explain) explain.style.display = 'block';
+      });
+    });
+  });
+</script>

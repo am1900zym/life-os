@@ -1,0 +1,30 @@
+---
+// src/pages/dental/scan.astro — 影像病例
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { scanItems } from '../../data/dentalData';
+
+const modalityIcon = {
+  '全景片': '🩻',
+  'CBCT': '🦷',
+  '根尖片': '🔍',
+};
+---
+
+<DentalLayout title="影像 — 口腔视界" active="/dental/scan" pageTitle="影像档案" pageSub="全景片 · CBCT · 根尖片 — 影像判读与临床对照。">
+  <div class="entry-list">
+    {scanItems.map((s) => (
+      <article class="entry-item">
+        <div class="entry-icon">{modalityIcon[s.modality] || '🩻'}</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class="entry-cat c-cyan">{s.modality}</span>
+            <span class="entry-date">{s.date}</span>
+          </div>
+          <h3 class="entry-title">{s.title}</h3>
+          <p class="entry-desc">{s.finding}</p>
+          <div class="entry-meta">影像判读 · 仅供参考，请结合临床</div>
+        </div>
+      </article>
+    ))}
+  </div>
+</DentalLayout>

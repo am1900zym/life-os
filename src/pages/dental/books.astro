@@ -1,0 +1,31 @@
+---
+// src/pages/dental/books.astro — 书库
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { dentalBooks } from '../../data/dentalData';
+
+const catColors = {
+  '教科书': 'c-blue',
+  '临床': 'c-green',
+  '考试': 'c-gold',
+  '研究': 'c-purple',
+};
+---
+
+<DentalLayout title="书库 — 口腔视界" active="/dental/books" pageTitle="口腔书库" pageSub="教科书 · 临床参考 · 考试必备。">
+  <div class="entry-list">
+    {dentalBooks.map((b) => (
+      <article class="entry-item">
+        <div class="entry-icon">{b.cover}</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class={`entry-cat ${catColors[b.category] || 'c-blue'}`}>{b.category}</span>
+            <span class="entry-date">{b.year}</span>
+          </div>
+          <h3 class="entry-title"><a href={b.url}>{b.title}</a></h3>
+          <p class="entry-desc">{b.description}</p>
+          <div class="entry-meta">{b.author}</div>
+        </div>
+      </article>
+    ))}
+  </div>
+</DentalLayout>

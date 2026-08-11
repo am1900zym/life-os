@@ -1,0 +1,125 @@
+---
+// src/layouts/DentalLayout.astro — 口腔视界 DentaScope 布局
+// 参考 Alohomora：极简学术风、Serif 标题、Sans 元数据、日期分组
+import '../styles/dental.css';
+
+interface Props {
+  title?: string;
+  active?: string;
+  pageTitle?: string;
+  pageSub?: string;
+}
+const { title = '口腔视界 DentaScope', active = '/dental', pageTitle = '', pageSub = '' } = Astro.props;
+
+const navItems = [
+  { href: '/dental', label: '今日' },
+  { href: '/dental/papers', label: '论文' },
+  { href: '/dental/cases', label: '病例' },
+  { href: '/dental/nursing', label: '护理' },
+  { href: '/dental/videos', label: '视频' },
+  { href: '/dental/books', label: '书库' },
+  { href: '/dental/scan', label: '影像' },
+  { href: '/dental/review', label: '复习' },
+];
+
+const schedule = [
+  { time: '0–7', label: '晨间文献' },
+  { time: '7–11', label: '门诊高峰' },
+  { time: '11–13', label: '午间病例' },
+  { time: '13–19', label: '临床操作' },
+  { time: '19–24', label: '夜学充电' },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('dentascope-theme');
+          if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/dental">口腔视界 <span class="brand-en">DentaScope</span></a>
+        <nav class="header-nav">
+          {navItems.map((item) => (
+            <a href={item.href} class:list={['hnav-link', { active: active === item.href }]}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="header-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button">☾ 深色</button>
+        </div>
+      </div>
+      <!-- 时段条 -->
+      <div class="schedule-strip">
+        <div class="schedule-inner">
+          <span class="schedule-label">今日节奏</span>
+          {schedule.map((s, i) => (
+            <span class:list={['slot', { now: i === 2 }]}>
+              <span class="slot-time">{s.time}</span>{s.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        {pageTitle && (
+          <div class="page-head">
+            <h1>{pageTitle}</h1>
+            {pageSub && <p class="sub">{pageSub}</p>}
+          </div>
+        )}
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="/dental">口腔视界</a>
+          <a href="/dental/papers">论文</a>
+          <a href="/dental/nursing">护理</a>
+          <a href="/dental/cases">病例</a>
+          <a href="/">返回 Life OS</a>
+        </div>
+        <span class="reading-now">3 位读者正在阅读</span>
+      </div>
+    </footer>
+
+    <script is:inline>
+      // 主题切换
+      var themeToggleBtn = document.getElementById('theme-toggle');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function () {
+          var root = document.documentElement;
+          var dark = root.getAttribute('data-theme') === 'dark';
+          if (dark) {
+            root.removeAttribute('data-theme');
+            localStorage.setItem('dentascope-theme', 'light');
+            themeToggleBtn.textContent = '☾ 深色';
+          } else {
+            root.setAttribute('data-theme', 'dark');
+            localStorage.setItem('dentascope-theme', 'dark');
+            themeToggleBtn.textContent = '☀ 浅色';
+          }
+        });
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) themeToggleBtn.textContent = '☀ 浅色';
+      }
+    </script>
+  </body>
+</html>

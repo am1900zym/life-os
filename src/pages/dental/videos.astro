@@ -1,0 +1,31 @@
+---
+// src/pages/dental/videos.astro — 视频讲座
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { dentalVideos } from '../../data/dentalData';
+
+const catColors = {
+  '手术': 'c-rose',
+  '讲座': 'c-blue',
+  '教学': 'c-green',
+  '研讨': 'c-purple',
+};
+---
+
+<DentalLayout title="视频 — 口腔视界" active="/dental/videos" pageTitle="口腔视频" pageSub="手术演示 · 学术讲座 · 临床教学。">
+  <div class="entry-list">
+    {dentalVideos.map((v) => (
+      <article class="entry-item">
+        <div class="entry-icon">🎬</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class={`entry-cat ${catColors[v.category] || 'c-blue'}`}>{v.category}</span>
+            <span class="entry-date">{v.date}</span>
+            <span class="entry-date" style="margin-left:0;color:var(--blue);font-weight:600">{v.duration}</span>
+          </div>
+          <h3 class="entry-title"><a href={v.url}>{v.title}</a></h3>
+          <p class="entry-desc">频道：{v.channel}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</DentalLayout>

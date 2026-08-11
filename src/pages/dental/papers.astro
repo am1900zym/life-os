@@ -1,0 +1,99 @@
+---
+// src/pages/dental/papers.astro — 论文库：日期分组 + 期刊筛选
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { papersByDate, dentalJournals } from '../../data/dentalData';
+---
+
+<DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学论文，每日更新。">
+  <!-- 期刊筛选按钮 -->
+  <div class="meta-line">
+    <button class="filter-btn" id="filter-toggle" type="button">☰ 筛选期刊</button>
+    <span style="font-size:12.5px;color:var(--muted)" id="filter-status">全部 {dentalJournals.length} 本期刊</span>
+  </div>
+
+  <!-- 期刊筛选面板（参考 Alohomora Journal Filter） -->
+  <div class="filter-panel" id="filter-panel">
+    <div class="filter-panel-head">
+      <span class="fp-title">Journal Filter</span>
+      <div class="fp-actions">
+        <button class="fp-action" type="button" data-action="all">Select All</button>
+        <button class="fp-action" type="button" data-action="none">Clear All</button>
+      </div>
+    </div>
+    <div class="journal-check-grid" id="journal-checks">
+      {dentalJournals.map((j) => (
+        <label class="journal-check">
+          <input type="checkbox" value={j} checked />
+          <span>{j}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- 按日期分组的论文 -->
+  {(() => {
+    const byDate = new Map();
+    for (const p of papersByDate) {
+      if (!byDate.has(p.date)) byDate.set(p.date, []);
+      byDate.get(p.date).push(p);
+    }
+    return [...byDate.entries()].map(([date, papers]) => (
+      <section class="paper-section" data-date={date}>
+        <div class="date-group">
+          <span class="dg-date">{date}</span>
+          <span class="dg-count">{papers.length} 篇</span>
+        </div>
+        {papers.map((paper) => (
+          <article class="paper-item" data-journal={paper.journal}>
+            <div class="paper-meta">
+              <span class="paper-journal j-blue">{paper.journal}</span>
+              <span class="new-badge">NEW</span>
+              <span style="margin-left:auto">{paper.date}</span>
+            </div>
+            <h3 class="paper-title"><a href={paper.url}>{paper.title}</a></h3>
+            <div class="paper-authors">{paper.authors}</div>
+            <p class="paper-abstract">{paper.abstract}</p>
+            <div class="paper-tags">
+              {paper.tags.map((t) => <span class="paper-tag">{t}</span>)}
+            </div>
+          </article>
+        ))}
+      </section>
+    ));
+  })()}
+</DentalLayout>
+
+<script is:inline>
+  // ===== 期刊筛选逻辑 =====
+  const filterToggle = document.getElementById('filter-toggle');
+  const panel = document.getElementById('filter-panel');
+  const status = document.getElementById('filter-status');
+
+  filterToggle?.addEventListener('click', () => panel?.classList.toggle('open'));
+
+  const checkboxes = [...document.querySelectorAll('#journal-checks input[type=checkbox]')];
+
+  function applyFilter() {
+    const selected = new Set(checkboxes.filter((c) => c.checked).map((c) => c.value));
+    document.querySelectorAll('.paper-item').forEach((item) => {
+      const j = item.getAttribute('data-journal');
+      item.style.display = selected.has(j) ? '' : 'none';
+    });
+    // 隐藏没有可见论文的日期组
+    document.querySelectorAll('.paper-section').forEach((sec) => {
+      const anyVisible = [...sec.querySelectorAll('.paper-item')].some((it) => it.style.display !== 'none');
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+    status.textContent = `已选 ${selected.size} / ${checkboxes.length} 本期刊`;
+  }
+
+  checkboxes.forEach((c) => c.addEventListener('change', applyFilter));
+
+  document.querySelectorAll('.fp-action').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const action = btn.getAttribute('data-action');
+      checkboxes.forEach((c) => { c.checked = action === 'all'; });
+      applyFilter();
+    });
+  });
+</script>

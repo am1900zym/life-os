@@ -1,0 +1,108 @@
+---
+// src/pages/dental/index.astro — 口腔视界首页（今日 + 新论文 + 口腔塔罗）
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { papersByDate, dentalJournals } from '../../data/dentalData';
+---
+
+<DentalLayout title="口腔视界 — 今日口腔" active="/dental" pageTitle="今日口腔" pageSub="口腔医学 · 口腔护理，每日更新。">
+  <!-- 统计条 -->
+  <section class="stat-bar">
+    <div class="stat-card">
+      <div class="stat-num">{papersByDate.length}</div>
+      <div class="stat-label">今日收录论文</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{dentalJournals.length}</div>
+      <div class="stat-label">追踪期刊</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">护理要点</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">4</div>
+      <div class="stat-label">临床病例</div>
+    </div>
+  </section>
+
+  <!-- 口腔塔罗（参考 Paper Tarot） -->
+  <section class="tarot-zone" id="tarot-zone">
+    <h2 class="tarot-title">口腔塔罗</h2>
+    <p class="tarot-sub">抽三张卡片 — 档案给出今天的口腔知识答案。</p>
+    <div class="tarot-cards">
+      <div class="tarot-card" data-card="0">🃏<span class="tc-label">CARD 1</span></div>
+      <div class="tarot-card" data-card="1">🃏<span class="tc-label">CARD 2</span></div>
+      <div class="tarot-card" data-card="2">🃏<span class="tc-label">CARD 3</span></div>
+    </div>
+    <div class="tarot-result" id="tarot-result">点击卡片，抽取今日知识。</div>
+    <button class="tarot-shuffle" id="tarot-shuffle" type="button">洗牌重抽 →</button>
+  </section>
+
+  <!-- 新论文 -->
+  <section class="paper-section">
+    <div class="date-group">
+      <span class="dg-date">New Papers</span>
+      <span class="dg-count">口腔论文 · 每日更新</span>
+    </div>
+
+    {papersByDate.slice(0, 8).map((paper) => (
+      <article class="paper-item">
+        <div class="paper-meta">
+          <span class="paper-journal j-blue">{paper.journal}</span>
+          <span class="new-badge">NEW</span>
+          <span style="margin-left:auto">{paper.date}</span>
+        </div>
+        <h3 class="paper-title"><a href={paper.url}>{paper.title}</a></h3>
+        <div class="paper-authors">{paper.authors}</div>
+        <p class="paper-abstract">{paper.abstract}</p>
+      </article>
+    ))}
+  </section>
+</DentalLayout>
+
+<script is:inline>
+  // ===== 口腔塔罗：抽卡即给答案 =====
+  const TIPS = [
+    { title: '预防龋齿', body: '儿童氟化钠漱口：6 岁以上每日 1 次，含漱 1 分钟后吐出，30 分钟内不进食不饮水。' },
+    { title: '拔牙术后', body: '纱卷加压咬合 30 分钟；持续出血检查牙槽窝，必要时明胶海绵填塞，联系医生。' },
+    { title: '老年患者', body: '治疗前常规测血压：收缩压 ≥180mmHg 或舒张压 ≥110mmHg 应暂缓择期治疗。' },
+    { title: '糖尿病管理', body: '择期治疗前空腹血糖建议 ≤7.8mmol/L，餐后 2h ≤10mmol/L，候诊区备糖果防低血糖。' },
+    { title: '正畸清洁', body: '固定矫治期间餐后 3 分钟内清洁，正畸小头刷 + 牙间刷 + 冲牙器组合使用。' },
+    { title: '根管充填', body: '恰填标准：充填物距根尖 1mm 内，致密无空隙，根尖周无透射影。' },
+    { title: '种植术前', body: 'CBCT 评估剩余牙槽嵴高度与上颌窦状态，残余骨高度 <4mm 需考虑提升术。' },
+    { title: '口腔癌早筛', body: '口腔白斑、红斑、长期不愈溃疡（>2 周）应转诊活检，警惕高危部位。' },
+    { title: '四手操作', body: '护士与医生间距 50cm，器械传递在患者口腔外 10cm 范围内进行，减少重复取放。' },
+    { title: '消毒隔离', body: '手机、车针一人一用一消毒；治疗前后台面用含氯消毒剂或 75% 酒精擦拭。' },
+  ];
+
+  const cards = document.querySelectorAll('.tarot-card');
+  const result = document.getElementById('tarot-result');
+
+  function pick() {
+    const idx = Math.floor(Math.random() * TIPS.length);
+    return TIPS[idx];
+  }
+
+  function drawCard(cardEl) {
+    if (cardEl.classList.contains('flipped')) return;
+    cardEl.classList.add('flipped');
+    const tip = pick();
+    cardEl.innerHTML = `<span style="font-size:26px">🦷</span><span class="tc-label" style="font-size:9px">${tip.title}</span>`;
+    if (result) {
+      result.innerHTML = `<span class="tr-title">${tip.title}</span><br>${tip.body}`;
+    }
+  }
+
+  cards.forEach((card) => {
+    card.addEventListener('click', () => drawCard(card));
+  });
+
+  const shuffle = document.getElementById('tarot-shuffle');
+  shuffle?.addEventListener('click', () => {
+    cards.forEach((card) => {
+      card.classList.remove('flipped');
+      card.innerHTML = `🃏<span class="tc-label">CARD ${card.dataset.card}</span>`;
+    });
+    result.innerHTML = '点击卡片，抽取今日知识。';
+  });
+</script>

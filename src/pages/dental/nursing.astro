@@ -1,0 +1,64 @@
+---
+// src/pages/dental/nursing.astro — 口腔护理要点
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { nursingItems } from '../../data/dentalData';
+
+const catColors = {
+  '预防': 'c-green',
+  '治疗': 'c-blue',
+  '紧急': 'c-rose',
+  '儿科': 'c-gold',
+  '老年': 'c-purple',
+};
+---
+
+<DentalLayout title="口腔护理 — 口腔视界" active="/dental/nursing" pageTitle="口腔护理" pageSub="预防 · 治疗 · 紧急 · 儿科 · 老年 — 临床护理要点速查。">
+
+  <!-- 分类速览 -->
+  <section class="stat-bar">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">护理类别</div></div>
+    <div class="stat-card"><div class="stat-num">{nursingItems.length}</div><div class="stat-label">护理要点</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">四手操作规范</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">紧急预案</div></div>
+  </section>
+
+  <div class="entry-list">
+    {nursingItems.map((item) => (
+      <article class="entry-item">
+        <div class="entry-icon">🦷</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class={`entry-cat ${catColors[item.category] || 'c-blue'}`}>{item.category}</span>
+            <span class="entry-date">{item.date}</span>
+          </div>
+          <h3 class="entry-title">{item.title}</h3>
+          <p class="entry-desc">{item.summary}</p>
+          <div class="entry-meta">口腔护理 · 临床指南</div>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <!-- 护理小贴士卡片 -->
+  <section class="paper-section">
+    <div class="date-group">
+      <span class="dg-date">护理速记</span>
+      <span class="dg-count">3 条高频要点</span>
+    </div>
+    <article class="paper-item">
+      <div class="paper-meta"><span class="paper-journal j-green">四手操作</span></div>
+      <h3 class="paper-title">器械传递的正确位置</h3>
+      <p class="paper-abstract">护士与医生间距 50cm，器械传递在患者口腔外 10cm 范围内进行，避免在患者面部上方传递，减少交叉污染与重复取放。</p>
+    </article>
+    <article class="paper-item">
+      <div class="paper-meta"><span class="paper-journal j-cyan">消毒隔离</span></div>
+      <h3 class="paper-title">一人一用一消毒</h3>
+      <p class="paper-abstract">手机、车针、洁牙工作尖严格执行一人一用一消毒；治疗前后台面使用含氯消毒剂或 75% 酒精擦拭，器械盘一人一盘。</p>
+    </article>
+    <article class="paper-item">
+      <div class="paper-meta"><span class="paper-journal j-gold">患者沟通</span></div>
+      <h3 class="paper-title">知情同意与术后交代</h3>
+      <p class="paper-abstract">治疗前说明方案、费用与风险；术后 24 小时注意事项逐条交代：止血、饮食、用药、复诊时间，并确认患者理解。</p>
+    </article>
+  </section>
+</DentalLayout>

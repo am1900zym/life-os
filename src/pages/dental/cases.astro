@@ -1,0 +1,25 @@
+---
+// src/pages/dental/cases.astro — 临床病例
+import DentalLayout from '../../layouts/DentalLayout.astro';
+import { dentalCases } from '../../data/dentalData';
+---
+
+<DentalLayout title="临床病例 — 口腔视界" active="/dental/cases" pageTitle="临床病例" pageSub="真实诊疗路径复盘 — 诊断、决策与随访。">
+  <div class="entry-list">
+    {dentalCases.map((c) => (
+      <article class="entry-item">
+        <div class="entry-icon">{c.image}</div>
+        <div class="entry-body">
+          <div class="entry-top">
+            <span class="entry-cat c-blue">{c.specialty}</span>
+            <span class="entry-cat">{c.patient}</span>
+            <span class="entry-date">{c.date}</span>
+          </div>
+          <h3 class="entry-title"><a href={c.url}>{c.title}</a></h3>
+          <p class="entry-desc">{c.summary}</p>
+          <div class="entry-meta">诊断：{c.diagnosis}</div>
+        </div>
+      </article>
+    ))}
+  </div>
+</DentalLayout>

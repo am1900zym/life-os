@@ -1,0 +1,697 @@
+/* ============================================================
+   口腔视界 DentaScope — Dental Medicine & Nursing
+   设计参考：Alohomora（极简学术风）+ Amanda 蓝调偏好
+   Serif 标题 / Sans 元数据 / 浅色底 / 细分隔线 / 日期分组
+   ============================================================ */
+
+:root {
+  /* ---- 底色 ---- */
+  --bg: #F7F8FA;
+  --bg-soft: #FFFFFF;
+  --surface: #FFFFFF;
+  --border: #E8EAEE;
+  --border-strong: #D8DBE2;
+
+  /* ---- 文字 ---- */
+  --text: #1F2430;
+  --text-secondary: #3A4150;
+  --muted: #7A8190;
+  --placeholder: #9AA1AE;
+
+  /* ---- 品牌蓝（Amanda 偏好）---- */
+  --blue: #4F7CF7;
+  --blue-dark: #3B5DE7;
+  --blue-ghost: rgba(79,124,247,0.08);
+  --blue-soft: rgba(79,124,247,0.16);
+  --blue-ring: rgba(79,124,247,0.28);
+
+  /* ---- 语义 ---- */
+  --green: #2DA878;
+  --green-bg: #E8F7F0;
+  --gold: #C8892A;
+  --gold-bg: #FBF3E4;
+  --purple: #7A6FE0;
+  --purple-bg: #F0EDFB;
+  --cyan: #1FA8A0;
+  --cyan-bg: #E5F6F5;
+  --rose: #D65D7E;
+  --rose-bg: #FBEDF2;
+  --teal: #2C9BB0;
+  --teal-bg: #E6F5F8;
+  --indigo: #5B5BD6;
+  --indigo-bg: #ECECFB;
+
+  /* ---- 字体 ---- */
+  --font-serif: 'Crimson Pro', 'Noto Serif SC', Georgia, serif;
+  --font-sans: 'DM Sans', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+
+  /* ---- 布局 ---- */
+  --max-w: 880px;
+  --radius: 10px;
+  --shadow-soft: 0 1px 2px rgba(20, 24, 33, 0.04);
+}
+
+/* 暗色模式（可选，参考 Alohomora Light 切换） */
+html[data-theme='dark'] {
+  --bg: #14161B;
+  --bg-soft: #1B1E25;
+  --surface: #1B1E25;
+  --border: #2A2E38;
+  --border-strong: #3A3F4C;
+  --text: #E8EAEF;
+  --text-secondary: #C4C9D4;
+  --muted: #8A91A0;
+  --placeholder: #6B7280;
+  --blue-ghost: rgba(122,152,255,0.10);
+  --blue-soft: rgba(122,152,255,0.20);
+  --green-bg: #142A21;
+  --gold-bg: #2A2113;
+  --purple-bg: #1E1B2E;
+  --cyan-bg: #102A29;
+  --rose-bg: #2B1620;
+  --teal-bg: #0F262B;
+  --indigo-bg: #18183C;
+  --shadow-soft: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   Header — 参考 Alohomora 顶部
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(247, 248, 250, 0.82);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--border);
+}
+html[data-theme='dark'] .site-header {
+  background: rgba(20, 22, 27, 0.82);
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+}
+.brand:hover { text-decoration: none; }
+.brand-en {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.header-nav::-webkit-scrollbar { display: none; }
+
+.hnav-link {
+  padding: 6px 11px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: background .12s ease, color .12s ease;
+}
+.hnav-link:hover { background: var(--blue-ghost); color: var(--blue); text-decoration: none; }
+.hnav-link.active {
+  background: var(--blue-ghost);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+  font-family: var(--font-sans);
+}
+.theme-toggle:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ============================================================
+   时段条 — 参考 Alohomora EconFM 节目单
+   ============================================================ */
+.schedule-strip {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+}
+.schedule-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.schedule-inner::-webkit-scrollbar { display: none; }
+.schedule-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-right: 6px;
+  white-space: nowrap;
+}
+.slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all .15s ease;
+}
+.slot:hover { background: var(--blue-ghost); border-color: var(--blue-soft); }
+.slot-time { color: var(--muted); font-variant-numeric: tabular-nums; }
+.slot.now {
+  background: var(--blue-ghost);
+  border-color: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Feature Box — 参考 Paper Tarot
+   ============================================================ */
+.feature-card {
+  margin: 26px 0 6px;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #1F2430, #2A3248);
+  color: #F2F4F8;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  box-shadow: 0 10px 30px rgba(20, 24, 33, 0.16);
+}
+html[data-theme='dark'] .feature-card {
+  background: linear-gradient(135deg, #2A2E38, #333A4D);
+}
+.feature-main h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.feature-main p {
+  margin: 0;
+  color: #B9C0CE;
+  font-size: 13.5px;
+}
+.feature-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.28);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, transform .05s ease;
+  font-family: var(--font-sans);
+}
+.feature-cta:hover { background: rgba(255,255,255,0.24); text-decoration: none; }
+.feature-cta:active { transform: translateY(1px); }
+
+/* ============================================================
+   页面标题区
+   ============================================================ */
+.page-head {
+  margin: 34px 0 4px;
+}
+.page-head h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+.page-head .sub {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14.5px;
+}
+.page-head .meta-line {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+  font-family: var(--font-sans);
+}
+.filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+.filter-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+/* ============================================================
+   论文列表 — 参考 Alohomora 日期分组
+   ============================================================ */
+.paper-section { margin-top: 26px; }
+.date-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 22px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.date-group .dg-date {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.4px;
+}
+.date-group .dg-count {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.paper-item {
+  padding: 13px 2px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.paper-item:last-child { border-bottom: none; }
+.paper-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+.paper-journal { text-transform: uppercase; letter-spacing: 0.6px; }
+.paper-journal::before {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  margin-right: 7px;
+  vertical-align: 1px;
+}
+.paper-journal.j-blue::before { background: var(--blue); }
+.paper-journal.j-green::before { background: var(--green); }
+.paper-journal.j-gold::before { background: var(--gold); }
+.paper-journal.j-purple::before { background: var(--purple); }
+.paper-journal.j-cyan::before { background: var(--cyan); }
+.paper-journal.j-rose::before { background: var(--rose); }
+.paper-journal.j-teal::before { background: var(--teal); }
+.paper-journal.j-indigo::before { background: var(--indigo); }
+
+.new-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--blue-ghost);
+  border: 1px solid var(--blue-soft);
+  color: var(--blue);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.paper-title {
+  font-family: var(--font-serif);
+  font-size: 17.5px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+}
+.paper-title a { color: var(--text); }
+.paper-title a:hover { color: var(--blue); text-decoration: none; }
+
+.paper-authors {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.paper-abstract {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.55;
+}
+.paper-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.paper-tag {
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--blue-ghost);
+  color: var(--blue);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Journal Filter Panel — 参考 Alohomora
+   ============================================================ */
+.filter-panel {
+  margin: 12px 0 4px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  display: none;
+}
+.filter-panel.open { display: block; }
+.filter-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.filter-panel-head .fp-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+.fp-actions { display: flex; gap: 6px; }
+.fp-action {
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.fp-action:hover { color: var(--blue); background: var(--blue-ghost); }
+
+.journal-check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 14px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.journal-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.journal-check:hover { background: var(--blue-ghost); }
+.journal-check input { accent-color: var(--blue); }
+
+/* ============================================================
+   通用列表卡片（护理/案例/视频/书/影像）
+   ============================================================ */
+.entry-list { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+.entry-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.entry-item:hover { border-color: var(--blue-soft); box-shadow: 0 4px 14px rgba(79,124,247,0.08); }
+.entry-icon {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  background: var(--blue-ghost);
+  border: 1px solid var(--blue-soft);
+}
+.entry-body { flex: 1; min-width: 0; }
+.entry-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.entry-cat {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+}
+.entry-cat.c-blue { color: var(--blue); border-color: var(--blue-soft); background: var(--blue-ghost); }
+.entry-cat.c-green { color: var(--green); border-color: rgba(45,168,120,.3); background: var(--green-bg); }
+.entry-cat.c-gold { color: var(--gold); border-color: rgba(200,137,42,.3); background: var(--gold-bg); }
+.entry-cat.c-purple { color: var(--purple); border-color: rgba(122,111,224,.3); background: var(--purple-bg); }
+.entry-cat.c-cyan { color: var(--cyan); border-color: rgba(31,168,160,.3); background: var(--cyan-bg); }
+.entry-cat.c-rose { color: var(--rose); border-color: rgba(214,93,126,.3); background: var(--rose-bg); }
+.entry-cat.c-teal { color: var(--teal); border-color: rgba(44,155,176,.3); background: var(--teal-bg); }
+.entry-cat.c-indigo { color: var(--indigo); border-color: rgba(91,91,214,.3); background: var(--indigo-bg); }
+.entry-date { font-size: 11.5px; color: var(--muted); margin-left: auto; }
+.entry-title {
+  margin: 6px 0 0;
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.entry-title a { color: var(--text); }
+.entry-title a:hover { color: var(--blue); }
+.entry-desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.entry-meta { margin-top: 6px; font-size: 12px; color: var(--muted); }
+
+/* ============================================================
+   统计条
+   ============================================================ */
+.stat-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-soft);
+}
+.stat-num {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--blue);
+  line-height: 1.1;
+}
+.stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ============================================================
+   Tarot / 塔罗抽卡
+   ============================================================ */
+.tarot-zone {
+  margin-top: 22px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+.tarot-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.tarot-sub { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+.tarot-cards { display: flex; justify-content: center; gap: 14px; margin-bottom: 18px; }
+.tarot-card {
+  width: 88px; height: 128px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #4F7CF7, #3B5DE7);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 30px;
+  box-shadow: 0 8px 22px rgba(79,124,247,0.28);
+  transition: transform .15s ease, box-shadow .15s ease;
+  user-select: none;
+}
+.tarot-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(79,124,247,0.34); }
+.tarot-card .tc-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; opacity: .85; }
+.tarot-card.flipped { background: var(--surface); border: 1px solid var(--border-strong); box-shadow: var(--shadow-soft); }
+.tarot-result {
+  min-height: 62px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.tarot-result .tr-title { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--text); }
+.tarot-shuffle {
+  margin-top: 6px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+  font-family: var(--font-sans);
+}
+.tarot-shuffle:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ============================================================
+   Footer — 参考 Alohomora
+   ============================================================ */
+.site-footer {
+  margin-top: 60px;
+  padding: 26px 24px 34px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--blue); }
+.reading-now { display: inline-flex; align-items: center; gap: 7px; }
+.reading-now::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(45,168,120,0.18);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 720px) {
+  .page-head h1 { font-size: 29px; }
+  .feature-card { flex-direction: column; align-items: flex-start; }
+  .header-inner { padding: 0 16px; }
+  .brand-en { display: none; }
+  .hnav-link { padding: 6px 8px; font-size: 13px; }
+  .container, .schedule-inner, .footer-inner { padding-left: 16px; padding-right: 16px; }
+  .tarot-card { width: 76px; height: 112px; }
+}
