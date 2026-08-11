@@ -29,23 +29,23 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
           <span>个人模式已启用</span>
         </div>
         <nav class="sidebar-nav">
-          <a href="/" class="nav-link" class:active={active === '/'}>
+          <a href="/" class={`nav-link ${active === '/' ? 'active' : ''}`}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>今日轨迹</span>
           </a>
-          <a href="/timeline" class="nav-link" class:active={active === '/timeline'}>
+          <a href="/timeline" class={`nav-link ${active === '/timeline' ? 'active' : ''}`}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>人生轨道</span>
           </a>
-          <a href="/friends" class="nav-link" class:active={active === '/friends'}>
+          <a href="/friends" class={`nav-link ${active === '/friends' ? 'active' : ''}`}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>朋友轨道</span>
           </a>
-          <a href="/report" class="nav-link" class:active={active === '/report'}>
+          <a href="/report" class={`nav-link ${active === '/report' ? 'active' : ''}`}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             <span>年度报告</span>
           </a>
-          <a href="/ai" class="nav-link" class:active={active === '/ai'}>
+          <a href="/ai" class={`nav-link ${active === '/ai' ? 'active' : ''}`}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/></svg>
             <span>AI 助手</span>
           </a>

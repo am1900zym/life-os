@@ -93,9 +93,9 @@
   width: 100%;
 }
 .nav-link:hover { color: #0d253d; }
-.nav-link.active {
-  background: #0d253d;
-  color: #fff;
+.sidebar-nav .nav-link.active {
+  background: #0d253d !important;
+  color: #fff !important;
   font-weight: 600;
 }
 .nav-link.active::before { display: none; }
