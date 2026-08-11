@@ -1,14 +1,9 @@
 ---
-// src/pages/ai.astro — AI 助手页面（本地规则引擎 MVP）
+// src/pages/ai.astro — AI 助手页面
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="AI 助手 — Life OS" active="/ai">
-  <section class="page-header">
-    <h1>🤖 Life AI</h1>
-    <p class="subtitle">理解你人生上下文的 AI</p>
-  </section>
-
   <section class="ai-context">
     <p class="ai-greeting">你好，<strong>Amanda</strong></p>
     <p class="ai-knows">我了解你的：</p>
@@ -20,7 +15,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <!-- 聊天区域 -->
   <section class="chat-area">
     <div class="chat-bubble ai" id="chat-history">
       <p>今天想聊什么？我在这里陪你探索人生的下一段旅程。</p>
@@ -28,15 +22,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <div class="quick-actions">
-      <button class="quick-btn blue" data-prompt="summarize">“总结我的 2026”</button>
-      <button class="quick-btn green" data-prompt="strength">“我的优势是什么？”</button>
-      <button class="quick-btn gold" data-prompt="focus">“最近应该关注什么？”</button>
-      <button class="quick-btn purple" data-prompt="friends">“我和朋友的关系变化？”</button>
-      <button class="quick-btn cyan" data-prompt="plan">“帮我规划未来一年”</button>
+      <button class="quick-btn" data-prompt="summarize">“总结我的 2026”</button>
+      <button class="quick-btn" data-prompt="strength">“我的优势是什么？”</button>
+      <button class="quick-btn" data-prompt="focus">“最近应该关注什么？”</button>
+      <button class="quick-btn" data-prompt="friends">“我和朋友的关系变化？”</button>
+      <button class="quick-btn" data-prompt="plan">“帮我规划未来一年”</button>
     </div>
   </section>
 
-  <!-- 输入框 -->
   <section class="chat-input">
     <div class="input-box">
       <input type="text" id="user-input" placeholder="问 AI 任何关于你人生的问题..." />
@@ -44,10 +37,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  /* 细节样式尽量统一在 src/styles/global.css；这里只保留页面特有覆盖 */
-</style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
@@ -97,11 +86,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '暂无数据';
 
     const key = promptKey || 'custom';
-    const text = typeof userInput!.value === 'string' ? userInput!.value.trim() : '';
-    userInput!.value = '';
+    const text = typeof userInput?.value === 'string' ? userInput.value.trim() : '';
+    if (userInput) userInput.value = '';
 
     const q = text || PROMPTS[key] || '总结我的人生';
-
     addBubble(q, 'user');
 
     let reply = '';

@@ -4,12 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="朋友轨道 — Life OS" active="/friends">
-  <section class="page-header">
-    <h1>朋友人生</h1>
-    <p class="subtitle">看见朋友的人生，而不是只看朋友圈</p>
-  </section>
-
-  <!-- 选择朋友 -->
   <section class="friend-selector">
     <div class="friend-chip checked">
       <span class="chip-avatar">G</span>
@@ -19,14 +13,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="chip-avatar">H</span>
       <span class="chip-name">H</span>
     </div>
-    <button class="btn-generate">[生成共同轨道]</button>
+    <button class="btn-generate">生成共同轨道</button>
   </section>
 
-  <!-- 多人并行轨道 -->
   <section class="multi-tracks">
-    <h2 class="section-title">2026 并行时间轴</h2>
-
-    <!-- Amanda -->
     <div class="friend-track">
       <div class="track-header">
         <span class="track-avatar">A</span>
@@ -48,7 +38,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
 
-    <!-- G -->
     <div class="friend-track">
       <div class="track-header">
         <span class="track-avatar">G</span>
@@ -66,7 +55,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
 
-    <!-- H -->
     <div class="friend-track">
       <div class="track-header">
         <span class="track-avatar">H</span>
@@ -85,9 +73,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <!-- 共享瞬间 -->
   <section class="shared-moments">
-    <h2 class="section-title">共同瞬间</h2>
+    <div class="section-title">共同瞬间</div>
     <div class="shared-badge">📅 2026.07 有 2 个共同瞬间</div>
     <article class="moment-card highlight">
       <span class="moment-type">☕ 社交</span>

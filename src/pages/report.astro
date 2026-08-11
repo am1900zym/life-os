@@ -1,15 +1,9 @@
 ---
-// src/pages/report.astro — 年度报告页面（接入 Supabase 实时数据）
+// src/pages/report.astro — 年度报告页面（Command Center 版）
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="年度报告 — Life OS" active="/report">
-  <section class="page-header">
-    <h1 id="report-year">2026</h1>
-    <p class="subtitle">Amanda 的一年</p>
-  </section>
-
-  <!-- 数据统计条 -->
   <section class="stats-bar">
     <div class="stat-item">
       <span class="stat-num" id="stat-days">--</span>
@@ -37,53 +31,47 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <!-- 年度关键词 -->
-  <section class="keywords">
-    <h2 class="section-title">这一年关键词</h2>
-    <div class="keyword-list" id="keyword-list">
-      <span class="keyword-tag blue">AI</span>
-      <span class="keyword-tag green">成长</span>
-      <span class="keyword-tag gold">创造</span>
-      <span class="keyword-tag purple">探索</span>
-    </div>
-  </section>
+  <div class="grid-2">
+    <section class="keywords">
+      <div class="section-title">这一年关键词</div>
+      <div class="keyword-list" id="keyword-list">
+        <span class="keyword-tag blue">AI</span>
+        <span class="keyword-tag green">成长</span>
+        <span class="keyword-tag gold">创造</span>
+        <span class="keyword-tag purple">探索</span>
+      </div>
+    </section>
 
-  <!-- 成长雷达图 -->
-  <section class="radar">
-    <h2 class="section-title">个人成长雷达</h2>
-    <div class="radar-wrap">
-      <svg viewBox="0 0 200 200" class="radar-svg">
-        <!-- 五边形网格 -->
-        <polygon points="100,15 175,65 150,160 50,160 25,65" fill="none" stroke="#E5EAF4" stroke-width="1"/>
-        <polygon points="100,40 155,75 135,145 65,145 45,75" fill="none" stroke="#E5EAF4" stroke-width="1"/>
-        <polygon points="100,65 135,85 120,130 80,130 65,85" fill="none" stroke="#E5EAF4" stroke-width="1"/>
-        <!-- 轴线 -->
-        <line x1="100" y1="100" x2="100" y2="15" stroke="#E5EAF4" stroke-width="1"/>
-        <line x1="100" y1="100" x2="175" y2="65" stroke="#E5EAF4" stroke-width="1"/>
-        <line x1="100" y1="100" x2="150" y2="160" stroke="#E5EAF4" stroke-width="1"/>
-        <line x1="100" y1="100" x2="50" y2="160" stroke="#E5EAF4" stroke-width="1"/>
-        <line x1="100" y1="100" x2="25" y2="65" stroke="#E5EAF4" stroke-width="1"/>
-        <!-- 动态数据多边形（由 JS 生成） -->
-        <polygon id="radar-poly" points="100,22 160,72 130,150 60,142 35,70" fill="rgba(79,124,247,0.2)" stroke="#4F7CF7" stroke-width="2"/>
-        <!-- 动态数据点 -->
-        <circle id="dot-0" cx="100" cy="22" r="3" fill="#4F7CF7"/>
-        <circle id="dot-1" cx="160" cy="72" r="3" fill="#4F7CF7"/>
-        <circle id="dot-2" cx="130" cy="150" r="3" fill="#4F7CF7"/>
-        <circle id="dot-3" cx="60" cy="142" r="3" fill="#4F7CF7"/>
-        <circle id="dot-4" cx="35" cy="70" r="3" fill="#4F7CF7"/>
-        <!-- 动态标签 -->
-        <text id="label-0" x="100" y="10" text-anchor="middle" font-size="9" fill="#8A93A6">学习 --</text>
-        <text id="label-1" x="175" y="62" text-anchor="start" font-size="9" fill="#8A93A6">创造 --</text>
-        <text id="label-2" x="150" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">健康 --</text>
-        <text id="label-3" x="50" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">社交 --</text>
-        <text id="label-4" x="15" y="62" text-anchor="end" font-size="9" fill="#8A93A6">体验 --</text>
-      </svg>
-    </div>
-  </section>
+    <section class="radar">
+      <div class="section-title">个人成长雷达</div>
+      <div class="radar-wrap">
+        <svg viewBox="0 0 200 200" class="radar-svg">
+          <polygon points="100,15 175,65 150,160 50,160 25,65" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon points="100,40 155,75 135,145 65,145 45,75" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon points="100,65 135,85 120,130 80,130 65,85" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="100" y2="15" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="175" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="150" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="50" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="25" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon id="radar-poly" points="100,22 160,72 130,150 60,142 35,70" fill="rgba(79,124,247,0.2)" stroke="#4F7CF7" stroke-width="2"/>
+          <circle id="dot-0" cx="100" cy="22" r="3" fill="#4F7CF7"/>
+          <circle id="dot-1" cx="160" cy="72" r="3" fill="#4F7CF7"/>
+          <circle id="dot-2" cx="130" cy="150" r="3" fill="#4F7CF7"/>
+          <circle id="dot-3" cx="60" cy="142" r="3" fill="#4F7CF7"/>
+          <circle id="dot-4" cx="35" cy="70" r="3" fill="#4F7CF7"/>
+          <text id="label-0" x="100" y="10" text-anchor="middle" font-size="9" fill="#8A93A6">学习 --</text>
+          <text id="label-1" x="175" y="62" text-anchor="start" font-size="9" fill="#8A93A6">创造 --</text>
+          <text id="label-2" x="150" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">健康 --</text>
+          <text id="label-3" x="50" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">社交 --</text>
+          <text id="label-4" x="15" y="62" text-anchor="end" font-size="9" fill="#8A93A6">体验 --</text>
+        </svg>
+      </div>
+    </section>
+  </div>
 
-  <!-- AI 年度总结 -->
   <section class="ai-report">
-    <h2 class="section-title">AI 眼中的你</h2>
+    <div class="section-title">AI 眼中的你</div>
     <div class="ai-card large">
       <p class="ai-year" id="ai-year">--</p>
       <p class="ai-transform" id="ai-transform">正在分析你的年度轨迹...</p>
@@ -93,10 +81,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  /* 细节样式尽量统一在 src/styles/global.css；这里只保留页面特有覆盖 */
-</style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
@@ -124,14 +108,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function escapeHtml(s: unknown): string {
-    return String(s ?? '').replace(/[&<>"']/g, (c) => (
-      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
-    )[c]);
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
   }
 
-  // 雷达图 5 顶点 (top, right-top, right-bottom, left-bottom, left-top)
   const RADAR_CENTER = { x: 100, y: 100 };
-  const RADAR_TOP = 25; // top to center
+  const RADAR_TOP = 25;
   const RADAR_RADIUS = 85;
   function radarPoint(index: number, score: number): string {
     const angle = -Math.PI / 2 + (2 * Math.PI * index) / 5;
@@ -164,9 +145,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function computeStats(moments: any[]) {
-    const categoryCounts: Record<string, number> = {
-      学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0,
-    };
+    const categoryCounts: Record<string, number> = { 学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0 };
     let workoutCount = 0;
     let bookCount = 0;
     for (const m of moments) {
@@ -176,14 +155,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (m.type?.includes('📚') || m.type?.includes('📖')) bookCount++;
     }
     const total = moments.length || 1;
-    const categoryScores = Object.fromEntries(
-      Object.entries(categoryCounts).map(([k, v]) => [k, Math.round((v / total) * 100)])
-    );
-
-    // 计算跨度天数
+    const categoryScores = Object.fromEntries(Object.entries(categoryCounts).map(([k, v]) => [k, Math.round((v / total) * 100)]));
     const dates = moments.map(m => new Date(m.occurred_at ?? m.created_at).toDateString()).filter(Boolean);
     const uniqueDays = new Set(dates).size;
-
     return {
       days: dates.length > 0 ? uniqueDays : 0,
       moments: moments.length,
@@ -205,7 +179,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     document.getElementById('stat-trips')!.textContent = String(stats.trips);
     renderRadar(stats.categoryScores);
 
-    // AI 总结
     const aiYear = document.getElementById('ai-year');
     const aiTransform = document.getElementById('ai-transform');
     const aiChange = document.getElementById('ai-change');
@@ -216,34 +189,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       } else if (stats.moments > 5) {
         aiTransform.textContent = '正在积极构建自己的系统。';
       } else {
-        aiTransform.textContent = '人生的操作系统刚刚启动。';
+        aiTransform.textContent = '目前还没有足够的数据做总结。先在首页多记录一些瞬间吧。';
       }
     }
-    if (aiChange) aiChange.textContent = stats.topCategory ? `在「${stats.topCategory}」维度投入最多。` : '--';
+    if (aiChange) {
+      aiChange.textContent = stats.topCategory ? `当前最突出的方向是「${stats.topCategory}」。建议继续聚焦，同时补强次要维度。` : '--';
+    }
   }
 
   async function load() {
-    const fallbackMoments = [
-      { type: '📚 阅读', occurred_at: '2026-05-20T00:00:00Z' },
-      { type: '🏋 健身', occurred_at: '2026-05-08T00:00:00Z' },
-      { type: '☕ 社交', occurred_at: '2026-04-15T00:00:00Z' },
-      { type: '✈️ 旅行', occurred_at: '2026-03-10T00:00:00Z' },
-      { type: '💻 学习', occurred_at: '2026-02-01T00:00:00Z' },
-      { type: '💡 想法', occurred_at: '2026-01-05T00:00:00Z' },
-    ];
     if (!supabase) {
-      renderReport(computeStats(fallbackMoments));
+      console.warn('[Report] Supabase 未配置');
+      renderReport({ days: 0, moments: 0, photos: 0, books: 0, workouts: 0, trips: 0, categoryScores: {}, topCategory: '体验' });
       return;
     }
     const { data, error } = await supabase
       .from('moments')
-      .select('type, occurred_at, created_at')
+      .select('*')
       .order('occurred_at', { ascending: false })
-      .limit(500);
+      .limit(300);
     if (error) { console.error('[Report] 读取失败:', error); return; }
     const moments = data ?? [];
-    const stats = computeStats(moments.length === 0 ? fallbackMoments : moments);
-    renderReport(stats);
+    renderReport(computeStats(moments));
   }
 
   load();

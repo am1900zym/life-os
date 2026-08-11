@@ -17,14 +17,14 @@
   --surface: #FFFFFF;
   --border: #E5EAF4;
   --border-light: #F2F4FA;
-  --text: #1A1D2B;
-  --text-secondary: #4B5563;
-  --muted: #8A93A6;
-  --placeholder: #B0B7C4;
+  --text: #0d253d;
+  --text-secondary: #273951;
+  --muted: #64748d;
+  --placeholder: #8A93A6;
 
   /* ---- Semantic ---- */
-  --green: #5CB85C;
-  --green-bg: #EBF7EC;
+  --green: #2DD4A8;
+  --green-bg: #E6FAF5;
   --gold: #F5A623;
   --gold-bg: #FFF7E8;
   --gold-border: #FDE68A;
@@ -36,7 +36,7 @@
   --red-bg: #FEE2E2;
   --red-border: #FECACA;
   --shadow-soft: 0 8px 24px rgba(79,124,247,0.08);
-  --shadow-card: 0 2px 8px rgba(15,23,42,0.06), 0 12px 28px rgba(79,124,247,0.08);
+  --shadow-card: 0 2px 8px rgba(15,23,42,0.04), 0 12px 28px rgba(79,124,247,0.08);
   --shadow-modal: 0 12px 40px rgba(15,23,42,0.18);
 
   /* ---- Radius ---- */

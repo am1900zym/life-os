@@ -1,54 +1,47 @@
 ---
-// src/pages/timeline.astro — 人生轨道页面（接入 Supabase 实时数据）
+// src/pages/timeline.astro — 人生轨道页面（Command Center 版）
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="人生轨道 — Life OS" active="/timeline">
-  <section class="page-header">
-    <h1>Amanda Life Timeline</h1>
-    <p class="subtitle" id="current-year">2026 年 · 时间轴总览</p>
-  </section>
-
-  <!-- 年份切换 -->
-  <div class="year-selector">
-    <button class="year-btn active">2026</button>
-    <button class="year-btn">2025</button>
-    <button class="year-btn">2024</button>
+  <div class="grid-2">
+    <!-- 年份切换 -->
+    <div class="card">
+      <div class="section-title">年份切换</div>
+      <div class="year-selector">
+        <button class="year-btn active">2026</button>
+        <button class="year-btn">2025</button>
+        <button class="year-btn">2024</button>
+      </div>
+    </div>
+    <!-- 能量分布 -->
+    <div class="card">
+      <div class="section-title">能量分布</div>
+      <div class="map-grid">
+        <div class="map-item"><span class="map-label">学习</span><div class="map-dot blue"></div><span class="map-score" id="score-learning">--</span></div>
+        <div class="map-item"><span class="map-label">创造</span><div class="map-dot cyan"></div><span class="map-score" id="score-creation">--</span></div>
+        <div class="map-item"><span class="map-label">健康</span><div class="map-dot green"></div><span class="map-score" id="score-health">--</span></div>
+        <div class="map-item"><span class="map-label">社交</span><div class="map-dot purple"></div><span class="map-score" id="score-social">--</span></div>
+        <div class="map-item"><span class="map-label">体验</span><div class="map-dot rose"></div><span class="map-score" id="score-experience">--</span></div>
+        <div class="map-item"><span class="map-label">旅行</span><div class="map-dot gold"></div><span class="map-score" id="score-travel">--</span></div>
+      </div>
+    </div>
   </div>
 
-  <!-- 轨道总览模式（由真实数据统计生成） -->
+  <!-- 轨道总览 -->
   <section class="tracks-overview">
-    <div class="track-row">
-      <span class="track-label">📚 学习</span>
-      <div class="track-line" id="track-learning"></div>
-    </div>
-    <div class="track-row">
-      <span class="track-label">🏋 健康</span>
-      <div class="track-line" id="track-health"></div>
-    </div>
-    <div class="track-row">
-      <span class="track-label">✈️ 旅行</span>
-      <div class="track-line" id="track-travel"></div>
-    </div>
-    <div class="track-row">
-      <span class="track-label">👥 关系</span>
-      <div class="track-line" id="track-social"></div>
-    </div>
-    <div class="track-row">
-      <span class="track-label">💻 创造</span>
-      <div class="track-line" id="track-creation"></div>
-    </div>
-    <div class="track-row">
-      <span class="track-label">🌟 体验</span>
-      <div class="track-line" id="track-experience"></div>
-    </div>
+    <div class="track-row"><span class="track-label">📚 学习</span><div class="track-line" id="track-learning"></div></div>
+    <div class="track-row"><span class="track-label">🏋 健康</span><div class="track-line" id="track-health"></div></div>
+    <div class="track-row"><span class="track-label">✈️ 旅行</span><div class="track-line" id="track-travel"></div></div>
+    <div class="track-row"><span class="track-label">👥 关系</span><div class="track-line" id="track-social"></div></div>
+    <div class="track-row"><span class="track-label">💻 创造</span><div class="track-line" id="track-creation"></div></div>
+    <div class="track-row"><span class="track-label">🌟 体验</span><div class="track-line" id="track-experience"></div></div>
   </section>
 
-  <!-- 详细时间轴（由真实数据生成） -->
-  <section class="timeline-detail">
+  <!-- 详细时间轴 -->
+  <section>
     <h2 class="section-title" id="month-title">轨迹</h2>
     <div id="timeline-moments">
-      <!-- 兜底演示数据 -->
       <div class="moment-card">
         <div class="moment-date">2026.05.20</div>
         <h3>香港演唱会旅行</h3>
@@ -65,52 +58,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
-
-  <!-- 人生地图模式（由真实数据统计） -->
-  <section class="life-map">
-    <h2 class="section-title">能量分布</h2>
-    <div class="map-grid" id="map-grid">
-      <div class="map-item">
-        <span class="map-label">学习</span>
-        <div class="map-dot blue"></div>
-        <span class="map-score" id="score-learning">--</span>
-      </div>
-      <div class="map-item">
-        <span class="map-label">创造</span>
-        <div class="map-dot cyan"></div>
-        <span class="map-score" id="score-creation">--</span>
-      </div>
-      <div class="map-item">
-        <span class="map-label">健康</span>
-        <div class="map-dot green"></div>
-        <span class="map-score" id="score-health">--</span>
-      </div>
-      <div class="map-item">
-        <span class="map-label">社交</span>
-        <div class="map-dot purple"></div>
-        <span class="map-score" id="score-social">--</span>
-      </div>
-      <div class="map-item">
-        <span class="map-label">体验</span>
-        <div class="map-dot rose"></div>
-        <span class="map-score" id="score-experience">--</span>
-      </div>
-      <div class="map-item">
-        <span class="map-label">旅行</span>
-        <div class="map-dot gold"></div>
-        <span class="map-score" id="score-travel">--</span>
-      </div>
-      <div class="map-item center">
-        <span class="map-label">Amanda</span>
-        <div class="map-avatar">A</div>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
-
-<style>
-  /* 细节样式尽量统一在 src/styles/global.css；这里只保留页面特有覆盖 */
-</style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
@@ -135,11 +83,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return '体验';
   }
 
-  // 渲染轨道总览
   function renderTracks(moments: any[]) {
-    const counts: Record<string, number> = {
-      学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0,
-    };
+    const counts: Record<string, number> = { 学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0 };
     for (const m of moments) {
       counts[classifyCategory(m.type ?? '💡 想法')] = (counts[classifyCategory(m.type ?? '💡 想法')] || 0) + 1;
     }
@@ -159,7 +104,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         ? `<div class="track-dot"></div><div class="track-segment" style="width:${fill(counts[cat])}%"></div>`.repeat(Math.min(6, Math.max(1, counts[cat])))
         : '';
     }
-    // 能量分布分数
     const mapScores: Record<string, HTMLElement | null> = {
       学习: document.getElementById('score-learning'),
       创造: document.getElementById('score-creation'),
@@ -175,7 +119,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
-  // 渲染时间轴（按月分组）
   function renderTimeline(moments: any[]) {
     const container = document.getElementById('timeline-moments');
     if (!container) return;
@@ -203,9 +146,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function escapeHtml(s: unknown): string {
-    return String(s ?? '').replace(/[&<>"']/g, (c) => (
-      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>
-    )[c]);
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
   }
 
   async function load() {
