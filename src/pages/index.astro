@@ -122,7 +122,23 @@ import { supabaseClient } from '../lib/supabaseClient';
     list.querySelectorAll('.moment-card').forEach((el) => {
       const id = el.getAttribute('data-id');
       const m = moments.find((x) => x.id === id);
-      el.addEventListener('click', () => { if (m && window.openDetail) window.openDetail(m); });
+      el.addEventListener('click', () => { 
+        if (m && typeof window.openDetail === 'function') {
+          window.openDetail(m);
+        } else {
+          // Fallback: retry up to 5 times in case BaseLayout script hasn't loaded yet
+          let tries = 0;
+          const retry = () => {
+            tries++;
+            if (typeof window.openDetail === 'function') {
+              window.openDetail(m);
+            } else if (tries < 10) {
+              setTimeout(retry, 100);
+            }
+          };
+          retry();
+        }
+      });
     });
   }
 
