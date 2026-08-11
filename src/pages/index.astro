@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { supabaseClient } from '../lib/supabaseClient';
 ---
 
 <BaseLayout title="Life OS" active="/" pageTitle="今日轨迹">
@@ -9,28 +10,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p style="margin:6px 0 0;color:#64748d;font-size:14px;">{import.meta.env.PUBLIC_NOW_DATE || new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'})}</p>
   </section>
 
-  <section class="card">
-    <div class="section-title">今日轨迹</div>
-    <p class="data-status" id="data-status" style="margin:0 0 10px;"></p>
-    <div class="moment-list" id="moment-list">
-      <article class="moment-card">
-        <span class="moment-type">📚 阅读</span>
-        <h3>《时间游戏》</h3>
-        <p class="moment-meta">今天</p>
-      </article>
-      <article class="moment-card">
-        <span class="moment-type">🏋 健身</span>
-        <h3>力量训练 60 分钟</h3>
-        <p class="moment-meta">今天</p>
-      </article>
-      <article class="moment-card">
-        <span class="moment-type">☕ 社交</span>
-        <h3>朋友聚餐</h3>
-        <p class="moment-meta">今天</p>
-      </article>
+  <!-- 筛选面板 -->
+  <section class="card" id="filter-panel">
+    <div class="section-title">标签筛选</div>
+    <div class="filter-tags" id="filter-tags"></div>
+  </section>
+
+  <!-- 主内容区域 -->
+  <section class="timeline-content">
+    <div class="timeline-left" id="timeline-left">
+      <div class="timeline-date" id="timeline-date">{import.meta.env.PUBLIC_NOW_DATE || new Date().toLocaleDateString('zh-CN', {month:'long',day:'numeric'})}</div>
+    </div>
+    <div class="timeline-right">
+      <div class="moment-list" id="moment-list"></div>
     </div>
   </section>
 
+  <!-- AI 卡片 -->
   <section class="card">
     <div class="section-title">AI 今日一句话</div>
     <div class="ai-card large">
@@ -38,6 +34,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <!-- 成长进度 -->
   <section class="card">
     <div class="section-title">本月成长</div>
     <div class="bar-list">
@@ -59,9 +56,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <style>
   .data-status { font-size: 12px; color: #8A93A6; margin: 0 0 10px; }
-  .data-status.live { color: #4F7CF7; font-weight: 500; }
-  .data-status.demo { color: #B0B7C4; }
-  .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0 0; }
+  .timeline-content { display: flex; gap: 18px; }
+  .timeline-left { min-width: 60px; text-align: center; }
+  .timeline-date { font-size: 14px; color: #64748d; padding-top: 4px; }
+  .timeline-right { flex: 1; }
+  .moment-card {
+    background: #fff; border: 1px solid #E5EAF4; border-radius: 14px; padding: 16px;
+    margin-bottom: 12px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); cursor: pointer;
+  }
+  .moment-card:hover { box-shadow: 0 4px 12px rgba(15,23,42,0.08); }
+  .moment-type { font-size: 11px; color: #4F7CF7; font-weight: 600; }
+  .moment-card h3 { margin: 6px 0 4px; font-size: 15px; color: #0d253d; }
+  .moment-body { font-size: 13px; color: #8A93A6; margin: 4px 0; line-height: 1.5; }
+  .moment-tags { margin: 8px 0 4px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .moment-tag { font-size: 11px; background: #EEF3FF; color: #4F7CF7; padding: 2px 8px; border-radius: 10px; }
+  .moment-meta { font-size: 11px; color: #B0B7C4; }
+  .filter-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filter-tag {
+    font-size: 12px; padding: 6px 12px; border-radius: 18px; border: 1px solid #E5EAF4;
+    background: #fff; cursor: pointer; transition: all .15s ease;
+  }
+  .filter-tag:hover { background: #EBF1FF; color: #4F7CF7; border-color: #4F7CF7; }
+  .filter-tag.active { background: #4F7CF7; color: #fff; border-color: #4F7CF7; }
+  .photo-preview {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 1000; display: none;
+  }
+  .photo-preview.visible { display: block; }
+  .photo-preview img { max-width: 80vw; max-height: 80vh; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .photo-preview .close {
+    position: absolute; top: -40px; right: 0; color: #fff; font-size: 24px; cursor: pointer;
+    background: rgba(0,0,0,0.3); padding: 8px 14px; border-radius: 8px;
+  }
 </style>
 
 <script>
@@ -70,28 +96,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const DEFAULT_USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
   const CURRENT = { userId: 'local-' + DEFAULT_USER_ID, nickname: 'Amanda', color: '#4F7CF7' };
 
-  function escapeHtml(s: unknown): string {
-    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   }
 
-  function renderMoments(moments: any[]) {
+  function renderMoments(moments) {
     const list = document.getElementById('moment-list');
     const status = document.getElementById('data-status');
     if (!list) return;
-    const items = (moments || []).map((m) => `
-      <article class="moment-card" data-id="${escapeHtml(m.id)}">
-        <span class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</span>
-        <h3>${escapeHtml(m.title)}</h3>
-        ${m.body ? `<p class="moment-body">${escapeHtml(m.body)}</p>` : ''}
-        <p class="moment-meta">${escapeHtml(m.occurred_at ? new Date(m.occurred_at).toLocaleDateString('zh-CN') : '今天')}</p>
-      </article>
-    `).join('');
+    
+    const items = (moments || []).map((m) => {
+      const tags = Array.isArray(m.tags) ? m.tags : (m.tags ? JSON.parse(m.tags) : []);
+      return `
+        <article class="moment-card" data-id="${escapeHtml(m.id)}" data-tags="${escapeHtml(JSON.stringify(tags))}">
+          <span class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</span>
+          <h3>${escapeHtml(m.title)}</h3>
+          ${m.body ? `<p class="moment-body">${escapeHtml(m.body)}</p>` : ''}
+          ${tags.length ? `<div class="moment-tags">${tags.map(t => `<span class="moment-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+          <p class="moment-meta">${escapeHtml(m.occurred_at ? new Date(m.occurred_at).toLocaleDateString('zh-CN') : '今天')}</p>
+        </article>
+      `;
+    }).join('');
     list.innerHTML = items || '<p style="color:#8A93A6;font-size:14px;">暂无记录</p>';
-    if (status) {
-      status.textContent = `● 已接入 Supabase · 共 ${moments.length} 条瞬间`;
-      status.className = 'data-status live';
-    }
-
+    
     list.querySelectorAll('.moment-card').forEach((el) => {
       const id = el.getAttribute('data-id');
       const m = moments.find((x) => x.id === id);
@@ -99,7 +126,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     });
   }
 
-  function showDemo(reason?: string) {
+  function showDemo(reason) {
     const status = document.getElementById('data-status');
     if (status) {
       status.textContent = reason ? `○ 演示数据（${reason}）` : '○ 演示数据（未配置 Supabase 或暂无记录）';
@@ -107,17 +134,137 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
+  function setupFilter(moments) {
+    const tagSet = new Set();
+    moments.forEach(m => {
+      const tags = Array.isArray(m.tags) ? m.tags : (m.tags ? JSON.parse(m.tags) : []);
+      tags.forEach(t => tagSet.add(t));
+    });
+    const container = document.getElementById('filter-tags');
+    if (!container) return;
+    container.innerHTML = [...tagSet].map(tag => 
+      `<span class="filter-tag" data-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</span>`
+    ).join('');
+    
+    container.querySelectorAll('.filter-tag').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        const activeTags = [...container.querySelectorAll('.filter-tag.active')].map(el => el.getAttribute('data-tag'));
+        filterMoments(moments, activeTags);
+      });
+    });
+  }
+
+  function filterMoments(moments, tags) {
+    if (tags.length === 0) {
+      renderMoments(moments);
+      return;
+    }
+    const filtered = moments.filter(m => {
+      const mTags = Array.isArray(m.tags) ? m.tags : (m.tags ? JSON.parse(m.tags) : []);
+      return tags.some(t => mTags.includes(t));
+    });
+    renderMoments(filtered);
+  }
+
   async function loadMoments() {
-    if (!supabase) { showDemo('Supabase 未配置'); return; }
+    const list = document.getElementById('moment-list');
+    if (!list) return;
+    
+    const today = new Date().toISOString().slice(0, 10);
+    
+    if (!supabase) { 
+      showDemo('Supabase 未配置');
+      renderMoments([]);
+      return; 
+    }
+    
     const { data, error } = await supabase
       .from('moments')
       .select('*')
-      .order('occurred_at', { ascending: false })
-      .limit(30);
-    if (error) { console.error('[LifeOS] 加载瞬间失败:', error); showDemo('读取失败'); return; }
-    renderMoments(data || []);
+      .gte('occurred_at', today + 'T00:00:00')
+      .lte('occurred_at', today + 'T23:59:59')
+      .order('occurred_at', { ascending: false });
+      
+    if (error) { 
+      console.error('[LifeOS] 加载瞬间失败:', error); 
+      showDemo('读取失败'); 
+      list.innerHTML = '<p style="color:#8A93A6;font-size:14px;">读取失败，<a onclick="loadMoments()" style="color:#4F7CF7;cursor:pointer;">点击重试</a></p>';
+      return; 
+    }
+    
+    const safe = (data || []).map(m => ({ ...m, tags: Array.isArray(m.tags) ? m.tags : (typeof m.tags === 'string' ? JSON.parse(m.tags) : []) }));
+    setupFilter(safe);
+    renderMoments(safe);
   }
 
+  window.loadMoments = loadMoments;
   window.addEventListener('lifeos:refresh', loadMoments);
   loadMoments();
+</script>
+
+<!-- 照片预览层 -->
+<div id="photo-preview" class="photo-preview"></div>
+<style>
+  /* 照片预览弹层 */
+  #photo-preview {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; visibility: hidden; transition: opacity .2s ease;
+  }
+  #photo-preview.visible { opacity: 1; visibility: visible; }
+</style>
+<script>
+  // 照片悬浮预览
+  const preview = document.getElementById('photo-preview');
+  document.addEventListener('click', (e) => {
+    const img = e.target.closest('img[data-preview]');
+    if (img) {
+      preview.innerHTML = `<img src="${img.src}" alt="preview"><div class="close" onclick="previewEl.style.visibility='hidden';previewEl.classList.remove('visible')">×</div>`;
+      preview.classList.add('visible');
+      const previewEl = preview;
+      // 点击外部关闭
+      const closeHandler = (ev) => {
+        if (!preview.contains(ev.target)) {
+          preview.classList.remove('visible');
+          document.removeEventListener('click', closeHandler);
+        }
+      };
+      setTimeout(() => document.addEventListener('click', closeHandler), 0);
+    }
+  });
+</script>
+
+<!-- 详情弹窗（编辑模式） -->
+<script>
+  window.openDetail = function(moment) {
+    // 此方法已存在于 BaseLayout.astro 中，调用它打开详情modal
+    if (typeof window._originalOpenDetail === 'function') {
+      window._originalOpenDetail(moment);
+    } else {
+      // fallback: 展示原有的详情
+      const detailModal = document.getElementById('detail-modal');
+      if (!detailModal) return;
+      detailModal.hidden = false;
+      detailModal.style.display = '';
+      document.getElementById('detail-title').textContent = moment.title;
+      const mediaHtml = Array.isArray(moment.media_urls) && moment.media_urls.length
+        ? `<div class="detail-media">${moment.media_urls.map(u => 
+            /\\.(mp4|mov)$/i.test(u) ? `<video src="${u}" controls></video>` : 
+            `<img src="${u}" alt="media" data-preview/>`
+          ).join('')}</div>`
+        : '';
+      document.getElementById('detail-body').innerHTML = `
+        <div class="detail-meta">
+          <span class="detail-visibility">${moment.visibility === 'public' ? '公开' : '私密'}</span>
+          <span class="detail-date">${new Date(moment.occurred_at).toLocaleString('zh-CN')}</span>
+        </div>
+        ${mediaHtml}
+        <p class="detail-text">${moment.body || ''}</p>
+        <div class="detail-tags">${Array.isArray(moment.tags) ? moment.tags.map(t => `<span class="moment-tag">${t}</span>`).join('') : ''}</div>
+      `;
+      detailModal.hidden = false;
+      detailModal.style.display = 'flex';
+    }
+  };
 </script>

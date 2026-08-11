@@ -1,5 +1,5 @@
 ---
-// src/pages/timeline.astro — 人生轨道页面（Command Center 版）
+// src/pages/timeline.astro — 人生轨道页面（轨道视图版）
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -7,166 +7,271 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <div class="grid-2">
     <!-- 年份切换 -->
     <div class="card">
-      <div class="section-title">年份切换</div>
+      <div class="section-title">年份</div>
       <div class="year-selector">
         <button class="year-btn active">2026</button>
         <button class="year-btn">2025</button>
         <button class="year-btn">2024</button>
       </div>
     </div>
-    <!-- 能量分布 -->
+    <!-- 能量分布地图 -->
     <div class="card">
       <div class="section-title">能量分布</div>
-      <div class="map-grid">
-        <div class="map-item"><span class="map-label">学习</span><div class="map-dot blue"></div><span class="map-score" id="score-learning">--</span></div>
-        <div class="map-item"><span class="map-label">创造</span><div class="map-dot cyan"></div><span class="map-score" id="score-creation">--</span></div>
-        <div class="map-item"><span class="map-label">健康</span><div class="map-dot green"></div><span class="map-score" id="score-health">--</span></div>
-        <div class="map-item"><span class="map-label">社交</span><div class="map-dot purple"></div><span class="map-score" id="score-social">--</span></div>
-        <div class="map-item"><span class="map-label">体验</span><div class="map-dot rose"></div><span class="map-score" id="score-experience">--</span></div>
-        <div class="map-item"><span class="map-label">旅行</span><div class="map-dot gold"></div><span class="map-score" id="score-travel">--</span></div>
-      </div>
+      <div class="map-grid" id="map-grid"></div>
     </div>
   </div>
 
-  <!-- 轨道总览 -->
-  <section class="tracks-overview">
-    <div class="track-row"><span class="track-label">📚 学习</span><div class="track-line" id="track-learning"></div></div>
-    <div class="track-row"><span class="track-label">🏋 健康</span><div class="track-line" id="track-health"></div></div>
-    <div class="track-row"><span class="track-label">✈️ 旅行</span><div class="track-line" id="track-travel"></div></div>
-    <div class="track-row"><span class="track-label">👥 关系</span><div class="track-line" id="track-social"></div></div>
-    <div class="track-row"><span class="track-label">💻 创造</span><div class="track-line" id="track-creation"></div></div>
-    <div class="track-row"><span class="track-label">🌟 体验</span><div class="track-line" id="track-experience"></div></div>
+  <!-- 轨道视图 -->
+  <section class="card">
+    <div class="section-title">我的轨道</div>
+    <div class="orbit-container" id="orbit-container">
+      <div class="orbit-center">
+        <div class="orbit-core">Amanda</div>
+      </div>
+      <div class="orbit-ring ring-1" style="animation-duration:8s" id="ring-learning"></div>
+      <div class="orbit-ring ring-2" style="animation-duration:12s" id="ring-health"></div>
+      <div class="orbit-ring ring-3" style="animation-duration:16s" id="ring-creation"></div>
+      <div class="orbit-ring ring-4" style="animation-duration:20s" id="ring-social"></div>
+      <div class="orbit-ring ring-5" style="animation-duration:24s" id="ring-travel"></div>
+      <div class="orbit-ring ring-6" style="animation-duration:28s" id="ring-experience"></div>
+    </div>
   </section>
 
-  <!-- 详细时间轴 -->
-  <section>
-    <h2 class="section-title" id="month-title">轨迹</h2>
-    <div id="timeline-moments">
-      <div class="moment-card">
-        <div class="moment-date">2026.05.20</div>
-        <h3>香港演唱会旅行</h3>
-        <p class="moment-meta">📷 12 张照片 · 👥 G</p>
-        <p class="moment-feeling">“第一次意识到，人与人的连接需要主动创造。”</p>
-        <div class="ai-tag">🔗 与心理学主题相关</div>
+  <!-- 轨道图谱卡片 -->
+  <section class="grid-2">
+    <div class="card">
+      <div class="section-title">轨道概览</div>
+      <div class="orbit-map">
+        <div class="orbit-summary" id="orbit-summary"></div>
       </div>
-      <div class="moment-card">
-        <div class="moment-date">2026.05.08</div>
-        <h3>完成 Hermes Agent 部署</h3>
-        <p class="moment-meta">💻 技术突破 · 24小时</p>
-        <p class="moment-feeling">“从 0 到 1 搭建个人 AI 助手系统。”</p>
-        <div class="ai-tag">🔗 与 AI 学习轨迹相关</div>
+    </div>
+    <div class="card">
+      <div class="section-title">成长地图</div>
+      <div class="radar-wrap">
+        <svg viewBox="0 0 200 200" class="radar-svg">
+          <polygon points="100,15 175,65 150,160 50,160 25,65" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon points="100,40 155,75 135,145 65,145 45,75" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon points="100,65 135,85 120,130 80,130 65,85" fill="none" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="100" y2="15" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="175" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="150" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="50" y2="160" stroke="#E5EAF4" stroke-width="1"/>
+          <line x1="100" y1="100" x2="25" y2="65" stroke="#E5EAF4" stroke-width="1"/>
+          <polygon id="radar-poly" points="100,22 160,72 130,150 60,142 35,70" fill="rgba(79,124,247,0.2)" stroke="#4F7CF7" stroke-width="2"/>
+          <circle id="dot-0" cx="100" cy="22" r="3" fill="#4F7CF7"/>
+          <circle id="dot-1" cx="160" cy="72" r="3" fill="#4F7CF7"/>
+          <circle id="dot-2" cx="130" cy="150" r="3" fill="#4F7CF7"/>
+          <circle id="dot-3" cx="60" cy="142" r="3" fill="#4F7CF7"/>
+          <circle id="dot-4" cx="35" cy="70" r="3" fill="#4F7CF7"/>
+          <text id="label-0" x="100" y="10" text-anchor="middle" font-size="9" fill="#8A93A6">学习</text>
+          <text id="label-1" x="175" y="62" text-anchor="start" font-size="9" fill="#8A93A6">创造</text>
+          <text id="label-2" x="150" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">健康</text>
+          <text id="label-3" x="50" y="175" text-anchor="middle" font-size="9" fill="#8A93A6">社交</text>
+          <text id="label-4" x="15" y="62" text-anchor="end" font-size="9" fill="#8A93A6">体验</text>
+        </svg>
       </div>
     </div>
   </section>
+
+  <!-- 详细轨迹 -->
+  <section>
+    <h2 class="section-title" id="month-title">轨迹</h2>
+    <div id="timeline-moments" class="moment-list"></div>
+  </section>
 </BaseLayout>
+
+<style>
+  /* 轨道视图 */
+  .orbit-container {
+    position: relative; width: 480px; height: 480px;
+    margin: 20px auto; border-radius: 50%;
+  }
+  .orbit-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #4F7CF7, #7BA4F9);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 14px;
+    z-index: 10; box-shadow: 0 0 0 4px rgba(255,255,255,0.5);
+  }
+  .orbit-core { font-size: 16px; }
+  .orbit-ring {
+    position: absolute; top: 50%; left: 50%;
+    width: var(--size); height: var(--size);
+    border: 1px dashed rgba(79,124,247,0.2);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    animation: spin linear infinite; pointer-events: none;
+  }
+  .ring-1 { --size: 120px; border-style: solid; border-color: rgba(79,124,247,0.3) transparent; }
+  .ring-2 { --size: 180px; border-style: dashed; border-color: rgba(46,204,113,0.3) transparent; }
+  .ring-3 { --size: 240px; border-style: solid; border-color: rgba(241,115,96,0.3) transparent; }
+  .ring-4 { --size: 300px; border-style: dashed; border-color: rgba(155,135,240,0.3) transparent; }
+  .ring-5 { --size: 360px; border-style: solid; border-color: rgba(245,166,35,0.3) transparent; }
+  .ring-6 { --size: 420px; border-style: dashed; border-color: rgba(16,185,129,0.3) transparent; }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  
+  /* 地图网格 */
+  .map-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .map-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: #F8FAFC; border-radius: 8px; padding: 12px 6px;
+  }
+  .map-dot { width: 14px; height: 14px; border-radius: 50%; }
+  .map-label { font-size: 11px; color: #64748d; }
+  .map-score { font-size: 16px; font-weight: 700; color: #0d253d; }
+  .dot-blue { background: #4F7CF7; }
+  .dot-cyan { background: #40E0D0; }
+  .dot-green { background: #2DD4A8; }
+  .dot-purple { background: #9B8FFF; }
+  .dot-rose { background: #EC4899; }
+  .dot-gold { background: #F5A623; }
+  
+  /* 轨道概览 */
+  .orbit-map { text-align: center; }
+  .orbit-summary { display: flex; flex-direction: column; gap: 8px; }
+  .orbit-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #0d253d;
+  }
+  .orbit-item .count { margin-left: auto; font-weight: 600; color: #4F7CF7; }
+  .orbit-item .bar {
+    flex: 1; height: 6px; background: #EEF2F5; border-radius: 999px; overflow: hidden;
+  }
+  .orbit-item .bar-fill { height: 100%; border-radius: 999px; }
+</style>
 
 <script>
   import { supabase } from '../lib/supabaseClient';
 
-  const TYPE_MAP: Record<string, { label: string; keys: string[] }> = {
-    '📚 阅读': { label: '学习', keys: ['📚', '学习'] },
-    '📖 阅读': { label: '学习', keys: ['📖', '学习'] },
-    '🏋 健身': { label: '健康', keys: ['🏋', '健身', '运动'] },
-    '💪 健康': { label: '健康', keys: ['💪', '健康'] },
-    '☕ 社交': { label: '社交', keys: ['☕', '社交'] },
-    '✈️ 旅行': { label: '旅行', keys: ['✈️', '旅行', '旅游'] },
-    '💻 学习': { label: '创造', keys: ['💻', '学习', '编码', '编程'] },
-    '🧑💻 创造': { label: '创造', keys: ['🧑💻', '创造'] },
-    '💡 想法': { label: '体验', keys: ['💡', '想法'] },
-    '🌟 体验': { label: '体验', keys: ['🌟', '体验'] },
+  const TYPE_MAP = {
+    '📚 阅读': '学习', '📖 阅读': '学习',
+    '🏋 健身': '健康', '💪 健康': '健康',
+    '☕ 社交': '社交',
+    '✈️ 旅行': '旅行', '🌴 旅行': '旅行',
+    '💻 学习': '创造', '🧑💻 创造': '创造',
+    '💡 想法': '体验', '🌟 体验': '体验',
   };
 
-  function classifyCategory(typeText: string): string {
+  function classifyCategory(typeText) {
     for (const [k, v] of Object.entries(TYPE_MAP)) {
-      if (typeText.includes(k)) return v.label;
+      if (typeText?.includes(k)) return v;
     }
     return '体验';
   }
 
-  function renderTracks(moments: any[]) {
-    const counts: Record<string, number> = { 学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0 };
-    for (const m of moments) {
-      counts[classifyCategory(m.type ?? '💡 想法')] = (counts[classifyCategory(m.type ?? '💡 想法')] || 0) + 1;
-    }
+  const CAT_COLORS = {
+    学习: '#4F7CF7', 创造: '#9B8FFF', 健康: '#2DD4A8',
+    社交: '#F5A623', 体验: '#EC4899', 旅行: '#06B6D4',
+  };
+  const CAT_ORDER = ['学习', '创造', '健康', '社交', '体验', '旅行'];
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  }
+
+  function renderOrbits(moments) {
+    const counts = { 学习: 0, 健康: 0, 旅行: 0, 社交: 0, 创造: 0, 体验: 0 };
+    moments.forEach(m => {
+      counts[classifyCategory(m.type)] = (counts[classifyCategory(m.type)] || 0) + 1;
+    });
     const max = Math.max(1, ...Object.values(counts));
-    const fill = (n: number) => Math.max(12, Math.round((n / max) * 100));
-    const categoryTrack: Record<string, HTMLElement | null> = {
-      学习: document.getElementById('track-learning'),
-      健康: document.getElementById('track-health'),
-      旅行: document.getElementById('track-travel'),
-      社交: document.getElementById('track-social'),
-      创造: document.getElementById('track-creation'),
-      体验: document.getElementById('track-experience'),
-    };
-    for (const [cat, el] of Object.entries(categoryTrack)) {
-      if (!el) continue;
-      el.innerHTML = counts[cat] > 0
-        ? `<div class="track-dot"></div><div class="track-segment" style="width:${fill(counts[cat])}%"></div>`.repeat(Math.min(6, Math.max(1, counts[cat])))
-        : '';
+
+    // 地图
+    const mapGrid = document.getElementById('map-grid');
+    if (mapGrid) {
+      mapGrid.innerHTML = CAT_ORDER.map(cat => `
+        <div class="map-item">
+          <div class="map-dot ${'dot-' + Object.keys(CAT_COLORS)[CAT_ORDER.indexOf(cat)]}" style="background:${CAT_COLORS[cat]}"></div>
+          <span class="map-label">${cat}</span>
+          <span class="map-score">${counts[cat]}</span>
+        </div>
+      `).join('');
     }
-    const mapScores: Record<string, HTMLElement | null> = {
-      学习: document.getElementById('score-learning'),
-      创造: document.getElementById('score-creation'),
-      健康: document.getElementById('score-health'),
-      社交: document.getElementById('score-social'),
-      体验: document.getElementById('score-experience'),
-      旅行: document.getElementById('score-travel'),
-    };
-    const total = moments.length || 1;
-    for (const [cat, el] of Object.entries(mapScores)) {
-      if (!el) continue;
-      el.textContent = `${Math.round((counts[cat] / total) * 100)}`;
+
+    // 轨道概览
+    const orbitSummary = document.getElementById('orbit-summary');
+    if (orbitSummary) {
+      orbitSummary.innerHTML = CAT_ORDER.map(cat => `
+        <div class="orbit-item">
+          <span>${cat}</span>
+          <div class="bar"><div class="bar-fill" style="width:${(counts[cat]/max*100)}%;background:${CAT_COLORS[cat]}"></div></div>
+          <span class="count">${counts[cat]}</span>
+        </div>
+      `).join('');
+    }
+
+    // 雷达图
+    const radarPoints = CAT_ORDER.map((cat, i) => {
+      const ratio = counts[cat] / max;
+      const cx = [100, 160, 130, 60, 35, 100][i];
+      const cy = [22, 72, 150, 142, 70, 22][i];
+      const px = 40 + (cx - 40) * ratio;
+      const py = 110 - (110 - cy) * ratio;
+      return `${px},${py}`;
+    }).join(' ');
+    const radarPoly = document.getElementById('radar-poly');
+    if (radarPoly) radarPoly.setAttribute('points', radarPoints);
+  }
+
+  async function load() {
+    const list = document.getElementById('timeline-moments');
+    if (!supabase) {
+      document.getElementById('month-title').textContent = '重要轨迹';
+      if (list) list.innerHTML = '<p class="data-status demo">暂无轨迹记录（Supabase 未配置）</p>';
+      renderOrbits([]);
+      return;
+    }
+    const { data, error } = await supabase.from('moments').select('*').order('occurred_at', { ascending: false }).limit(300);
+    if (error) { console.error('[Timeline] 读取失败:', error); renderOrbits([]); return; }
+    const moments = data ?? [];
+    renderOrbits(moments);
+
+    if (list) {
+      if (moments.length === 0) { list.innerHTML = '<p class="data-status demo">暂无轨迹记录</p>'; return; }
+      const byMonth = {};
+      for (const m of moments) {
+        const d = new Date(m.occurred_at ?? m.created_at);
+        const key = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}`;
+        (byMonth[key] = byMonth[key] || []).push(m);
+      }
+      const months = Object.keys(byMonth).sort((a,b) => b.localeCompare(a));
+      document.getElementById('month-title').textContent = months.length ? `${months[0]} · 轨迹` : '重要轨迹';
+      list.innerHTML = months.map(month => byMonth[month].map(m => `
+        <div class="moment-card" data-id="${escapeHtml(m.id)}">
+          <div class="moment-date">${new Date(m.occurred_at ?? m.created_at).toLocaleDateString('zh-CN', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\\//g,'.')}</div>
+          <h3>${escapeHtml(m.title)}</h3>
+          ${m.body ? `<p class="moment-feeling">“${escapeHtml(m.body)}”</p>` : ''}
+          <div class="moment-type">${escapeHtml(m.type ?? '💡 想法')}</div>
+        </div>
+      `).join('')).join('');
     }
   }
 
-  function renderTimeline(moments: any[]) {
+  function renderTimeline(moments) {
     const container = document.getElementById('timeline-moments');
     if (!container) return;
-    if (moments.length === 0) {
-      container.innerHTML = '<p class="data-status demo">暂无时间轴记录</p>';
-      return;
-    }
-    const byMonth: Record<string, any[]> = {};
+    if (moments.length === 0) { container.innerHTML = '<p class="data-status demo">暂无时间轴记录</p>'; return; }
+    const byMonth = {};
     for (const m of moments) {
       const d = new Date(m.occurred_at ?? m.created_at);
-      const key = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const key = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}`;
       (byMonth[key] = byMonth[key] || []).push(m);
     }
-    const months = Object.keys(byMonth).sort((a, b) => b.localeCompare(a));
+    const months = Object.keys(byMonth).sort((a,b) => b.localeCompare(a));
     const title = document.getElementById('month-title');
-    if (title) title.textContent = months.length > 0 ? `${months[0]} · 重要瞬间` : '重要瞬间';
-    container.innerHTML = months.map((month) => byMonth[month].map((m) => `
-      <div class="moment-card">
-        <div class="moment-date">${new Date(m.occurred_at ?? m.created_at).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.')}</div>
+    if (title) title.textContent = months.length ? `${months[0]} · 轨迹` : '轨迹';
+    container.innerHTML = months.map(month => byMonth[month].map(m => `
+      <div class="moment-card" data-id="${escapeHtml(m.id)}">
+        <div class="moment-date">${new Date(m.occurred_at ?? m.created_at).toLocaleDateString('zh-CN', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\\//g,'.')}</div>
         <h3>${escapeHtml(m.title)}</h3>
         ${m.body ? `<p class="moment-feeling">“${escapeHtml(m.body)}”</p>` : ''}
         <p class="moment-meta">${escapeHtml(m.type ?? '💡 想法')}</p>
       </div>
     `).join('')).join('');
-  }
-
-  function escapeHtml(s: unknown): string {
-    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
-  }
-
-  async function load() {
-    if (!supabase) {
-      console.warn('[Timeline] Supabase 未配置，使用演示数据');
-      renderTracks([
-        { type: '📚 阅读' }, { type: '🏋 健身' }, { type: '☕ 社交' },
-        { type: '✈️ 旅行' }, { type: '💻 学习' }, { type: '🌟 体验' },
-      ]);
-      return;
-    }
-    const { data, error } = await supabase
-      .from('moments')
-      .select('*')
-      .order('occurred_at', { ascending: false })
-      .limit(200);
-    if (error) { console.error('[Timeline] 读取失败:', error); return; }
-    const moments = data ?? [];
-    renderTracks(moments);
-    renderTimeline(moments);
   }
 
   load();
