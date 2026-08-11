@@ -93,9 +93,10 @@
 }
 .nav-link:hover { background: #F4F6FA; color: #0d253d; }
 .nav-link.active {
-  background: #F5F7FF;
+  background: #EBF1FF;
   color: #4F7CF7;
   font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(79,124,247,0.25) inset;
 }
 .nav-link.active::before {
   content: '';
