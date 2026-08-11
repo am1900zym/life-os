@@ -1,5 +1,6 @@
 ---
 // src/pages/dental/papers.astro — 论文库：日期分组 + 期刊筛选
+// 客户端优先从 Supabase 加载真实数据；构建时用本地数据兜底渲染
 import DentalLayout from '../../layouts/DentalLayout.astro';
 import { papersByDate, dentalJournals } from '../../data/dentalData';
 ---
@@ -30,7 +31,12 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
     </div>
   </div>
 
+  <div class="data-status" id="papers-status" style="font-size:12px;color:var(--muted);margin-top:14px">
+    ○ 构建时数据（Supabase 未配置时展示）
+  </div>
+
   <!-- 按日期分组的论文 -->
+  <div id="papers-container">
   {(() => {
     const byDate = new Map();
     for (const p of papersByDate) {
@@ -50,7 +56,7 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
               <span class="new-badge">NEW</span>
               <span style="margin-left:auto">{paper.date}</span>
             </div>
-            <h3 class="paper-title"><a href={paper.url}>{paper.title}</a></h3>
+            <h3 class="paper-title"><a href={paper.url} target="_blank" rel="noopener">{paper.title}</a></h3>
             <div class="paper-authors">{paper.authors}</div>
             <p class="paper-abstract">{paper.abstract}</p>
             <div class="paper-tags">
@@ -61,39 +67,98 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
       </section>
     ));
   })()}
+  </div>
 </DentalLayout>
 
 <script is:inline>
   // ===== 期刊筛选逻辑 =====
-  const filterToggle = document.getElementById('filter-toggle');
-  const panel = document.getElementById('filter-panel');
-  const status = document.getElementById('filter-status');
+  const filterToggleBtn = document.getElementById('filter-toggle');
+  const filterPanel = document.getElementById('filter-panel');
+  const filterStatus = document.getElementById('filter-status');
 
-  filterToggle?.addEventListener('click', () => panel?.classList.toggle('open'));
+  filterToggleBtn?.addEventListener('click', () => filterPanel?.classList.toggle('open'));
 
-  const checkboxes = [...document.querySelectorAll('#journal-checks input[type=checkbox]')];
-
-  function applyFilter() {
-    const selected = new Set(checkboxes.filter((c) => c.checked).map((c) => c.value));
-    document.querySelectorAll('.paper-item').forEach((item) => {
-      const j = item.getAttribute('data-journal');
-      item.style.display = selected.has(j) ? '' : 'none';
-    });
-    // 隐藏没有可见论文的日期组
-    document.querySelectorAll('.paper-section').forEach((sec) => {
-      const anyVisible = [...sec.querySelectorAll('.paper-item')].some((it) => it.style.display !== 'none');
-      sec.style.display = anyVisible ? '' : 'none';
-    });
-    status.textContent = `已选 ${selected.size} / ${checkboxes.length} 本期刊`;
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   }
 
-  checkboxes.forEach((c) => c.addEventListener('change', applyFilter));
-
-  document.querySelectorAll('.fp-action').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const action = btn.getAttribute('data-action');
-      checkboxes.forEach((c) => { c.checked = action === 'all'; });
-      applyFilter();
+  function bindFilters() {
+    const checkboxes = [...document.querySelectorAll('#journal-checks input[type=checkbox]')];
+    function applyFilter() {
+      const selected = new Set(checkboxes.filter((c) => c.checked).map((c) => c.value));
+      document.querySelectorAll('.paper-item').forEach((item) => {
+        const j = item.getAttribute('data-journal');
+        item.style.display = selected.has(j) ? '' : 'none';
+      });
+      document.querySelectorAll('.paper-section').forEach((sec) => {
+        const anyVisible = [...sec.querySelectorAll('.paper-item')].some((it) => it.style.display !== 'none');
+        sec.style.display = anyVisible ? '' : 'none';
+      });
+      filterStatus.textContent = `已选 ${selected.size} / ${checkboxes.length} 本期刊`;
+    }
+    checkboxes.forEach((c) => c.addEventListener('change', applyFilter));
+    document.querySelectorAll('.fp-action').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const action = btn.getAttribute('data-action');
+        checkboxes.forEach((c) => { c.checked = action === 'all'; });
+        applyFilter();
+      });
     });
-  });
+  }
+
+  // ===== 从 Supabase 加载真实论文 =====
+  async function loadFromSupabase() {
+    try {
+      const mod = await import('../lib/supabaseClient');
+      if (!mod.supabase) return;
+      const { data, error } = await mod.supabase
+        .from('dental_papers')
+        .select('*')
+        .order('published_on', { ascending: false })
+        .limit(50);
+      if (error || !data || data.length === 0) return;
+
+      // 重渲染日期分组
+      const container = document.getElementById('papers-container');
+      const byDate = new Map();
+      data.forEach((r) => {
+        const d = (r.published_on || '').slice(5, 10);
+        if (!byDate.has(d)) byDate.set(d, []);
+        byDate.get(d).push(r);
+      });
+      container.innerHTML = [...byDate.entries()].map(([date, papers]) => `
+        <section class="paper-section" data-date="${escapeHtml(date)}">
+          <div class="date-group">
+            <span class="dg-date">${escapeHtml(date)}</span>
+            <span class="dg-count">${papers.length} 篇</span>
+          </div>
+          ${papers.map((p) => `
+            <article class="paper-item" data-journal="${escapeHtml(p.journal)}">
+              <div class="paper-meta">
+                <span class="paper-journal j-blue">${escapeHtml(p.journal)}</span>
+                <span class="new-badge">NEW</span>
+                <span style="margin-left:auto">${escapeHtml((p.published_on || '').slice(5, 10))}</span>
+              </div>
+              <h3 class="paper-title"><a href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a></h3>
+              <div class="paper-authors">${escapeHtml(p.authors || '')}</div>
+              ${p.abstract ? `<p class="paper-abstract">${escapeHtml(p.abstract)}</p>` : ''}
+              ${Array.isArray(p.tags) && p.tags.length ? `<div class="paper-tags">${p.tags.map((t) => `<span class="paper-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+            </article>
+          `).join('')}
+        </section>
+      `).join('');
+      const statusEl = document.getElementById('papers-status');
+      if (statusEl) {
+        statusEl.textContent = `● 实时数据 · PubMed 追踪 · ${data.length} 篇`;
+        statusEl.style.color = 'var(--green)';
+        statusEl.style.fontWeight = '600';
+      }
+      bindFilters();
+    } catch (e) {
+      console.warn('[DentaScope] Supabase 论文加载失败，保留本地数据', e);
+    }
+  }
+
+  bindFilters();
+  loadFromSupabase();
 </script>
