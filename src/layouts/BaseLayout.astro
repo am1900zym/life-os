@@ -67,11 +67,12 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
             <span class="page-subtitle" id="page-date"></span>
           </div>
           <div class="topbar-right">
-            <div class="search-box" style="opacity:.6;pointer-events:none;">
+            <div class="search-box">
               <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" placeholder="全局搜索..." disabled />
+              <input type="text" id="search-input" placeholder="全局搜索..." autocomplete="off" />
+              <div class="search-suggest" id="search-suggest" hidden></div>
             </div>
-            <button class="btn-primary quick-add-btn" disabled>
+            <button class="btn-primary quick-add-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               快速新增
             </button>
@@ -82,6 +83,293 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
         <main class="main-content">
           <slot />
         </main>
+
+        <!-- 全局：快速新增模态框 -->
+        <div class="modal-overlay" id="quick-add-modal" hidden style="display:none">
+          <div class="modal-card modal-wide">
+            <div class="modal-header">
+              <h3>记录一个瞬间</h3>
+              <button type="button" class="modal-close" onclick="const m=document.getElementById('quick-add-modal');m.hidden=true;m.style.display='none'">✕</button>
+            </div>
+            <form id="quick-add-form">
+              <label>类型
+                <select name="type" required>
+                  <option value="📚 阅读">📚 阅读</option>
+                  <option value="📖 阅读">📖 阅读</option>
+                  <option value="🏋 健身">🏋 健身</option>
+                  <option value="💪 健康">💪 健康</option>
+                  <option value="☕ 社交">☕ 社交</option>
+                  <option value="✈️ 旅行">✈️ 旅行</option>
+                  <option value="💻 学习">💻 学习</option>
+                  <option value="🧑💻 创造">🧑💻 创造</option>
+                  <option value="💡 想法">💡 想法</option>
+                  <option value="🌟 体验">🌟 体验</option>
+                </select>
+              </label>
+              <label>标题
+                <input name="title" placeholder="发生了什么" required />
+              </label>
+              <label>心得 / 细节
+                <textarea name="body" rows="3" placeholder="你的感受或细节..."></textarea>
+              </label>
+              <label>发生日期
+                <input type="date" name="occurred_at" />
+              </label>
+              <label>图片 / 视频
+                <input type="file" accept="image/*,video/*" multiple />
+                <span class="file-hint">支持多选图片或视频</span>
+              </label>
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" id="qa-cancel">取消</button>
+                <button type="submit" class="btn-primary">保存</button>
+              </div>
+              <p class="form-status" id="qa-status"></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- 全局：详情模态框 -->
+        <div class="modal-overlay" id="detail-modal" hidden style="display:none">
+          <div class="modal-card">
+            <div class="modal-header">
+              <h3 id="detail-title">标题</h3>
+              <button type="button" class="modal-close" onclick="closeDetail()">✕</button>
+            </div>
+            <div id="detail-body"></div>
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" onclick="closeDetail()">关闭</button>
+              <button type="button" class="btn-primary" id="detail-edit-btn">编辑</button>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          // ========= 快速新增 =========
+          const qaModal = document.getElementById('quick-add-modal');
+          const qaForm = document.getElementById('quick-add-form');
+          const qaStatus = document.getElementById('qa-status');
+          const qaCancel = document.getElementById('qa-cancel');
+          const DEFAULT_USER_ID = 'ec4e72df-c496-4d45-830e-71787bb281a5';
+
+          function openQuickAdd() {
+            if (!qaModal) return;
+            qaModal.hidden = false;
+            qaModal.style.display = '';
+          }
+          function closeQuickAdd() {
+            if (!qaModal) return;
+            qaModal.hidden = true;
+            qaModal.style.display = 'none';
+          }
+          document.querySelector('.quick-add-btn')?.addEventListener('click', openQuickAdd);
+          qaCancel?.addEventListener('click', closeQuickAdd);
+
+          async function uploadMedia(files) {
+            const { supabase } = await import('../lib/supabaseClient');
+            const urls = [];
+            for (const file of files) {
+              const ext = file.name.split('.').pop() || 'bin';
+              const path = `moments/${DEFAULT_USER_ID}/${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+              const { error } = await supabase.storage.from('life-os').upload(path, file, {
+                cacheControl: '3600', upsert: false, contentType: file.type || 'application/octet-stream',
+              });
+              if (error) continue;
+              const { data } = supabase.storage.from('life-os').getPublicUrl(path);
+              if (data?.publicUrl) urls.push(data.publicUrl);
+            }
+            return urls;
+          }
+
+          qaForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const { supabase } = await import('../lib/supabaseClient');
+            if (!supabase) { qaStatus.textContent = 'Supabase 未配置'; return; }
+            const fd = new FormData(qaForm);
+            const type = String(fd.get('type') || '').trim();
+            const title = String(fd.get('title') || '').trim();
+            const body = String(fd.get('body') || '').trim();
+            const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : new Date().toISOString();
+            if (!type || !title) { qaStatus.textContent = '请填写类型和标题'; return; }
+            qaStatus.textContent = '保存中...';
+            const media = await uploadMedia(Array.from(qaForm.querySelectorAll('input[type=file]')[0]?.files || []));
+            const { error } = await supabase.from('moments').insert({
+              user_id: DEFAULT_USER_ID, type, title, body: body || null, occurred_at, visibility: 'private', media_urls: media,
+            });
+            if (error) { qaStatus.textContent = '保存失败：' + error.message; return; }
+            qaStatus.textContent = '已保存';
+            qaForm.reset();
+            setTimeout(() => { closeQuickAdd(); qaStatus.textContent = ''; }, 300);
+            window.dispatchEvent(new CustomEvent('lifeos:refresh'));
+          });
+
+          // ========= 搜索建议 =========
+          const searchInput = document.getElementById('search-input');
+          const searchSuggest = document.getElementById('search-suggest');
+          const searchDebounce = (fn, wait) => {
+            let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+          };
+
+          async function searchMoments(term) {
+            const { supabase } = await import('../lib/supabaseClient');
+            if (!supabase) return [];
+            const { data } = await supabase
+              .from('moments')
+              .select('id,title,type,occurred_at,body')
+              .or(`title.ilike.%${term}%,body.ilike.%${term}%,type.ilike.%${term}%`)
+              .order('occurred_at', { ascending: false })
+              .limit(8);
+            return data || [];
+          }
+
+          const renderSearch = searchDebounce(async (value) => {
+            if (!value || !searchSuggest) { searchSuggest.hidden = true; searchSuggest.innerHTML = ''; return; }
+            const rows = await searchMoments(value);
+            if (!rows.length) { searchSuggest.hidden = true; searchSuggest.innerHTML = ''; return; }
+            searchSuggest.innerHTML = rows.map((r) => `
+              <div class="search-item" data-id="${r.id}">
+                <span>${r.title}</span>
+                <span class="si-meta">${r.type} · ${new Date(r.occurred_at).toLocaleDateString('zh-CN')}</span>
+              </div>
+            `).join('');
+            searchSuggest.hidden = false;
+          }, 180);
+
+          searchInput?.addEventListener('input', (e) => renderSearch(e.target.value));
+          searchInput?.addEventListener('focus', () => { if (searchInput.value.trim()) renderSearch(searchInput.value.trim()); });
+          document.addEventListener('click', (e) => {
+            if (!searchSuggest?.contains(e.target) && e.target !== searchInput) {
+              searchSuggest.hidden = true;
+            }
+          });
+
+          // ========= 详情：查看/编辑/评论 =========
+          const detailModal = document.getElementById('detail-modal');
+          const detailTitle = document.getElementById('detail-title');
+          const detailBody = document.getElementById('detail-body');
+          const detailEditBtn = document.getElementById('detail-edit-btn');
+          let currentDetail = null;
+
+          async function openDetail(moment) {
+            currentDetail = moment;
+            detailTitle.textContent = moment.title;
+            detailBody.innerHTML = `
+              <div class="detail-meta">
+                <span class="detail-visibility">${moment.visibility === 'public' ? '公开' : '私密'}</span>
+                <span class="detail-date">${new Date(moment.occurred_at).toLocaleString('zh-CN')}</span>
+              </div>
+              ${Array.isArray(moment.media_urls) && moment.media_urls.length ? `
+                <div class="detail-media">
+                  ${moment.media_urls.map((u) => /\.(mp4|mov)$/i.test(u) ? `<video src="${u}" controls></video>` : `<img src="${u}" alt="media" />`).join('')}
+                </div>
+              ` : ''}
+              <p class="detail-text">${moment.body || ''}</p>
+              <div class="detail-actions">
+                <button type="button" class="btn-secondary" onclick="closeDetail()">关闭</button>
+                <button type="button" class="btn-primary" onclick="enableEdit()">编辑</button>
+              </div>
+              <form class="detail-edit-form" id="detail-edit-form">
+                <label>标题
+                  <input name="title" value="${moment.title.replace(/"/g, '&quot;')}" required />
+                </label>
+                <label>心得
+                  <textarea name="body" rows="3">${moment.body || ''}</textarea>
+                </label>
+                <label>日期
+                  <input type="date" name="occurred_at" value="${moment.occurred_at ? new Date(moment.occurred_at).toISOString().slice(0,10) : ''}" />
+                </label>
+                <label>可见性
+                  <select name="visibility">
+                    <option value="private">私密</option>
+                    <option value="public">公开</option>
+                  </select>
+                </label>
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary" onclick="cancelEdit()">取消</button>
+                  <button type="submit" class="btn-primary">保存修改</button>
+                </div>
+              </form>
+              <div class="comments-section" id="comments-section">
+                <div class="comments-title">评论</div>
+                <div class="comment-list" id="comment-list"></div>
+                <form class="comment-form" id="comment-form">
+                  <input type="text" name="content" placeholder="写评论..." required />
+                  <button type="submit">发送</button>
+                </form>
+              </div>
+            `;
+            detailModal.hidden = false;
+            detailModal.style.display = '';
+
+            const editForm = document.getElementById('detail-edit-form');
+            window.enableEdit = () => editForm?.classList.add('open');
+            window.cancelEdit = () => editForm?.classList.remove('open');
+            editForm?.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const { supabase } = await import('../lib/supabaseClient');
+              if (!supabase || !currentDetail) return;
+              const fd = new FormData(editForm);
+              const { error } = await supabase.from('moments').update({
+                title: String(fd.get('title') || '').trim(),
+                body: String(fd.get('body') || '').trim() || null,
+                occurred_at: String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : currentDetail.occurred_at,
+                visibility: String(fd.get('visibility') || 'private').trim(),
+              }).eq('id', currentDetail.id);
+              if (error) { alert('保存失败：' + error.message); return; }
+              window.dispatchEvent(new CustomEvent('lifeos:refresh'));
+              closeDetail();
+            });
+
+            const commentForm = document.getElementById('comment-form');
+            const commentList = document.getElementById('comment-list');
+            const loadComments = async () => {
+              try {
+                const { supabase } = await import('../lib/supabaseClient');
+                if (!supabase) { commentList.innerHTML = '<p style="color:#8A93A6;font-size:13px;">评论不可用</p>'; return; }
+                const { data } = await supabase.from('comments').select('*').eq('moment_id', currentDetail.id).order('created_at', { ascending: true });
+                const rows = data || [];
+                if (!rows.length) { commentList.innerHTML = '<p style="color:#8A93A6;font-size:13px;">暂无评论</p>'; return; }
+                commentList.innerHTML = rows.map((c) => `
+                  <div class="comment-item">
+                    <div class="comment-avatar" style="background:${c.user_id === DEFAULT_USER_ID ? '#4F7CF7' : '#2DD4A8'}">${(c.nickname || 'U')[0]?.toUpperCase()}</div>
+                    <div class="comment-bubble">
+                      <div class="cb-name">${escapeHtml(c.nickname || '用户')}</div>
+                      <div class="cb-text">${escapeHtml(c.content)}</div>
+                      <div class="cb-time">${new Date(c.created_at).toLocaleString('zh-CN')}</div>
+                    </div>
+                  </div>
+                `).join('');
+              } catch (err) {
+                commentList.innerHTML = '<p style="color:#8A93A6;font-size:13px;">评论加载失败</p>';
+              }
+            };
+            await loadComments();
+            commentForm?.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const { supabase } = await import('../lib/supabaseClient');
+              if (!supabase || !currentDetail) return;
+              const fd = new FormData(commentForm);
+              const content = String(fd.get('content') || '').trim();
+              if (!content) return;
+              const { error } = await supabase.from('comments').insert({ moment_id: currentDetail.id, user_id: DEFAULT_USER_ID, nickname: 'Amanda', content });
+              if (error) { alert('评论失败：' + error.message); return; }
+              commentForm.reset();
+              loadComments();
+            });
+          }
+
+          function closeDetail() {
+            if (!detailModal) return;
+            detailModal.hidden = true;
+            detailModal.style.display = 'none';
+            currentDetail = null;
+          }
+
+          function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
+          }
+
+          window.addEventListener('lifeos:refresh', () => {});
+        </script>
       </div>
 
       <!-- 右栏（预留扩展） -->

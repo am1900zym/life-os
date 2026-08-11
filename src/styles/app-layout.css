@@ -246,6 +246,28 @@
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 
+/* Search */
+.search-box { position: relative; }
+.search-suggest {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: #FFFFFF;
+  border: 1px solid #E5EAF4;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+  z-index: 50;
+  overflow: hidden;
+}
+.search-item {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #0d253d;
+  cursor: pointer;
+}
+.search-item:hover { background: #F4F6FA; }
+.search-item .si-meta { color: #8A93A6; margin-left: 8px; font-size: 12px; }
+
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
   .app-shell {

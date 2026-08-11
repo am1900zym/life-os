@@ -55,50 +55,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
-
-  <div class="modal-overlay" id="add-modal" hidden style="display:none">
-    <div class="modal-card modal-wide">
-      <div class="modal-header">
-        <h3>记录一个瞬间</h3>
-        <button type="button" class="modal-close" onclick="const m=document.getElementById('add-modal');m.hidden=true;m.style.display='none'">✕</button>
-      </div>
-      <form id="add-form">
-        <label>类型
-          <select name="type" required>
-            <option value="📚 阅读">📚 阅读</option>
-            <option value="📖 阅读">📖 阅读</option>
-            <option value="🏋 健身">🏋 健身</option>
-            <option value="💪 健康">💪 健康</option>
-            <option value="☕ 社交">☕ 社交</option>
-            <option value="✈️ 旅行">✈️ 旅行</option>
-            <option value="💻 学习">💻 学习</option>
-            <option value="🧑💻 创造">🧑💻 创造</option>
-            <option value="💡 想法">💡 想法</option>
-            <option value="🌟 体验">🌟 体验</option>
-          </select>
-        </label>
-        <label>标题
-          <input name="title" placeholder="发生了什么" required />
-        </label>
-        <label>心得 / 细节
-          <textarea name="body" rows="3" placeholder="你的感受或细节..."></textarea>
-        </label>
-        <label>发生日期
-          <input type="date" name="occurred_at" />
-        </label>
-        <label>图片 / 视频
-          <input type="file" id="media-files" accept="image/*,video/*" multiple />
-          <span class="file-hint">支持多选图片或视频</span>
-          <ul class="file-list" id="file-list"></ul>
-        </label>
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" id="btn-cancel">取消</button>
-          <button type="submit" class="btn-primary">保存</button>
-        </div>
-        <p class="form-status" id="form-status"></p>
-      </form>
-    </div>
-  </div>
 </BaseLayout>
 
 <style>
@@ -118,15 +74,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as Record<string, string>)[c]);
   }
 
-  function openOverlay(id: string) {
-    const m = document.getElementById(id);
-    if (m) { m.hidden = false; m.style.display = ''; }
-  }
-  function closeOverlay(id: string) {
-    const m = document.getElementById(id);
-    if (m) { m.hidden = true; m.style.display = 'none'; }
-  }
-
   function renderMoments(moments: any[]) {
     const list = document.getElementById('moment-list');
     const status = document.getElementById('data-status');
@@ -144,6 +91,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       status.textContent = `● 已接入 Supabase · 共 ${moments.length} 条瞬间`;
       status.className = 'data-status live';
     }
+
+    list.querySelectorAll('.moment-card').forEach((el) => {
+      const id = el.getAttribute('data-id');
+      const m = moments.find((x) => x.id === id);
+      el.addEventListener('click', () => { if (m && window.openDetail) window.openDetail(m); });
+    });
   }
 
   function showDemo(reason?: string) {
@@ -165,63 +118,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     renderMoments(data || []);
   }
 
-  const modal = document.getElementById('add-modal') as HTMLElement | null;
-  const btnAdd = document.getElementById('btn-add');
-  const btnCancel = document.getElementById('btn-cancel');
-  const form = document.getElementById('add-form') as HTMLFormElement | null;
-  const formStatus = document.getElementById('form-status');
-  const mediaInput = document.getElementById('media-files') as HTMLInputElement | null;
-  const fileList = document.getElementById('file-list');
-
-  if (btnAdd) btnAdd.addEventListener('click', () => openOverlay('add-modal'));
-  if (btnCancel) btnCancel.addEventListener('click', () => closeOverlay('add-modal'));
-
-  if (mediaInput) {
-    mediaInput.addEventListener('change', () => {
-      if (!fileList) return;
-      const files = Array.from(mediaInput.files || []);
-      fileList.innerHTML = files.map((f) => `<li>● ${escapeHtml(f.name)} (${(f.size / 1024).toFixed(1)} KB)</li>`).join('');
-    });
-  }
-
-  async function uploadMedia(files: File[]): Promise<string[]> {
-    if (!supabase || files.length === 0) return [];
-    const urls: string[] = [];
-    for (const file of files) {
-      const ext = file.name.split('.').pop() || 'bin';
-      const path = `moments/${DEFAULT_USER_ID}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error } = await supabase.storage.from('life-os').upload(path, file, {
-        cacheControl: '3600', upsert: false, contentType: file.type || 'application/octet-stream',
-      });
-      if (error) { console.error('[LifeOS] 上传失败:', error); continue; }
-      const { data } = supabase.storage.from('life-os').getPublicUrl(path);
-      if (data?.publicUrl) urls.push(data.publicUrl);
-    }
-    return urls;
-  }
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!supabase) { if (formStatus) formStatus.textContent = 'Supabase 未配置，无法保存'; return; }
-      const fd = new FormData(form);
-      const type = String(fd.get('type') || '').trim();
-      const title = String(fd.get('title') || '').trim();
-      const body = String(fd.get('body') || '').trim();
-      const occurred_at = String(fd.get('occurred_at') || '') ? new Date(String(fd.get('occurred_at'))).toISOString() : new Date().toISOString();
-      if (!type || !title) { if (formStatus) formStatus.textContent = '请填写类型和标题'; return; }
-      if (formStatus) formStatus.textContent = '保存中...';
-      const files = mediaInput?.files ? Array.from(mediaInput.files) : [];
-      const mediaUrls = files.length > 0 ? await uploadMedia(files) : [];
-      const { error } = await supabase.from('moments').insert({
-        user_id: DEFAULT_USER_ID, type, title, body: body || null, occurred_at, visibility: 'private', media_urls: mediaUrls.length > 0 ? mediaUrls : [],
-      });
-      if (error) { if (formStatus) formStatus.textContent = '保存失败：' + escapeHtml(error.message); return; }
-      if (formStatus) formStatus.textContent = '已保存';
-      form.reset(); if (fileList) fileList.innerHTML = '';
-      setTimeout(() => { closeOverlay('add-modal'); loadMoments(); }, 300);
-    });
-  }
-
+  window.addEventListener('lifeos:refresh', loadMoments);
   loadMoments();
 </script>
