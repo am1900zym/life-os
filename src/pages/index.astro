@@ -20,14 +20,17 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
       <article class="moment-card">
         <span class="moment-type">📚 阅读</span>
         <h3>《时间游戏》</h3>
+        <p class="moment-meta">今天</p>
       </article>
       <article class="moment-card">
         <span class="moment-type">🏋 健身</span>
         <h3>力量训练 60 分钟</h3>
+        <p class="moment-meta">今天</p>
       </article>
       <article class="moment-card">
         <span class="moment-type">☕ 社交</span>
         <h3>朋友聚餐</h3>
+        <p class="moment-meta">今天</p>
       </article>
     </div>
   </section>
@@ -102,16 +105,7 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
     </div>
   </div>
 
-  <!-- 瞬间详情弹窗（查看 / 编辑 / 删除 / 评论） -->
-  <div class="modal-overlay" id="detail-modal" hidden style="display:none">
-    <div class="modal-card modal-wide">
-      <div class="modal-header">
-        <h3 id="detail-title">瞬间详情</h3>
-        <button type="button" class="modal-close" onclick="var m=document.getElementById('detail-modal');m.hidden=true;m.style.display='none'">✕</button>
-      </div>
-      <div id="detail-body"></div>
-    </div>
-  </div>
+  <!-- 瞬间详情弹窗已关闭，如需恢复可保留此结构 -->
 </BaseLayout>
 
 <style>
