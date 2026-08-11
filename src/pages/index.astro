@@ -2,58 +2,43 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Life OS" active="/">
-  <!-- 顶部概览 -->
-  <div class="grid-2">
-    <div class="card">
-      <div class="section-title">今日重点</div>
-      <p style="margin:0;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:-0.2px;">推进真正重要的结果</p>
-      <p style="margin:6px 0 0;color:#64748d;font-size:14px;" id="page-date">{import.meta.env.PUBLIC_NOW_DATE || new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'})}</p>
-    </div>
-    <div class="card">
-      <div class="section-title">当前创业项目</div>
-      <p style="margin:0;font-size:14px;color:#0d253d;font-weight:500;">Problem Research</p>
-      <p style="margin:6px 0 0;color:#64748d;font-size:13px;">持续验证需求假设</p>
-      <div style="margin-top:10px;height:8px;border-radius:999px;background:#EEF2FF;overflow:hidden;">
-        <div style="width:62%;height:100%;border-radius:999px;background:#4F7CF7;"></div>
-      </div>
-      <p style="margin:6px 0 0;color:#8A93A6;font-size:12px;">进度 62%</p>
-    </div>
-  </div>
+<BaseLayout title="Life OS" active="/" pageTitle="今日轨迹">
+  <section class="card">
+    <div class="section-title">今日重点</div>
+    <p style="margin:0;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:-0.2px;">推进真正重要的结果</p>
+    <p style="margin:6px 0 0;color:#64748d;font-size:14px;">{import.meta.env.PUBLIC_NOW_DATE || new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'})}</p>
+  </section>
 
-  <!-- 中段：轨迹 + AI -->
-  <div class="grid-2">
-    <div class="card">
-      <div class="section-title">今日轨迹</div>
-      <p class="data-status" id="data-status" style="margin:0 0 10px;"></p>
-      <div class="moment-list" id="moment-list">
-        <article class="moment-card">
-          <span class="moment-type">📚 阅读</span>
-          <h3>《时间游戏》</h3>
-          <p class="moment-meta">今天</p>
-        </article>
-        <article class="moment-card">
-          <span class="moment-type">🏋 健身</span>
-          <h3>力量训练 60 分钟</h3>
-          <p class="moment-meta">今天</p>
-        </article>
-        <article class="moment-card">
-          <span class="moment-type">☕ 社交</span>
-          <h3>朋友聚餐</h3>
-          <p class="moment-meta">今天</p>
-        </article>
-      </div>
+  <section class="card">
+    <div class="section-title">今日轨迹</div>
+    <p class="data-status" id="data-status" style="margin:0 0 10px;"></p>
+    <div class="moment-list" id="moment-list">
+      <article class="moment-card">
+        <span class="moment-type">📚 阅读</span>
+        <h3>《时间游戏》</h3>
+        <p class="moment-meta">今天</p>
+      </article>
+      <article class="moment-card">
+        <span class="moment-type">🏋 健身</span>
+        <h3>力量训练 60 分钟</h3>
+        <p class="moment-meta">今天</p>
+      </article>
+      <article class="moment-card">
+        <span class="moment-type">☕ 社交</span>
+        <h3>朋友聚餐</h3>
+        <p class="moment-meta">今天</p>
+      </article>
     </div>
-    <div class="card">
-      <div class="section-title">AI 今日一句话</div>
-      <div class="ai-card large">
-        <p>“今天的你，在持续构建长期能力。”</p>
-      </div>
-    </div>
-  </div>
+  </section>
 
-  <!-- 底部：成长 -->
-  <div class="card">
+  <section class="card">
+    <div class="section-title">AI 今日一句话</div>
+    <div class="ai-card large">
+      <p>“今天的你，在持续构建长期能力。”</p>
+    </div>
+  </section>
+
+  <section class="card">
     <div class="section-title">本月成长</div>
     <div class="bar-list">
       <div class="bar-row">
@@ -69,9 +54,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="bar-track"><div class="bar-fill gold" style="width: 72%"></div></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 添加瞬间弹窗 -->
   <div class="modal-overlay" id="add-modal" hidden style="display:none">
     <div class="modal-card modal-wide">
       <div class="modal-header">

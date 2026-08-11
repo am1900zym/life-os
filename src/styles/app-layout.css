@@ -89,13 +89,23 @@
   font-weight: 500;
   text-decoration: none;
   transition: background .12s ease, color .12s ease;
+  position: relative;
 }
 .nav-link:hover { background: #F4F6FA; color: #0d253d; }
 .nav-link.active {
   background: #F5F7FF;
   color: #4F7CF7;
-  box-shadow: 0 0 0 1px rgba(79,124,247,0.18) inset;
   font-weight: 600;
+}
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: #4F7CF7;
 }
 .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
 

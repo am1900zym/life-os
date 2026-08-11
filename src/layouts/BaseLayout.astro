@@ -3,8 +3,8 @@
 // Command Center 布局：左侧栏 + 顶栏 + 主内容 + 右栏（可扩展）
 import '../styles/global.css';
 import '../styles/app-layout.css';
-interface Props { title?: string; active?: string }
-const { title = 'Life OS', active = '' } = Astro.props;
+interface Props { title?: string; active?: string; pageTitle?: string }
+const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.props;
 ---
 
 <html lang="zh-CN">
@@ -63,7 +63,7 @@ const { title = 'Life OS', active = '' } = Astro.props;
         <!-- 顶栏 -->
         <header class="topbar">
           <div class="topbar-left">
-            <h1 class="page-title" id="page-title">今日轨迹</h1>
+            <h1 class="page-title" id="page-title">{pageTitle}</h1>
             <span class="page-subtitle" id="page-date"></span>
           </div>
           <div class="topbar-right">
