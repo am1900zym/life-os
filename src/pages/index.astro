@@ -136,8 +136,7 @@ const CURRENT_AVATAR_COLOR = '#4F7CF7';
   }
 
   // ====== 列表渲染 ======
-  // 详情弹窗入口已关闭；如需恢复，取消下行注释并保留 openDetail()
-  // (window as any)._lifeosOpenDetail = (id: string) => openDetail(id);
+  // 详情弹窗入口已关闭；如需恢复请回滚到包含 openDetail() 的版本
 
   function renderMoments(moments: any[]) {
     const list = document.getElementById('moment-list');
