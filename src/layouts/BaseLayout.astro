@@ -115,10 +115,13 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
               <label>发生日期
                 <input type="date" name="occurred_at" />
               </label>
-              <label>图片 / 视频
-                <input type="file" accept="image/*,video/*" multiple />
-                <span class="file-hint">支持多选图片或视频</span>
-              </label>
+              <label class="file-input-label">
+                </label>
+              <div class="upload-btn" id="upload-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                上传图片
+              </div>
+              <input type="file" id="media-input" accept="image/*,video/*" multiple hidden />
               <div class="form-actions">
                 <button type="button" class="btn-secondary" id="qa-cancel">取消</button>
                 <button type="submit" class="btn-primary">保存</button>
@@ -180,7 +183,19 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
             return urls;
           }
 
-          qaForm?.addEventListener('submit', async (e) => {
+          const mediaInput = document.getElementById('media-input');
+const uploadBtn = document.getElementById('upload-btn');
+uploadBtn?.addEventListener('click', () => mediaInput?.click());
+mediaInput?.addEventListener('change', () => {
+  qaForm.querySelector('[name=files]')?.remove();
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.name = 'files';
+  hidden.value = Array.from(mediaInput.files).map(f => f.name).join(',');
+  qaForm.appendChild(hidden);
+});
+
+qaForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const { supabase } = await import('../lib/supabaseClient');
             if (!supabase) { qaStatus.textContent = 'Supabase 未配置'; return; }
