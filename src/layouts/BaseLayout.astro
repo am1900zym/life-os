@@ -67,11 +67,11 @@ const { title = 'Life OS', active = '', pageTitle = '今日轨迹' } = Astro.pro
             <span class="page-subtitle" id="page-date"></span>
           </div>
           <div class="topbar-right">
-            <div class="search-box">
+            <div class="search-box" style="opacity:.6;pointer-events:none;">
               <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" placeholder="全局搜索..." />
+              <input type="text" placeholder="全局搜索..." disabled />
             </div>
-            <button class="btn-primary quick-add-btn">
+            <button class="btn-primary quick-add-btn" disabled>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               快速新增
             </button>
