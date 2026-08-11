@@ -1,8 +1,8 @@
 ---
 // src/layouts/BaseLayout.astro
 import '../styles/global.css';
-interface Props { title?: string }
-const { title = 'Life OS' } = Astro.props;
+interface Props { title?: string; active?: string }
+const { title = 'Life OS', active = '' } = Astro.props;
 ---
 <html lang="zh-CN">
   <head>
@@ -17,11 +17,11 @@ const { title = 'Life OS' } = Astro.props;
     <slot />
     <footer class="site-footer">
       <nav class="nav-bar">
-        <a href="/" class="nav-item">🏠</a>
-        <a href="/timeline" class="nav-item active">🛤</a>
-        <a href="/friends" class="nav-item">👥</a>
-        <a href="/report" class="nav-item">📊</a>
-        <a href="/ai" class="nav-item">🤖</a>
+        <a href="/" class="nav-item" class:active={active === '/'}>🏠</a>
+        <a href="/timeline" class="nav-item" class:active={active === '/timeline'}>🛤</a>
+        <a href="/friends" class="nav-item" class:active={active === '/friends'}>👥</a>
+        <a href="/report" class="nav-item" class:active={active === '/report'}>📊</a>
+        <a href="/ai" class="nav-item" class:active={active === '/ai'}>🤖</a>
       </nav>
     </footer>
   </body>
