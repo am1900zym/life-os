@@ -345,7 +345,7 @@ qaForm?.addEventListener('submit', async (e) => {
               const fd = new FormData(editForm);
               const tagsRaw = String(fd.get('tags') || '');
               const tags = tagsRaw.split(/[,，]/).map((t) => t.trim()).filter(Boolean);
-              const { error } = await supabase.from('moments').update({
+              const { error, count } = await supabase.from('moments').update({
                 type: String(fd.get('type') || '💡 想法').trim(),
                 title: String(fd.get('title') || '').trim(),
                 body: String(fd.get('body') || '').trim() || null,
@@ -354,6 +354,7 @@ qaForm?.addEventListener('submit', async (e) => {
                 tags,
               }).eq('id', currentDetail.id);
               if (error) { alert('保存失败：' + error.message); return; }
+              if (count === 0) { alert('保存失败：没有匹配的记录（可能是 Supabase RLS 策略缺失，需为 moments 表添加 UPDATE 策略）。'); return; }
               window.dispatchEvent(new CustomEvent('lifeos:refresh'));
               closeDetail();
             }, { once: true });
@@ -404,12 +405,14 @@ qaForm?.addEventListener('submit', async (e) => {
           }
 
           window.deleteCurrent = async function () {
-            if (!currentDetail) return;
+            const targetId = currentDetail?.id;
+            if (!targetId) { alert('未找到该记录，请重新打开详情再删除'); return; }
             if (!confirm('确定删除这条记录吗？此操作不可撤销。')) return;
             const { supabase } = await import('../lib/supabaseClient');
             if (!supabase) { alert('Supabase 未配置'); return; }
-            const { error } = await supabase.from('moments').delete().eq('id', currentDetail.id);
+            const { error, count } = await supabase.from('moments').delete({ count: 'exact' }).eq('id', targetId);
             if (error) { alert('删除失败：' + error.message); return; }
+            if (count === 0) { alert('删除失败：没有匹配的记录。\n很可能是 Supabase RLS 策略缺失——请在 Supabase SQL Editor 执行项目中的 supabase/fix-rls-moments.sql 为 moments 表添加 DELETE 策略。'); return; }
             closeDetail();
             window.dispatchEvent(new CustomEvent('lifeos:refresh'));
           };

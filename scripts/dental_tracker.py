@@ -202,11 +202,25 @@ def fetch_existing_pmids(supabase_url, service_key):
         "apikey": service_key,
         "Authorization": f"Bearer {service_key}",
     }, timeout=30)
-    if r.status_code == 401:
-        # 表可能不存在或无权限, 返回空 (首次运行)
+    if r.status_code == 401 or r.status_code == 404:
+        # 表不存在/未授权 (首次运行), 返回空 set
         return set()
     r.raise_for_status()
     return {row.get("pmid") for row in r.json() if row.get("pmid")}
+
+
+def ensure_tables(supabase_url, service_key):
+    """自检: 如果 dental_papers 表不存在, 返回 False 提示需要先建表.
+    (Supabase REST API 无法建表, 只读/写数据; 建表须用 SQL Editor 或 Management API.)
+    返回 True=表存在/可写, False=需手动建.
+    """
+    url = f"{supabase_url}/rest/v1/dental_papers?select=1&limit=0"
+    r = requests.get(url, headers={
+        "apikey": service_key,
+        "Authorization": f"Bearer {service_key}",
+    }, timeout=30)
+    # 200 = 表存在; 404/405 = 不存在或无权 (service_role 应能 200)
+    return r.status_code == 200
 
 
 def upsert_articles(supabase_url, service_key, articles):
@@ -229,12 +243,14 @@ def main():
     parser.add_argument("--days", type=int, default=7, help="回溯天数 (默认 7)")
     parser.add_argument("--dry-run", action="store_true", help="只打印不写库")
     parser.add_argument("--journal", default=None, help="只追踪指定期刊 (默认全部)")
+    parser.add_argument("--json", dest="as_json", action="store_true", help="输出 JSON 到 stdout (配合 --out 使用)")
+    parser.add_argument("--out", default=None, help="写入 JSON 文件路径 (默认 stdout)")
     args = parser.parse_args()
 
     supabase_url = os.environ.get("SUPABASE_URL")
     service_key = os.environ.get("SUPABASE_SERVICE_KEY")
-    if not args.dry_run and (not supabase_url or not service_key):
-        print("ERROR: 需要环境变量 SUPABASE_URL 和 SUPABASE_SERVICE_KEY (dry-run 除外)")
+    if not (args.dry_run or args.as_json) and (not supabase_url or not service_key):
+        print(f"ERROR: 需要环境变量 SUPABASE_URL 和 SUPABASE_SERVICE_KEY (dry-run/--json 除外)")
         sys.exit(1)
 
     end = datetime.now()
@@ -248,6 +264,14 @@ def main():
         sys.exit(1)
 
     print(f"[{datetime.now():%H:%M:%S}] 追踪区间: {start_str} - {end_str}")
+
+    # 自检: 表是否存在 (写库前检查)
+    if not args.dry_run and not args.as_json:
+        if not ensure_tables(supabase_url, service_key):
+            print(f"⚠️  表 dental_papers 不存在! 请先在 Supabase SQL Editor 执行:")
+            print(f"   supabase/dental-schema.sql")
+            print(f"   或访问: {supabase_url} → SQL Editor → 贴入 schema → 运行")
+            sys.exit(1)
 
     # 已入库 PMID (去重)
     existing = set()
@@ -286,7 +310,17 @@ def main():
                 all_new.append(a)
             time.sleep(0.4)  # NCBI 限速: 无 API key 3 req/s
 
-    print(f"\n新论文: {len(all_new)} 篇")
+    print(f"\\n新论文: {len(all_new)} 篇")
+
+    if args.as_json:
+        out = json.dumps(all_new, ensure_ascii=False, indent=2, default=str)
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as f:
+                f.write(out)
+            print(f"✅ JSON 写入: {args.out}")
+        else:
+            print(out)
+        return
 
     if args.dry_run:
         for a in all_new[:20]:

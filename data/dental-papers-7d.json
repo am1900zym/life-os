@@ -1,0 +1,534 @@
+[
+  {
+    "pmid": "42578440",
+    "title": "Partnership with Purpose: Presidential Speech.",
+    "authors": "J E Gallagher",
+    "journal": "Journal of dental research",
+    "journal_zh": "牙科研究杂志",
+    "date": "2026-08-11",
+    "doi": "10.1177/00220345261463177",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42578440/",
+    "abstract": "",
+    "type": "研究",
+    "tags": [
+      "caries",
+      "dental public health",
+      "health services research",
+      "periodontal disease(s)/periodontitis",
+      "prevention"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42578426",
+    "title": "Fluoride-Releasing Fillers Modulate the Response of Fibroblasts to Dental Composites.",
+    "authors": "W Al-Omairi, A Altaie, D J Wood, A Werner, M J German",
+    "journal": "Journal of dental research",
+    "journal_zh": "牙科研究杂志",
+    "date": "2026-08-11",
+    "doi": "10.1177/00220345261460387",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42578426/",
+    "abstract": "To reduce secondary caries-related restoration failure, ion-releasing fillers are being incorporated into resin-based composites (RBCs). However, a comprehensive investigation into the cytocompatibility of these materials, particularly concerning transcriptomic responses to monomer and ion release, has yet to be conducted. This study investigated model RBCs (80:20 UDMA:HEMA matrix, 62 vol% filler), including a fluorapatite (FA) containing composite (FA+, 9 vol%), to assess the effect of fluoride ion-releasing filler content on degree of conversion (DC%) and monomer release. Apparent water sorption and fluoride release were evaluated after 28 d of storage in artificial saliva (pH 7 and pH 4) and distilled deionized water. Cytocompatibility was assessed using an XTT assay on human gingival fibroblasts (HGFs), and the expression of genes encoding DNA-repair and stress-response markers following composite exposure was analyzed by quantitative reverse transcription polymerase chain reaction (RT-qPCR). RNA sequencing (RNA-seq) identified differentially expressed genes in response to FA+ and fluorapatite-free RBCs (FA-). Unfilled specimens exhibited lower DC% and higher monomer release compared to the RBCs. FA+ specimens had the highest apparent water sorption, particularly after pH 7 artificial saliva storage. Fluoride release was most significant in acidic environments. UDMA reduced HGF viability compared to HEMA at all concentrations up to 5 mM, but the polymerized RBCs caused no reduction compared to control HGFs. However, expression analysis by RT-qPCR of DNA-repair and stress-response markers following composite exposure revealed that UDMA reduced repair gene expression, whereas HEMA stimulated it. RNA-seq analysis revealed significant changes in gene expression profiles upon composite exposure, with enriched pathways related to ferroptosis and protein digestion. These findings highlight, for the first time, the potential for significant cellular responses even with ",
+    "type": "研究",
+    "tags": [
+      "apatites",
+      "bioactive materials",
+      "composite materials",
+      "gene expression",
+      "genetic"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42572434",
+    "title": "Corrigendum to Porphyromonas gingivalis-Induced NETs Mediate Neuroinflammation via TLR4 Activation.",
+    "authors": "",
+    "journal": "Journal of dental research",
+    "journal_zh": "牙科研究杂志",
+    "date": "2026-08-09",
+    "doi": "10.1177/00220345261472458",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42572434/",
+    "abstract": "",
+    "type": "政策",
+    "tags": [],
+    "is_new": true
+  },
+  {
+    "pmid": "42571869",
+    "title": "Shotgun Metagenomic Analysis Reveals Taxonomic and Functional Transitions in the Salivary Microbiome During Periodontal Disease Progression.",
+    "authors": "Muhammed Manzoor, Jaakko Leskelä, Eija Könönen, Leo Lahti, Jukka Putaala, Pirkko J Pussinen",
+    "journal": "Journal of clinical periodontology",
+    "journal_zh": "临床牙周病学杂志",
+    "date": "2026-08-09",
+    "doi": "10.1111/jcpe.70184",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42571869/",
+    "abstract": "AIM: To characterise multi-kingdom salivary microbiome profiles across clinically defined periodontal states and identify stage-specific taxonomic and functional alterations using shotgun metagenomic sequencing. MATERIALS AND METHODS: In this cross-sectional study, 204 adults (mean age 40.3 ± 7.6 years) from the SECRETO study (NCT01934725) underwent clinical and radiographic oral examinations and were classified into six periodontal groups: periodontal health, localised gingivitis, generalised gingivitis, gingivitis with pockets, mild periodontitis (Stages I-II) and severe periodontitis (Stages III-IV). Saliva samples were analysed using shotgun metagenomic sequencing to evaluate microbial diversity, taxonomic composition and functional pathways. RESULTS: Beta diversity differed between periodontal health and the different disease states (Bray-Curtis: p = 0.049; Jaccard: p = 0.043). Gingivitis with pockets and severe periodontitis showed a significant enrichment of disease-associated species Porphyromonas gingivalis, Tannerella forsythia, Treponema denticola, Porphyromonas endodontalis, Fusobacterium nucleatum and Parvimonas micra. Among non-bacterial taxa, Candida, Moineauvirus, Pyricularia and Roseolovirus were the predominant genera. A composite metagenomic classifier showed high discriminative performance for gingivitis with pockets (AUC = 0.90; 95% CI: 0.770-1.000) and severe periodontitis (AUC = 0.865; 95% CI: 0.762-0.968). CONCLUSION: Salivary multi-kingdom microbiome transitions closely reflect the progression of periodontal disease and provide promising biomarkers for identifying at-risk individuals.",
+    "type": "研究",
+    "tags": [
+      "gingivitis",
+      "microbial dysbiosis",
+      "multi‐kingdom interactions",
+      "oral biomarkers",
+      "oral microbiome"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42563453",
+    "title": "Impact of Keratinized Mucosa Width and Mucosal Thickness on Implant Outcomes and Brushing Discomfort: A 25-Year Cohort Study.",
+    "authors": "Emilio Couso-Queiruga, Clemens Raabe, Andrea Roccuzzo, Giovanni E Salvi, Manrique Fonseca, Vivianne Chappuis",
+    "journal": "Journal of clinical periodontology",
+    "journal_zh": "临床牙周病学杂志",
+    "date": "2026-08-06",
+    "doi": "10.1111/jcpe.70187",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42563453/",
+    "abstract": "OBJECTIVE: To assess the impact of keratinized mucosa width (KMW) and mucosal thickness (MT) on peri-implant conditions over 25 years in patients with adequate oral hygiene enrolled in regular supportive peri-implant care. METHODS: Partially edentulous patients rehabilitated with tissue-level implants were clinically and radiographically evaluated by calibrated examiners. Patient-reported brushing discomfort was recorded, and associations with variables of interest were analysed. RESULTS: A total of 149 patients, 235 implants, with a mean follow-up of 25.4 ± 3 years, were included. Peri-implantitis prevalence was 11.1%, 0% and 7.1% in the 0-mm, < 2-mm and ≥ 2-mm KMW groups, respectively (p = 0.98). Sites with 0 mm KMW showed significantly greater crestal bone loss (CBL) than < 2 mm (-0.28 mm) and ≥ 2 mm (-0.40 mm) (p = 0.01). Absence of KMW was associated with an increased risk of peri-implant soft-tissue dehiscence (PSTD) and implant platform visibility (p ≤ 0.01). No significant differences were observed for probing depth (PD), bleeding on probing (BOP), plaque index or peri-implant diseases (p > 0.05). MT was not associated with CBL, PD, BOP, suppuration on probing (SOP) or peri-implant diseases (p > 0.05). Thin MT (< 2 mm) was linked to increased PSTD (p = 0.005), greater implant platform visibility (p = 0.04) and lower plaque index (p = 0.01). Brushing discomfort was reported in 11.4% of sites with 0 mm KMW, compared with 3.4% and 2.4% in the < 2 mm and ≥ 2 mm groups, respectively, with no significant associations across KMW or MT groups (p > 0.05). CONCLUSIONS: KMW was associated with long-term peri-implant tissue stability, whereas thin MT was primarily associated with an increased risk of PSTD. Neither KMW nor MT was significantly associated with long-term brushing discomfort.",
+    "type": "研究",
+    "tags": [
+      "clinical trial",
+      "dental implants",
+      "peri‐implantitis",
+      "phenotype",
+      "titanium"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42554427",
+    "title": "Wound Healing Patterns of PRF and PRGF Versus a Collagen-Based Substitute and Spontaneous Healing-A Randomised Controlled Clinical Trial Assessing Wound Closure of an Experimental, Standardised Palatal Defect.",
+    "authors": "Stefan P Bienz, Anne C Fischer, Leonardo Mancini, Franz J Strauss, Raphael M Ferrari, Sonja Hitz",
+    "journal": "Journal of clinical periodontology",
+    "journal_zh": "临床牙周病学杂志",
+    "date": "2026-08-05",
+    "doi": "10.1111/jcpe.70164",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42554427/",
+    "abstract": "AIMS: To evaluate wound-healing progression among platelet-rich fibrin (PRF), plasma rich in growth factors (PRGF), a collagen-based wound dressing (CS = collagen substitute) and spontaneous healing (control), assessed by percentage of remaining open wound area and patient-reported pain. MATERIALS AND METHODS: Twenty participants each received four standardised palatal wounds (6 mm × 3 mm) and were randomly assigned to PRF, PRGF, a collagen substitute or spontaneous healing as control. All dressings were secured with criss-cross sutures. Standardised clinical photographs and pain assessments were obtained at baseline and on postoperative days 2,5,7,9, 12 and 14. Parametric and nonparametric models for longitudinal data were used to compare outcomes, accounting for within-subject correlation of repeated measurements. RESULTS: Open wound area decreased across all groups throughout the 14-day period. Some defects enlarged transiently at Day 2, and the greatest differences between the groups were observed on Day 7 (35.7%-47.0% of wound remaining). Pain scores decreased significantly over time in all groups, with no statistically significant differences between treatments (p > 0.05). Anterior defects tended to be perceived as more painful than posterior defects. CONCLUSIONS: Spontaneous healing resulted in slightly faster reduction of remaining open wound area than PRF, PRGF or the collagen substitute, with comparable postoperative pain levels. In standardised defects in healthy individuals, PRF, PRGF and collagen substitutes demonstrate minimal additional benefit for soft-tissue healing. Further studies are warranted to determine whether benefits emerge in larger wounds or in patients with compromised healing.",
+    "type": "研究",
+    "tags": [
+      "Autologous platelet concentrates",
+      "patient‐reported outcome (PRO)",
+      "patient‐reported outcome measure (PROM)",
+      "plasma rich in growth factors (PRGF)",
+      "platelet‐rich fibrin (PRF)"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42570685",
+    "title": "Treatment Outcomes Following Root Perforation Repair in Permanent Teeth: A Systematic Review and Meta-Analysis.",
+    "authors": "Yee Ang, Lay Ann Teh, Jonathan Jun Xian Yuen, Galvin Sim Siang Lin",
+    "journal": "Journal of endodontics",
+    "journal_zh": "牙髓病学杂志",
+    "date": "2026-08-08",
+    "doi": "10.1016/j.joen.2026.08.003",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42570685/",
+    "abstract": "INTRODUCTION: This systematic review and meta-analysis aimed to evaluate the treatment outcomes of root perforation repair in permanent teeth and identify relevant prognostic factors. METHODS: A comprehensive search of PubMed, Embase, Scopus, Cochrane Library, Web of Science, and Google Scholar identified studies published between January 2000 and February 2026. Studies reporting treatment outcomes of repaired root perforations in permanent teeth with ≥12 months of follow-up were included. Two investigators independently performed study selection, data extraction, and risk of bias assessment using the Joanna Briggs Institute Critical Appraisal Checklist. Level and certainty of evidence were assessed using the Oxford Centre for Evidence-Based Medicine Levels of Evidence and the Grading of Recommendations Assessment, Development and Evaluation approach. Random-effects meta-analyses estimated the proportion of favorable outcomes and associations with preoperative prognostic factors. RESULTS: Nine observational studies evaluating non-surgical root perforation repair were included, of which seven contributed to the meta-analysis. The pooled favorable outcome was 89.7% (95% CI: 83.0%-94.9%). Smaller perforations (≤3 mm) were associated with higher odds of a favorable outcome than larger defects (OR=2.69; 95% CI: 1.29-5.59; p=0.008), while maxillary teeth demonstrated higher odds than mandibular teeth (OR=2.31; 95% CI: 1.12-4.75; p=0.023). Tooth type, perforation location, gender, preoperative radiolucency, and preoperative signs and symptoms were not significantly associated with favorable outcomes. CONCLUSIONS: Non-surgical root perforation repair appears to be associated with generally favorable treatment outcomes, particularly in smaller perforations (≤3 mm) and maxillary teeth. These findings should be interpreted cautiously given the substantial clinical heterogeneity and low-certainty evidence.",
+    "type": "综述",
+    "tags": [
+      "Clinical outcomes",
+      "endodontics",
+      "healing",
+      "prognosis",
+      "root perforation repair"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42567406",
+    "title": "Management of Separated Needle during Intraosseous anaesthesia of Mandibular Molar : A Case Report.",
+    "authors": "Anusha Doddamani, Fiyaz Ghan A S, Sidhartha Sharma, Vijay Kumar, Amrita Chawla, Ajay Logani",
+    "journal": "Journal of endodontics",
+    "journal_zh": "牙髓病学杂志",
+    "date": "2026-08-07",
+    "doi": "10.1016/j.joen.2026.08.001",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42567406/",
+    "abstract": "Intraosseous (IO) anaesthesia has emerged as an effective primary and supplemental technique for achieving profound pulpal anaesthesia during root canal treatment, particularly in mandibular molars. However, needle fracture during IO administration is an exceedingly rare complication with no established management protocol. A 29-year-old female presented with symptomatic irreversible pulpitis and symptomatic apical periodontitis in tooth #30 requiring non-surgical root canal treatment. A first-year postgraduate endodontic student administered intraosseous anaesthesia using the QuickSleeper® system (Dental HiTec, Cholet, France) with a 30-gauge, 16 mm Effitec needle and 4% Articaine with 1:100,000 Adrenaline. During needle retraction following an unsuccessful injection attempt, forceful manipulation resulted in separation and retention of the needle within the interdental bone between teeth #29 and #30. Needle position was confirmed with intraoral periapical radiograph and patient was informed. After administration of inferior alveolar nerve block, an envelope flap was elevated. Minimal osteotomy was performed to expose the needle head, and the intact separated needle was retrieved using the BTR pen (Broken Tool Remover, Cerkamed) via a loop/lasso technique. The surgical site was closed with interrupted 5-0 silk sutures. Root canal treatment for tooth #30 was completed in the two visits. A minimally invasive retrieval approach using the loop/lasso technique resulted in successful outcome without any postoperative complications.",
+    "type": "研究",
+    "tags": [
+      "broken needle retrieval",
+      "endodontic complication",
+      "intraosseous injection",
+      "local anaesthesia",
+      "needle separation"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42573018",
+    "title": "Pharmacological activation of GPR120 ameliorates diabetic periodontitis in mouse models through suppression of NET-associated responses.",
+    "authors": "Chao Jiang, Yilin Shi, Biwen Yao, Kedie Zhang, Yifan Yin, Zhiyi Zhu",
+    "journal": "Journal of periodontology",
+    "journal_zh": "牙周病学杂志",
+    "date": "2026-08-10",
+    "doi": "10.1002/jper.70191",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42573018/",
+    "abstract": "BACKGROUND: Epidemiological studies show periodontitis and type 2 diabetes share a bidirectional aggravating relationship, yet the molecular mechanisms linking systemic metabolic dysregulation to local periodontal destruction remain unclear, and effective therapies for this comorbidity are lacking. Certain G protein-coupled receptors (GPCRs) enhance insulin secretion and attenuate inflammation. We hypothesized that GPCR regulators may contribute to crosstalk between systemic metabolic abnormalities and periodontal immunopathology. METHODS: Using db/db mice with ligature-induced periodontitis, we performed multi-tissue transcriptomics of gingiva, colon, and small intestine combined with weighted gene co-expression network analysis (WGCNA) to identify GPCR-related candidates. The selective G protein-coupled receptor 120 (GPR120) agonist TUG-891 was administered to evaluate therapeutic effects on metabolic parameters and alveolar bone loss. In vivo and in vitro experiments, including gingival tissue immunofluorescence, PicoGreen dsDNA quantification, and western blotting were used to assess NET- and NLRP3-related responses. RESULTS: WGCNA identified GPR120 as a shared GPCR-related candidate across three tissues in diabetic periodontitis, with upregulation confirmed in gingiva. TUG-891 partially alleviated hyperglycemia, dyslipidemia, and alveolar bone loss. GPR120 activation reduced NET-associated signals in vivo and in vitro, downregulated calcium/potassium signaling (upstream NLRP3 activators), and decreased LPS/glucose-induced upregulation of NLRP3 and ASC in neutrophils. The NLRP3 inhibitor MCC950 phenocopied, while the NLRP3 activator nigericin reversed, the NET-associated changes of TUG-891. CONCLUSIONS: This study identifies GPR120 as a factor associated with metabolic stress and periodontal destruction in diabetic periodontitis, and suggests that the signaling involving GPR120, NLRP3-related responses, and NET-associated inflammation may hold therapeutic potent",
+    "type": "研究",
+    "tags": [
+      "GPR120",
+      "NLRP3 inflammasome",
+      "diabetes mellitus",
+      "diabetic periodontitis",
+      "neutrophil extracellular traps"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42563383",
+    "title": "Associations between periodontal inflammation and OHIP-14 scores: A cross-sectional study.",
+    "authors": "Luigi Nibali, Yanwen Zheng, Koula Asimakopoulou, Jeremy Redman, Alastair Lomax, Jing Kang",
+    "journal": "Journal of periodontology",
+    "journal_zh": "牙周病学杂志",
+    "date": "2026-08-06",
+    "doi": "10.1002/jper.70165",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42563383/",
+    "abstract": "BACKGROUND: More evidence is needed to assess the association between periodontitis and Oral Health-Related Quality of Life (OHRQoL) quantitatively. We hypothesized that periodontal inflammation is correlated with a worsening in quality of life and aimed to test this in this study. METHODS: A total of 1307 participants in King's Oral Biobank answered the Oral Health Impact Profile-14 (OHIP-14) questionnaire (measurement of OHRQoL) during a dental visit. The associations between periodontal inflammation, measured as periodontal inflamed surface area (PISA) and bleeding on probing (BOP), periodontal conditions (diagnosis/staging), and OHIP-14 scores across all seven domains (functional limitation, physical pain, psychological discomfort, physical disability, psychological disability, social disability, and handicap) were investigated. RESULTS: The PISA exhibited weak linear correlations with the overall OHIP-14 score (Pearson correlation coefficient r = 0.06, p = 0.037), particularly with the \"physical pain\" subdomain (r = 0.12, p < 0.001). BOP was associated with the OHIP overall score (r = 0.08, p = 0.022). In addition, stage IV periodontitis was associated with higher OHIP-14 total scores and with multiple subdomains, including physical pain, physical disability and psychological discomfort. CONCLUSIONS: Inflammation indices such as BOP and PISA are associated with worse OHRQoL. In addition, the complex clinical features of stage IV periodontitis may worsen OHRQoL, especially in relation to physical pain, physical disability and psychological discomfort. PLAIN LANGUAGE SUMMARY: This study shows that having more advanced gum disease (stage IV) and gum inflammation may worsen quality of life.",
+    "type": "研究",
+    "tags": [
+      "inflammation",
+      "periodontitis",
+      "quality of life"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42563231",
+    "title": "Histologic evaluation of alveolar ridge preservation using aseptically processed large-particle demineralized freeze-dried bone allograft: A case series.",
+    "authors": "Nikolaos Soldatos, Alakananda Melethil Sreeramadas, Hongseok An, Cristiane Miranda Franca",
+    "journal": "Journal of periodontology",
+    "journal_zh": "牙周病学杂志",
+    "date": "2026-08-06",
+    "doi": "10.1002/jper.70181",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42563231/",
+    "abstract": "BACKGROUND: Demineralized freeze-dried bone allograft (DFDBA) is widely utilized in alveolar ridge preservation (ARP). However, limited human histologic evidence exists characterizing early healing associated with aseptically processed large-particle DFDBA. Both graft processing methodology and particle size may influence regenerative healing dynamics, graft integration, and tissue maturation. METHODS: Three systemically healthy patients underwent ARP following tooth extraction using aseptically processed large-particle DFDBA (850-2000 µm) and dense polytetrafluoroethylene (d-PTFE) membrane coverage. Core biopsies were harvested at implant placement after 13-17 weeks of healing. Histologic and histomorphometric analyses were performed to evaluate graft integration, newly formed bone, residual graft particles, connective tissue, cellular repopulation, and tissue mineralization patterns. RESULTS: All specimens demonstrated active bone formation, graft integration, and cellular repopulation of residual DFDBA particles. Newly formed bone was observed in close apposition to graft particles, consistent with ongoing remodeling and incorporation at the graft-host interface. Mean vital bone formation was approximately 34%, while mean mineralization approached 90%. Residual graft particles remained present at all sites and demonstrated varying degrees of integration into newly formed tissue. Cone beam computed tomography (CBCT) evaluation demonstrated regions of reduced radiopacity suggestive of incomplete mineralization; however, histologic and histomorphometric analyses demonstrated highly mineralized regenerated tissue, highlighting differences between radiographic appearance and tissue maturity during early healing. CONCLUSION: Within the limitations of this exploratory case series, aseptically processed large-particle DFDBA demonstrated early healing characterized by graft integration, cellular repopulation of graft particles, vital bone formation, mineralized tissue dev",
+    "type": "研究",
+    "tags": [
+      "DFDBA",
+      "alveolar ridge preservation",
+      "bone graft processing",
+      "bone regeneration",
+      "dental implants"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42576317",
+    "title": "Toothbrush Design and Developmental Characteristics Influencing Plaque Removal in 7-Year-Old Children: A Randomized Crossover Trial.",
+    "authors": "Ece Baysan Maşızade, Ezgi Baltacı, Nazlı Durmuş, Selçuk Korkmaz, Neslihan Özveren",
+    "journal": "International journal of paediatric dentistry",
+    "journal_zh": "国际儿童牙科杂志",
+    "date": "2026-08-10",
+    "doi": "10.1111/ipd.70137",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42576317/",
+    "abstract": "BACKGROUND: Evidence comparing toothbrush designs and the influence of children's developmental abilities on brushing performance is limited. AIM: To compare the plaque-removal efficacy of three toothbrush types in 7-year-old children and to assess whether developmental characteristics affect brushing performance. DESIGN: This single-blind, randomized, three-period crossover clinical trial included 60 typically developing 7-year-old children. Participants used a conventional manual, triple-headed manual, and rechargeable powered toothbrush in randomized order with washout periods. Plaque was assessed using the modified Quigley-Hein Plaque Index and the Approximal Plaque Index. Developmental characteristics were evaluated using the parent-reported Five-to-Fifteen questionnaire. RESULTS: Mean plaque reduction differed significantly among toothbrush types. Powered (1.833 ± 0.705) and triple-headed manual toothbrushes (1.802 ± 0.678) achieved greater plaque reduction than the conventional manual toothbrush (1.310 ± 0.563; both p < 0.001), with no difference between powered and triple-headed brushes (p = 0.963). Approximal plaque removal was highest with the powered toothbrush, reaching 75% complete removal on posterior vestibular surfaces (p ≤ 0.016). Children with gross motor difficulties showed lower reduction with the powered toothbrush than children without such difficulties (p = 0.048). CONCLUSION: Powered and triple-headed toothbrushes are more effective than conventional manual brushes in 7-year-old children, with equivalent efficacy. Exploratory analyses suggest gross motor skills may influence powered toothbrush performance, warranting confirmation in adequately powered studies. TRIAL REGISTRATION: The study was registered retrospectively with the Australian New Zealand Clinical Trials Registry (ANZCTR; ACTRN12626000023358).",
+    "type": "研究",
+    "tags": [
+      "child development",
+      "dental plaque",
+      "motor skills",
+      "pediatric dentistry",
+      "powered toothbrush"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42572180",
+    "title": "Oral Rhabdomyomatous Hamartoma in a Paediatric Patient: Case Report a Rare Lesion.",
+    "authors": "Érika Machado do Carmo Albuquerque, Letícia Albuquerque Rodrigues, Gislayne Nunes de Siqueira, Marcelo Bonifácio da Silva Sampieri, Filipe Nobre Chaves, Denise Hélen Imaculada Pereira de Oliveira",
+    "journal": "International journal of paediatric dentistry",
+    "journal_zh": "国际儿童牙科杂志",
+    "date": "2026-08-09",
+    "doi": "10.1111/ipd.70138",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42572180/",
+    "abstract": "BACKGROUND: Rhabdomyomatous hamartoma is a rare congenital lesion, usually described on the face and neck and infrequently found in the oral cavity. Because its clinical presentation is non-specific, histopathological examination plays a fundamental role in establishing the final diagnosis and determining appropriate therapeutic management. CASE REPORT: An 8-year-old male patient presented with a submucosal nodule on the left lateral border of the tongue. The initial diagnostic hypothesis was dermoid cyst; however, histopathological examination revealed thick, interlacing bundles of skeletal striated muscle, compatible with rhabdomyomatous hamartoma. CONCLUSION: Although rare, rhabdomyomatous hamartoma should be considered in the differential diagnosis of oral nodules in children. Histopathological confirmation is essential for accurate diagnosis and as a guide to treatment, helping to avoid unnecessary interventions and ensuring proper management of the lesion.",
+    "type": "研究",
+    "tags": [
+      "case report",
+      "differential diagnosis",
+      "hamartoma",
+      "oral cavity",
+      "paediatric dentistry"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42568134",
+    "title": "Dietary Advice in Dental Practice for Young Adolescents to Prevent Dental Caries: A Scoping Review.",
+    "authors": "Kodikara Arachchige Mihiri Madhuka Gunasinghe, Renya Nambi Subramaniyan, Wendy Cheung, Paula Moynihan",
+    "journal": "International journal of paediatric dentistry",
+    "journal_zh": "国际儿童牙科杂志",
+    "date": "2026-08-07",
+    "doi": "10.1111/ipd.70133",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42568134/",
+    "abstract": "INTRODUCTION: A scoping review of dietary advice for caries prevention in adolescents in high income English-speaking countries was conducted. OBJECTIVE: To identify and appraise dietary advice for dental settings in government or private sector. METHOD: Dentistry and Oral Sciences database was searched from 2015 to September 2023. Papers published between 2015 and 2021 were identified from an existing review of nutrition practices not reporting dietary advice. A MEDLINE, CINAHL, Embase search (2021-September 2023) was also conducted. An advanced Google searches of relevant professional and dental commercial websites was conducted. RESULTS: Ten of 1257 identified papers were included, containing 17 topics of dietary advice: most common was to drink water (5/10), and keep sugars to mealtimes (4/10). Twenty-nine out of 63 national professional organisation yielded 18 topics of advice. Other websites (88 of 90) presented 14 topics of advice. Most common was 'drink water' (28/29 professional, 50/88 other websites) and 'drink milk' (18/29 professional, 28/88 other websites). Information on sugars thresholds ranged from 6 to 18.75 teaspoons/day. Definitions of 'low sugar' ranged from 5 to 15 g/100 g. CONCLUSION: In HIC English-speaking countries, the most common dietary advice for caries prevention in adolescents promotes water and milk and discourages sugars in-between meals. Confusion exists on sugars thresholds and what constitutes 'low sugar'.",
+    "type": "研究",
+    "tags": [
+      "child nutritional sciences",
+      "dentistry",
+      "diet, food and nutrition",
+      "oral health",
+      "sugar sweetened beverages"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557691",
+    "title": "Management of Molar Incisor Hypomineralization Under the Brazilian Unified Health System.",
+    "authors": "Thais Aguiar Gomes, Roberta Costa Jorge, Vera Mendes Soviero",
+    "journal": "International journal of paediatric dentistry",
+    "journal_zh": "国际儿童牙科杂志",
+    "date": "2026-08-05",
+    "doi": "10.1111/ipd.70134",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557691/",
+    "abstract": "BACKGROUND: Molar Incisor Hypomineralization (MIH) is challenging for Pediatric Dentists. AIM: To assess the perception and experience of dentists from the Brazilian Unified Health System (UHS) regarding clinical management of MIH. DESIGN: This cross-sectional study was based on a questionnaire including sociodemographic data, perception and treatment decision, and continuing education. The questionnaire scores and independent variables were tested using Student's t-test, ANOVA, and Poisson regression. RESULTS: The sample comprised 304 dentists. Among available restorative options in the UHS setting, glass ionomer cement was the first choice for severe MIH (65.1% for case 1; 48.4% for case 2). When asked about their first choice when other options were available, indirect restorations (38.9%) and composite (37.2%) were the most preferred. Only 8.9% had used the Hall Technique, but 52% would use it if available. The scale of perception of MIH as a clinical problem resulted in 22.7 (SD = 5.12), being higher among pediatric dentists (PR: 1.23; 95% CI: 1.12-1.33; p < 0.001) and dentists working in the Mountain region of the state (PR: 1.09; 95% CI: 1.001-1.179; p < 0.001). CONCLUSION: UHS dentists frequently treat patients with MIH, acknowledge its clinical implications, and recognize it as a challenge within the UHS.",
+    "type": "研究",
+    "tags": [
+      "dentistry",
+      "molar hypomineralization",
+      "national health strategies",
+      "primary health care",
+      "unified health system"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557700",
+    "title": "Structural Determinants and the Limits of the Clinical Model in Periodontal Disease.",
+    "authors": "Fábio R M Leite, Gustavo G Nascimento, Marco A Peres",
+    "journal": "Community dentistry and oral epidemiology",
+    "journal_zh": "社区口腔与流行病学",
+    "date": "2026-08-05",
+    "doi": "10.1111/cdoe.70107",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557700/",
+    "abstract": "BACKGROUND: Periodontitis remains one of the most prevalent chronic diseases worldwide and is strongly socially patterned. However, contemporary disease classifications and guideline-based management largely emphasise individualised, clinically intensive, long-term maintenance approaches. Whether these models are feasible, equitable, or sustainable when applied at the population level has received little attention. METHODS: We synthesised evidence from global and national epidemiological studies, health systems research, clinical practice guidelines, and health policy analyses to examine the implications of current periodontitis classifications and care models for service demand, workforce capacity, equity, and universal health coverage. We developed a conceptual framework linking disease definitions, recommended care intensity, and health system constraints. RESULTS: Current periodontitis classifications and maintenance-oriented care recommendations generate levels of service demand that substantially exceed the capacity of most oral health systems. This creates a feasibility paradox whereby increasingly comprehensive disease definitions and intensive maintenance schedules lead to implicit rationing of care and socially patterned access, disproportionately disadvantaging populations already at highest risk. The prevailing clinical paradigm also places limited emphasis on structural determinants of disease, population prevention, and value-based allocation of resources. CONCLUSIONS: A population-oriented reorientation of periodontal care is needed. We propose a framework that prioritises documented disease progression, risk of harm, and person-centred outcomes; aligns treatment intensity with expected benefit through risk-based and value-oriented approaches; and explicitly incorporates health system capacity together with the structural and commercial determinants of health. Moving beyond maintenance-for-all models toward feasible, equitable, and system-aware strate",
+    "type": "研究",
+    "tags": [
+      "Oral health policy",
+      "noncommunicable diseases",
+      "periodontal diseases",
+      "social determinants of health",
+      "universal health coverage"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557697",
+    "title": "Financial Burden in Dental Care: Global Determinants, Policy Interventions and Access Inequities-A Scoping Review.",
+    "authors": "Karthik Madhavan, Sheryl Ann Sajan",
+    "journal": "Community dentistry and oral epidemiology",
+    "journal_zh": "社区口腔与流行病学",
+    "date": "2026-08-05",
+    "doi": "10.1111/cdoe.70104",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557697/",
+    "abstract": "OBJECTIVE: Access to dental care is often limited by financial, structural and social factors, contributing to persistent oral health inequalities globally. This scoping review systematically maps and synthesizes how financial pressures influence access, service utilization and oral health outcomes, particularly among underserved and vulnerable populations. METHODS: Following PRISMA-ScR guidelines, 73 peer-reviewed studies published between 2004 and 2024 were included. The included studies spanned high-income countries (the USA, Canada, Japan, South Korea and Australia) and low- and middle-income countries (Iran, Tanzania, Uganda, Lesotho and Pakistan). Key outcomes were out-of-pocket expenditures, catastrophic health expenditure, delayed or foregone care, unmet needs, insurance gaps and utilization patterns. RESULTS: Study populations included adults, children, older adults and vulnerable groups such as racial and ethnic minorities and individuals with special needs. Between 17% and 63% of participants reported delaying or foregoing dental care due to cost, reflecting variation across populations and study contexts. Structural barriers, such as transportation limitations, provider shortages and clinic accessibility, further restrict care in low-resource areas. Social and cultural factors, such as discrimination, language barriers and mistrust, also reduced care-seeking among marginalized groups. These findings indicate the need for policies that address both financial and non-financial barriers to dental care. CONCLUSIONS: Reducing financial barriers requires more than expanding coverage alone. Policies should aim to provide comprehensive benefits, affordable essential services, adequate provider availability and strategies that address structural and social barriers to promote equitable oral health outcomes.",
+    "type": "综述",
+    "tags": [
+      "access to health care",
+      "dental health services",
+      "financial barriers",
+      "health disparities",
+      "health expenditures"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557689",
+    "title": "Defining Disability in Oral Health Policy and Practice in the UK.",
+    "authors": "K Rijhwani, J E Gallagher, S Scambler",
+    "journal": "Community dentistry and oral epidemiology",
+    "journal_zh": "社区口腔与流行病学",
+    "date": "2026-08-05",
+    "doi": "10.1111/cdoe.70106",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557689/",
+    "abstract": "OBJECTIVES: In the United Kingdom (UK), disabled people face barriers accessing dental care, leading to poor oral health. To understand these barriers, the present study examined how disability is defined and conceptualised in UK oral health policy documents, and explored the implications of these framings for the provision of dental care for disabled people. METHODS: A qualitative documentary analysis was conducted using a seven-phase framework. Oral health policy documents published between 2000 and 2023 were identified through targeted website searches, supplementary web searches and consultation with an expert panel. Twenty-six national and international documents were included. Data were extracted using a structured matrix and analysed using a directed approach informed by the social model of disability. Coding was organised into three themes: disability terminology, underlying models of disability and vision for oral healthcare. RESULTS: Of the 26 documents analysed, 15 provided explicit definitions of disability, predominantly within Special Care Dentistry (SCD) guidance, while general oral health documents rarely defined the term. Most general dental policies adopted a medical model, focusing on individual impairments, whereas SCD and international documents were more likely to incorporate social or biopsychosocial approaches. Consideration of barriers to care, infrastructure requirements and workforce competencies was inconsistent and largely absent from general dentistry documents. A clear, system-wide vision for the provision of inclusive oral healthcare for disabled people was evident in only a small number of documents. CONCLUSIONS: UK oral health policy documents demonstrate inconsistent and often limited conceptualisations of disability, with a predominance of medical model approaches in general dentistry. The lack of clear definitions and absence of barrier-focused frameworks may contribute to ongoing inequalities in access to and outcomes of dental ",
+    "type": "研究",
+    "tags": [
+      "International Classification of Functioning, Disability and Health",
+      "dental care for disabled people",
+      "health policy",
+      "health services for disabled persons",
+      "policy analysis"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557656",
+    "title": "Financing, Coverage and the Structural Gaps in Universal Oral Health Provision for Older Adults: A Cross-Country Review.",
+    "authors": "Manu Raj Mathur, Shehnaz Khan, Viswa Chaitanya Chandu, Noha Gomaa, Ankur Singh, Georgios Tsakos",
+    "journal": "Community dentistry and oral epidemiology",
+    "journal_zh": "社区口腔与流行病学",
+    "date": "2026-08-05",
+    "doi": "10.1111/cdoe.70103",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557656/",
+    "abstract": "OBJECTIVES: To evaluate health system readiness for UHC for oral health in ageing populations, using a cross-country analysis of eight countries (Japan, India, Colombia, Rwanda, the UK, Nigeria, Australia, Canada). The analysis encompasses health system organisation, financing and service delivery; dental workforce volume and distribution; oral health policies and provisions for older adults; and age-based differences in oral disease burden. METHODS: A narrative review was conducted across eight countries, purposively selected to represent diverse health system financing and governance arrangements using three established health system frameworks, by Böhm et al., Mackintosh et al. and Karan et al. Data were sourced from the WHO Global Oral Health Status Report and supplementary country-specific sources, and findings were organised thematically across four domains. Age-based differences in oral disease burden were quantified using disability-adjusted life years (DALYs) rates per 100 000 population, comparing adults aged ≥ 65 years with those aged < 65 years over the period 2001-2021, with both absolute and relative differences calculated. RESULTS: Considerable variation in readiness towards achieving UHC for oral health in ageing populations was observed. High-income countries nominally included essential dental services under UHC but often with shallow coverage, significant co-payments and limited rehabilitative services, leading to substantial out-of-pocket spending (notably Australia and Canada). Lower-income countries provided minimal public financing for oral health, leaving most dental care to private out of pocket expenditure (as observed in India and Nigeria). Dental workforce shortages and maldistribution were pronounced in low-resource settings (Rwanda and Nigeria recorded dentist-to-population ratios of approximately 1:57000 and 1:35000 respectively). Few countries had specific policies or programmes targeting oral healthcare for older adults (Japan and th",
+    "type": "研究",
+    "tags": [
+      "aged",
+      "dental care",
+      "global health",
+      "health equity",
+      "health financing systems"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42567828",
+    "title": "Salivary Flow Rate and Masticatory Performance in Relation to Functional Dependency in Older Adults: Potential Modification by Depressive Symptoms.",
+    "authors": "Kaung Myat Thwin, Yoko Hasegawa, Wa Than Lin, Kaname Nohno, Hiroshi Ogawa",
+    "journal": "Journal of oral rehabilitation",
+    "journal_zh": "口腔康复杂志",
+    "date": "2026-08-07",
+    "doi": "10.1111/joor.70288",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42567828/",
+    "abstract": "PURPOSE: To assess the individual and combined associations of salivary flow rate and masticatory performance with instrumental activities of daily living (IADL) impairment in community-dwelling older adults, and investigate whether depressive symptoms modified these associations. METHODS: This cross-sectional study used baseline data from an ongoing prospective cohort study of 244 community-dwelling older adults in Yangon, Myanmar. IADL impairment was defined as a Lawton IADL scale score of ≤ 7. Low salivary flow rate was defined as < 0.1 mL/min and poor masticatory performance as a xylitol chewing gum score of ≤ 3. Participants were classified into four groups based on these two measures. Depressive symptoms were assessed using the Geriatric Depression Scale-15 (score ≥ 5). Multivariable binary logistic regression, interaction terms, and stratified analyses were conducted. RESULTS: The prevalences of IADL impairment and depressive symptoms were 46.3% and 50.4%. Low salivary flow rate was independently associated with IADL impairment after adjustment (aOR: 1.89, 95% CI: 1.08-3.28), while poor masticatory performance alone was not. In the combined four-group model, participants with any oral impairment had higher odds of IADL impairment compared with those with normal salivary flow rate and masticatory performance. In stratified analyses, the association between low salivary flow rate and IADL impairment was more apparent among participants with depressive symptoms (aOR: 2.04, 95% CI: 1.09-4.47). CONCLUSION: Low salivary flow rate was associated with IADL impairment in community-dwelling older adults. The association appeared more pronounced among those with depressive symptoms, but this potential modifying role requires confirmation in larger longitudinal studies.",
+    "type": "研究",
+    "tags": [
+      "depression",
+      "functional dependency",
+      "masticatory performance",
+      "older adults",
+      "salivary flow rate"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557017",
+    "title": "Salivary Viscosity as a Non-Invasive Candidate Biomarker Associated With Aspiration Risk in Oculopharyngeal Muscular Dystrophy.",
+    "authors": "Alex Zvulunov, Rawan Saif, Liraz Olmer, Merav Ben-David, Limor Benyamini, Amir Dori",
+    "journal": "Journal of oral rehabilitation",
+    "journal_zh": "口腔康复杂志",
+    "date": "2026-08-05",
+    "doi": "10.1111/joor.70285",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557017/",
+    "abstract": "BACKGROUND: Aspiration pneumonia is the leading cause of morbidity and mortality in oculopharyngeal muscular dystrophy (OPMD), yet non-muscular contributors to aspiration risk are poorly defined. Thick saliva is frequently reported but has never been quantitatively characterised. OBJECTIVES: The primary objective was to compare salivary kinematic viscosity in genetically confirmed patients vs. household controls. Secondary hypothesis-generating exploratory objectives were to examine associations between viscosity, dysphagia severity, and aspiration risk. METHODS: In this observational, cross-sectional study, we compared genetically confirmed OPMD patients with matched household controls. Salivary kinematic viscosity was the primary outcome. Exploratory assessments examined associations between viscosity and validated dysphagia measures (Swallowing Disturbance Questionnaire, Penetration-Aspiration Scale, Functional Oral Intake Scale) and oral health (number of decayed, missing, and filled teeth). RESULTS: Among 57 participants (30 OPMD, 27 controls), salivary viscosity was higher in patients (difference 0.85 cSt; 95% CI 0.27-1.44; p = 0.007) and remained independently associated with the disease status after adjustment for age, oral health, and \"xerogenic\" medications. Higher viscosity was independently associated with higher aspiration risk (adjusted OR 2.5 per 1 cSt; 95% CI 1.1-6.1; p = 0.040), and discriminated patients with high risk for aspiration (Area Under the Curve of 0.76 and a positive likelihood ratio of 10.0). Salivary flow rates were preserved, indicating a compositional rather than hyposecretory rheological shift. CONCLUSION: Oculopharyngeal muscular dystrophy is associated with a flow-independent shift in salivary rheology quantitatively linked to dysphagia severity and aspiration risk. These cross-sectional findings nominate salivary viscosity as a non-invasive candidate biomarker warranting prospective validation for clinical application.",
+    "type": "研究",
+    "tags": [
+      "aspiration risk",
+      "biomarkers",
+      "dysphagia",
+      "oculopharyngeal muscular dystrophy",
+      "saliva"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42572026",
+    "title": "A machine learning approach to predict treatment response in myofascial pain patients receiving masseter trigger point injections.",
+    "authors": "Alshaimaa Ahmed Shabaan, Islam Kassem, Aliaa Ibrahium Mahrous, Inass Aboulmagd, Islam A Amer, Ahmed Shaaban",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-10",
+    "doi": "10.1186/s12903-026-09491-0",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42572026/",
+    "abstract": "BACKGROUND: Trigger point injection (TPI) therapy is widely used for masseter myofascial pain syndrome (MPS), yet outcomes vary substantially. Individualized prediction tools are lacking, often leading to trial-and-error treatment selection. OBJECTIVE: To develop, externally validate, and generalize ensemble machine learning models for predicting composite treatment success following masseter TPI, and to deploy a web-based clinical decision support system (CDSS). METHODS: This multicenter study included 1,181 patients with DC/TMD‑diagnosed masseter MPS treated with one of six injectable modalities. Baseline variables included pain (VAS), maximum mouth opening (MMO), and oral health‑related quality of life (OHIP-14). Composite treatment success was defined as simultaneous clinically meaningful improvement at 3 months: VAS reduction ≥ 2 points, MMO increase ≥ 5 mm, and OHIP-14 reduction ≥ 5 points. Random Forest (RF) and XGBoost models were trained on an internal cohort and externally validated on a geographically independent cohort. Performance was assessed using ROC‑AUC, precision‑recall AUC (PR‑AUC), calibration, decision curve analysis (DCA), and SHAP interpretability. RESULTS: Overall composite success rate was 43.1%. Internal validation ROC‑AUC was 0.914 (RF) and 0.888 (XGBoost); external validation ROC‑AUC was 0.771 and 0.787, respectively. External PR‑AUC values were 0.759 (RF) and 0.761 (XGBoost). Both models showed good calibration and positive net benefit on DCA across clinically relevant thresholds. SHAP analysis identified baseline MMO, OHIP-14, age, pain intensity, and injectable modality as the most influential predictors, with consistent rankings across models and cohorts. The validated XGBoost model was deployed as a web‑based CDSS. CONCLUSIONS: Machine learning models demonstrated good ability to predict multidimensional treatment success following masseter TPI. Baseline MMO, OHIP-14, age, pain intensity, and injectable modality were the strongest ou",
+    "type": "研究",
+    "tags": [
+      "Machine learning",
+      "Myofascial pain syndrome",
+      "Orofacial pain",
+      "Precision medicine",
+      "Random forest"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42568091",
+    "title": "Finite element analysis of patient specific three-dimensional titanium plate versus conventional two miniplate fixation for mandibular angle fractures.",
+    "authors": "Asmaa M Abd Elfattah, Mostafa M Eldibany, Ragab S Hassan, Mona S Oraby",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-08",
+    "doi": "10.1186/s12903-026-09471-4",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42568091/",
+    "abstract": "BACKGROUND: Mandibular angle fractures are among the most common maxillofacial fractures and represent a biomechanically challenging region because of complex functional loading. Conventional two miniplate fixation is widely used to provide fracture stability; however, stress concentration within the fixation hardware may affect its biomechanical performance. Recent advances in computer-aided design and manufacturing (CAD/CAM) have enabled the development of patient specific fixation techniques designed to improve implant adaptation and optimize stress distribution. OBJECTIVE: This study aimed to compare the biomechanical behaviour of a patient specific three-dimensional (3D) titanium plate and conventional two miniplate fixation for mandibular angle fractures using finite element analysis (FEA). MATERIALS AND METHODS: A three-dimensional mandibular model was reconstructed from computed tomography data obtained from a 25-year-old fully dentate male patient. Cortical and cancellous bone structures were generated using Mimics and Geomagic Design X software. Two fixation models and fixation hardware were assembled using SolidWorks software: Model A consisted of conventional two miniplate fixation, while Model B consisted of a patient specific three- dimensional titanium plate contoured along the tension zone of the mandible. The models were imported into ANSYS software for finite element analysis under simulated unilateral clenching conditions. Von Mises stress, maximum principal stress, and total displacement were evaluated under identical loading and boundary conditions. RESULTS: The patient specific 3D plate model demonstrated lower maximum von Mises stress within the fixation plate (326.19 MPa) compared with the conventional two miniplate system (417.48 MPa). Maximum principal stress in cortical bone was higher in the patient specific plate model (121.03 MPa) compared with the conventional fixation model (87.759 MPa). Total displacement was greater in the patient s",
+    "type": "研究",
+    "tags": [
+      "Biomechanics",
+      "Finite element analysis",
+      "Mandibular angle fracture",
+      "Patient specific plate",
+      "Three-dimensional fixation"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42568081",
+    "title": "Digital odontometric analysis for sex estimation in Egyptian adolescents.",
+    "authors": "Shimaa M Hadwa, Safa B Alawy, Ibrahim A Kabbash, Shaimaa S El-Desouky",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-08",
+    "doi": "10.1186/s12903-026-09486-x",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42568081/",
+    "abstract": "OBJECTIVES: Reliable sex estimation using dental metrics has important implications for clinical assessment and forensic identification, particularly in adolescents where skeletal indicators may be limited. This study aimed to validate the accuracy and clinical applicability of a digital odontometric model for sex estimation in an Egyptian adolescent population. METHODS: A total of 150 dental casts from individuals aged 12-19 years were digitized using a high-resolution three-dimensional scanner. Mesiodistal and buccolingual dimensions of the permanent first molars, mesiodistal widths of the maxillary canines, and intercanine, interpremolar, and intermolar arch widths were obtained using Facad Ortho tracing software. Statistical comparisons between sexes were performed, and discriminant function analysis was applied to construct and validate a predictive model for sex estimation. RESULTS: All measured parameters demonstrated significantly higher mean values in males compared with females (p < 0.05). The buccolingual and mesiodistal dimensions of the maxillary first molar exhibited the greatest sexual dimorphism (26.95% and 25.98%, respectively). The developed discriminant function model achieved a prediction accuracy of 97.8% for males and 100% for females. CONCLUSIONS: Digital odontometric analysis provides a promising approach for assessing sexual dimorphism in adolescents, pending external validation. This promising model may serve as a reliable adjunct for clinical evaluation and forensic identification within population-specific contexts pending further multicenter validation. CLINICAL RELEVANCE: Digital measurement of tooth and arch dimensions enables objective, standardized assessment of sex-related differences, supporting its integration into orthodontic diagnostics, treatment planning, and forensic casework where conventional skeletal indicators may be unavailable or inconclusive.",
+    "type": "研究",
+    "tags": [
+      "Arch width",
+      "Forensic odontology",
+      "Odontometric analysis",
+      "Sex",
+      "Sexual dimorphism"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42568076",
+    "title": "Retention and wear assessment of novel PolyEtherKetoneKetone versus traditional cobalt chromium material used in digital double crown retained removable partial dentures.",
+    "authors": "Rania Abd Elsattar Mangood Ramadan, Sawsan Maged Fadl, Shaimaa Mohamed Abu El Sadat Ali, Rami Maher Ghali",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-08",
+    "doi": "10.1186/s12903-026-09411-2",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42568076/",
+    "abstract": "BACKGROUND: Conventional removable partial dentures (RPDs) involve a process that is often susceptible to errors and demands a significant investment of time. The introduction of computer-aided design and computer-aided manufacturing (CAD/CAM) technology and materials witnessed significant advancements in recent years to produce accurate removable partial dentures. This study evaluated the retention and wear of PolyEtherKetoneKetone (PEKK) compared to Cobalt-Chromium (CoCr) in digitally fabricated double crown removable partial dentures for lower Kennedy Class I cases. METHODS: The study was performed on 3D digital models of mandibular Kennedy Class I with prepared premolars bilaterally. The double crown RPDs were designed and fabricated digitally to get 14 copies of RPDs. Two groups were defined (n = 7); the first group were milled from Co-Cr discs, and the other's from PEKK blanks. Initial retention was measured using a universal testing machine. RPDs were then subjected to dynamic loading in a chewing simulator over 100,000 cycles followed by 540 manual insertion and removal cycles and were remounted on the testing machine to measure final retention simulating six months. Wear was assessed using Geomagic Control X software, where negative deviations highlighted areas of degradation. Data was collected and analyzed for statistical analysis. Two Sample t-test was used to compare between the two groups and Paired t test to study the changes within each group. The significance level was set at P ≤ 0.05. RESULTS: PEKK group showed a statistically significantly higher final retentive values after 6 months (11.6 N) than Co-Cr (2 N). Moreover, results showed higher retention loss in Co-Cr group (16.9 N) compared to PEKK (3.7 N). Additionally, wear assessment of primary copings indicated a higher deviation in the Co-Cr group (-0.25 mm) compared to PEKK (-0.096 mm), with a notable correlation (0.651, P-value = 0.011) between retention loss and wear. CONCLUSIONS: Within the",
+    "type": "研究",
+    "tags": [
+      "Digital",
+      "Double crown",
+      "Partial dentures",
+      "PolyEtherKetoneKetone",
+      "Retention"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42576209",
+    "title": "Color stability of polyetheretherketone and graphene-reinforced polymethyl methacrylate after in-office bleaching.",
+    "authors": "Ali Can Bulut, Gokce Soganci Unsal",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-05",
+    "doi": "10.1186/s12903-026-09488-9",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42576209/",
+    "abstract": "BACKGROUND: This in vitro study evaluated the color stability of polyetheretherketone (PEEK) and graphene-reinforced polymethyl methacrylate (G-CAM) following direct exposure to a high-concentration in-office bleaching gel. METHODS: Thirty square-shaped specimens (10 × 10 × 3 mm) were prepared: 15 PEEK (BioHPP, Bredent, Germany) in shade A2 and 15 G-CAM (Graphenano Dental, Spain) in shade A2, with baseline color coordinates recorded using a spectrophotometer (VITA Easyshade Advance 4.0, Vita Zahnfabrik, Germany). All specimens were surface-ground, ultrasonically cleaned, and stored in distilled water at 37 °C for 24 h prior to measurements. A 40% hydrogen peroxide bleaching gel (Opalescence Boost, Ultradent Products, South Jordan, UT, USA) was applied for 20 min and repeated after a one-week interval, with color measurements obtained after each session. Color differences were calculated using the CIEDE2000 formula (ΔE₀₀). The observed CIELAB coordinates (L*, a*, b*) were analyzed using a 2 × 3 mixed-design ANOVA (material × bleaching stage), whereas the derived ΔE₀₀ contrasts were evaluated secondarily, with Mann-Whitney U tests used as supplementary between-material analyses (α = 0.05). RESULTS: A significant material × time interaction was found for all CIELAB coordinates (L*, a*, b*; all p < .001), indicating that the two materials followed distinct temporal patterns of color change. After the first bleaching session, G-CAM exhibited a markedly higher color change (ΔE₀₀ = 7.97 ± 3.12) compared with PEEK (ΔE₀₀ = 0.55 ± 0.23). Between the first and second sessions, G-CAM continued to show a higher incremental color change (ΔE₀₀ = 7.02 ± 2.61) than PEEK (ΔE₀₀ = 3.66 ± 0.26). When total color change from baseline to the second bleaching session was evaluated, G-CAM demonstrated a lower ΔE₀₀ value (1.81 ± 1.04) compared with PEEK (3.86 ± 0.34). CONCLUSION: PEEK and G-CAM exhibited markedly different color-stability behaviors under high-concentration in-office bleachin",
+    "type": "研究",
+    "tags": [
+      "Bleaching",
+      "Color stability",
+      "Graphene-reinforced PMMA",
+      "Hydrogen peroxide",
+      "PEEK"
+    ],
+    "is_new": true
+  },
+  {
+    "pmid": "42557559",
+    "title": "Mechanical performance and color stability of 3D-printed ceramic-filled resin following various bleaching regimens: an in vitro study.",
+    "authors": "Tamer M Hamdy",
+    "journal": "BMC oral health",
+    "journal_zh": "BMC 口腔健康",
+    "date": "2026-08-05",
+    "doi": "10.1186/s12903-026-09400-5",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42557559/",
+    "abstract": "BACKGROUND: Recent material science advancements enabled a 3D-printable ceramic-filled resin for restorations. Additive manufacturing produces crowns, veneers, and mock-ups. Office and home bleaching agents contact teeth and restoration surfaces during application, potentially altering material properties. OBJECTIVES: The aim of the study is to assess the compressive strength, flexural strength, surface microhardness, surface roughness, and color changes of the additive 3D-printed ceramic-filled resin before and after exposure to home and in-office tooth bleaching. METHODS: A total of 150 specimens were equally distributed into control (non-bleaching), home-bleaching (16% carbamide peroxide), and in-office bleaching (40% hydrogen peroxide) groups (n = 50/group). Compressive strength was evaluated using a universal testing machine, flexural strength by a four-point bending test, surface microhardness using a Vickers hardness tester, surface roughness using a 3D optical profilometer, and color changes using a spectrophotometer based on the CIEDE2000 (ΔE00) system. Statistical analysis was performed using one-way ANOVA, Tukey post-hoc tests, and independent t-tests (α = 0.05). RESULTS: Both home bleaching (16% carbamide peroxide) and in-office bleaching (40% hydrogen peroxide) significantly reduced the compressive strength, flexural strength, and surface microhardness of the 3D-printed ceramic-filled resin while significantly increasing surface roughness (P ≤ 0.05). The in-office bleaching group exhibited significantly greater reductions in mechanical properties and higher surface roughness values than the home-bleaching group. Although bleaching produced statistically significant color changes, all ΔE00 values remained below the clinically acceptable threshold. CONCLUSIONS: Home bleaching (16% carbamide peroxide) and in-office bleaching (40% hydrogen peroxide) reduced compressive and flexural strength, microhardness, and increased roughness of 3D-printed crowns. In-of",
+    "type": "研究",
+    "tags": [
+      "3D-Printed Ceramic-Filled Resin",
+      "Color change",
+      "Dental bleaching",
+      "Mechanical properties",
+      "Surface properties"
+    ],
+    "is_new": true
+  }
+]

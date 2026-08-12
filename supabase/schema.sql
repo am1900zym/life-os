@@ -52,8 +52,10 @@ alter table public.shared_moments enable row level security;
 -- 策略
 create policy "Users read own profile" on public.profiles for select using (auth.uid() = id);
 create policy "Users update own profile" on public.profiles for update using (auth.uid() = id);
-create policy "Users insert own moments" on public.moments for insert with check (auth.uid() = user_id);
+create policy "Users insert own moments" on public.moments for insert with check (user_id = 'ec4e72df-c496-4d45-830e-71787bb281a5');
 create policy "Users read own moments" on public.moments for select using (auth.uid() = user_id or visibility = 'public');
+create policy "Users update own moments" on public.moments for update using (user_id = 'ec4e72df-c496-4d45-830e-71787bb281a5') with check (user_id = 'ec4e72df-c496-4d45-830e-71787bb281a5');
+create policy "Users delete own moments" on public.moments for delete using (user_id = 'ec4e72df-c496-4d45-830e-71787bb281a5');
 create policy "Users manage own friends" on public.friends for all using (auth.uid() = user_id or auth.uid() = friend_id);
 create policy "Read shared moments" on public.shared_moments for select using (auth.uid() = any(participants));
 
