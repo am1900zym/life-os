@@ -1,24 +1,24 @@
 ---
-// src/pages/dental/papers.astro — 论文库：日期分组 + 期刊筛选
+// src/pages/dental/papers.astro — 论文库：双语显示 + 期刊筛选 + OA 全文直达
 // 客户端优先从 Supabase 加载真实数据；构建时用本地数据兜底渲染
 import DentalLayout from '../../layouts/DentalLayout.astro';
 import { papersByDate, dentalJournals } from '../../data/dentalData';
 ---
 
-<DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学论文，每日更新。">
+<DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学 + 口腔护理论文 · 每日同步 PubMed 20 大期刊">
   <!-- 期刊筛选按钮 -->
   <div class="meta-line">
     <button class="filter-btn" id="filter-toggle" type="button">☰ 筛选期刊</button>
     <span style="font-size:12.5px;color:var(--muted)" id="filter-status">全部 {dentalJournals.length} 本期刊</span>
   </div>
 
-  <!-- 期刊筛选面板（参考 Alohomora Journal Filter） -->
+  <!-- 期刊筛选面板 -->
   <div class="filter-panel" id="filter-panel">
     <div class="filter-panel-head">
-      <span class="fp-title">Journal Filter</span>
+      <span class="fp-title">Journal Filter · 期刊筛选</span>
       <div class="fp-actions">
-        <button class="fp-action" type="button" data-action="all">Select All</button>
-        <button class="fp-action" type="button" data-action="none">Clear All</button>
+        <button class="fp-action" type="button" data-action="all">Select All · 全选</button>
+        <button class="fp-action" type="button" data-action="none">Clear All · 清空</button>
       </div>
     </div>
     <div class="journal-check-grid" id="journal-checks">
@@ -53,14 +53,28 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
           <article class="paper-item" data-journal={paper.journal}>
             <div class="paper-meta">
               <span class="paper-journal j-blue">{paper.journal}</span>
+              <span class="paper-journal-zh">{paper.journal_zh ? ` / ${paper.journal_zh}` : ''}</span>
+              {paper.is_oa && <span class="oa-badge" title="开放获取全文">● OA 全文</span>}
               <span class="new-badge">NEW</span>
               <span style="margin-left:auto">{paper.date}</span>
             </div>
-            <h3 class="paper-title"><a href={paper.url} target="_blank" rel="noopener">{paper.title}</a></h3>
+            <h3 class="paper-title">
+              <a href={paper.full_text_url || paper.url} target="_blank" rel="noopener" title="点击查看原文">
+                {paper.title}
+              </a>
+            </h3>
+            {paper.title_zh && <div class="paper-title-zh">{paper.title_zh}</div>}
             <div class="paper-authors">{paper.authors}</div>
             <p class="paper-abstract">{paper.abstract}</p>
             <div class="paper-tags">
-              {paper.tags.map((t) => <span class="paper-tag">{t}</span>)}
+              {paper.tags_zh?.map((t) => <span class="paper-tag zh">{t}</span>)}
+              {paper.tags?.map((t) => <span class="paper-tag en">{t}</span>)}
+            </div>
+            <div class="paper-links">
+              <a class="paper-link" href={paper.full_text_url || paper.url} target="_blank" rel="noopener">
+                {paper.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文'}
+              </a>
+              {paper.doi && <span class="paper-doi">doi: {paper.doi}</span>}
             </div>
           </article>
         ))}
@@ -69,6 +83,69 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
   })()}
   </div>
 </DentalLayout>
+
+<style>
+  .paper-title-zh {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 2px 0 6px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+  .paper-journal-zh {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+  .oa-badge {
+    display: inline-block;
+    background: rgba(46, 125, 50, 0.12);
+    color: #2e7d32;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .paper-tag.zh {
+    background: var(--brand-soft, rgba(79, 124, 247, 0.12));
+    color: var(--brand, #4f7cf7);
+  }
+  .paper-tag.en {
+    background: var(--bg, #f4f6fa);
+    color: var(--muted);
+  }
+  .paper-links {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .paper-link {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--brand, #4f7cf7);
+    text-decoration: none;
+    padding: 4px 12px;
+    border: 1px solid var(--brand, #4f7cf7);
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+  .paper-link:hover {
+    background: var(--brand, #4f7cf7);
+    color: #fff;
+  }
+  .paper-doi {
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+</style>
 
 <script>
   // ===== 期刊筛选逻辑 =====
@@ -110,6 +187,40 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
     });
   }
 
+  // ===== 渲染单篇论文卡片 (双语 + OA) =====
+  function renderPaperItem(p) {
+    const journalZh = p.journal_zh ? `<span class="paper-journal-zh"> / ${escapeHtml(p.journal_zh)}</span>` : '';
+    const oaBadge = p.is_oa ? `<span class="oa-badge" title="开放获取全文">● OA 全文</span>` : '';
+    const linkHref = escapeHtml(p.full_text_url || p.url || '#');
+    const linkText = p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文';
+    const titleZh = p.title_zh ? `<div class="paper-title-zh">${escapeHtml(p.title_zh)}</div>` : '';
+    const tagsZh = Array.isArray(p.tags_zh) && p.tags_zh.length
+      ? p.tags_zh.map((t) => `<span class="paper-tag zh">${escapeHtml(t)}</span>`).join('') : '';
+    const tagsEn = Array.isArray(p.tags) && p.tags.length
+      ? p.tags.map((t) => `<span class="paper-tag en">${escapeHtml(t)}</span>`).join('') : '';
+    const doi = p.doi ? `<span class="paper-doi">doi: ${escapeHtml(p.doi)}</span>` : '';
+    return `
+      <article class="paper-item" data-journal="${escapeHtml(p.journal)}">
+        <div class="paper-meta">
+          <span class="paper-journal j-blue">${escapeHtml(p.journal)}</span>
+          ${journalZh}
+          ${oaBadge}
+          <span class="new-badge">NEW</span>
+          <span style="margin-left:auto">${escapeHtml((p.published_on || '').slice(5, 10))}</span>
+        </div>
+        <h3 class="paper-title"><a href="${linkHref}" target="_blank" rel="noopener" title="点击查看原文">${escapeHtml(p.title)}</a></h3>
+        ${titleZh}
+        <div class="paper-authors">${escapeHtml(p.authors || '')}</div>
+        ${p.abstract ? `<p class="paper-abstract">${escapeHtml(p.abstract)}</p>` : ''}
+        <div class="paper-tags">${tagsZh}${tagsEn}</div>
+        <div class="paper-links">
+          <a class="paper-link" href="${linkHref}" target="_blank" rel="noopener">${linkText}</a>
+          ${doi}
+        </div>
+      </article>
+    `;
+  }
+
   // ===== 从 Supabase 加载真实论文 =====
   async function loadFromSupabase() {
     try {
@@ -136,24 +247,12 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
             <span class="dg-date">${escapeHtml(date)}</span>
             <span class="dg-count">${papers.length} 篇</span>
           </div>
-          ${papers.map((p) => `
-            <article class="paper-item" data-journal="${escapeHtml(p.journal)}">
-              <div class="paper-meta">
-                <span class="paper-journal j-blue">${escapeHtml(p.journal)}</span>
-                <span class="new-badge">NEW</span>
-                <span style="margin-left:auto">${escapeHtml((p.published_on || '').slice(5, 10))}</span>
-              </div>
-              <h3 class="paper-title"><a href="${escapeHtml(p.url || '#')}" target="_blank" rel="noopener">${escapeHtml(p.title)}</a></h3>
-              <div class="paper-authors">${escapeHtml(p.authors || '')}</div>
-              ${p.abstract ? `<p class="paper-abstract">${escapeHtml(p.abstract)}</p>` : ''}
-              ${Array.isArray(p.tags) && p.tags.length ? `<div class="paper-tags">${p.tags.map((t) => `<span class="paper-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-            </article>
-          `).join('')}
+          ${papers.map((p) => renderPaperItem(p)).join('')}
         </section>
       `).join('');
       const statusEl = document.getElementById('papers-status');
       if (statusEl) {
-        statusEl.textContent = `● 实时数据 · PubMed 追踪 · ${data.length} 篇`;
+        statusEl.textContent = `● 实时数据 · PubMed 追踪 · ${data.length} 篇 · ${data.filter((p) => p.is_oa).length} 篇 OA 全文`;
         statusEl.style.color = 'var(--green)';
         statusEl.style.fontWeight = '600';
       }
