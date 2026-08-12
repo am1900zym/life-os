@@ -42,6 +42,7 @@ DEEPL_API_KEY = os.environ.get("DEEPL_API_KEY")
 
 DEEPL_URL = "https://api-free.deepl.com/v2/translate"
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
+MYMEMORY_DAILY_LIMIT = 5000  # MyMemory 免费档每日限额 (字符)
 
 # 翻译缓存: 相同标题只翻一次
 _cache: dict = {}
