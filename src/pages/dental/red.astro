@@ -82,7 +82,7 @@ const filterColors = {
   </div>
 </DentalLayout>
 
-<script is:inline>
+<script>
   // ===== 收藏逻辑 (Supabase + localStorage 双写) =====
   const RED_FILTER_TAGS = document.getElementById('red-filter-tags');
   const RED_LIST = document.getElementById('red-list');
@@ -95,7 +95,7 @@ const filterColors = {
   // 同步到 Supabase
   async function syncSaved() {
     try {
-      const mod = await import('../lib/supabaseClient');
+      const mod = await import('../../lib/supabaseClient');
       if (!mod.supabase) return;
       for (const id of savedSet) {
         await mod.supabase.from('dental_saved').upsert({

@@ -70,7 +70,7 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
   </div>
 </DentalLayout>
 
-<script is:inline>
+<script>
   // ===== 期刊筛选逻辑 =====
   const filterToggleBtn = document.getElementById('filter-toggle');
   const filterPanel = document.getElementById('filter-panel');
@@ -82,12 +82,16 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
     return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   }
 
+  function normalizeJournal(name) {
+    return String(name || '').toLowerCase().replace(/&/g, ' and ').replace(/\s+/g, ' ').trim();
+  }
+
   function bindFilters() {
     const checkboxes = [...document.querySelectorAll('#journal-checks input[type=checkbox]')];
     function applyFilter() {
-      const selected = new Set(checkboxes.filter((c) => c.checked).map((c) => c.value));
+      const selected = new Set(checkboxes.filter((c) => c.checked).map((c) => normalizeJournal(c.value)));
       document.querySelectorAll('.paper-item').forEach((item) => {
-        const j = item.getAttribute('data-journal');
+        const j = normalizeJournal(item.getAttribute('data-journal'));
         item.style.display = selected.has(j) ? '' : 'none';
       });
       document.querySelectorAll('.paper-section').forEach((sec) => {
@@ -109,7 +113,7 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
   // ===== 从 Supabase 加载真实论文 =====
   async function loadFromSupabase() {
     try {
-      const mod = await import('../lib/supabaseClient');
+      const mod = await import('../../lib/supabaseClient');
       if (!mod.supabase) return;
       const { data, error } = await mod.supabase
         .from('dental_papers')

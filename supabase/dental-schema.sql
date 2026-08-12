@@ -7,16 +7,20 @@
 -- 1. dental_papers（论文库）
 create table if not exists public.dental_papers (
   id uuid default gen_random_uuid() primary key,
+  pmid text,                        -- PubMed PMID (去重)
   title text not null,
   authors text,
   journal text not null,
+  journal_zh text,                  -- 期刊中文名
   published_on date not null,
+  doi text,                         -- DOI
   url text,
   abstract text,
   paper_type text default '研究',  -- 研究/综述/临床/实验室/政策
   tags text[] default '{}',
   is_new boolean default true,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  unique (pmid)
 );
 
 -- 2. dental_nursing（口腔护理要点）

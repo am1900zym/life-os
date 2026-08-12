@@ -214,10 +214,11 @@ def ensure_tables(supabase_url, service_key):
     (Supabase REST API 无法建表, 只读/写数据; 建表须用 SQL Editor 或 Management API.)
     返回 True=表存在/可写, False=需手动建.
     """
-    url = f"{supabase_url}/rest/v1/dental_papers?select=1&limit=0"
+    url = f"{supabase_url}/rest/v1/dental_papers?select=count"
     r = requests.get(url, headers={
         "apikey": service_key,
         "Authorization": f"Bearer {service_key}",
+        "Prefer": "count=exact",
     }, timeout=30)
     # 200 = 表存在; 404/405 = 不存在或无权 (service_role 应能 200)
     return r.status_code == 200
@@ -228,12 +229,27 @@ def upsert_articles(supabase_url, service_key, articles):
     if not articles:
         return 0
     url = f"{supabase_url}/rest/v1/dental_papers"
+    # 字段映射: tracker JSON 字段 → 表列名
+    rows = [{
+        "pmid": a.get("pmid"),
+        "title": a.get("title"),
+        "authors": a.get("authors", ""),
+        "journal": a.get("journal"),
+        "journal_zh": a.get("journal_zh", ""),
+        "published_on": a.get("date"),
+        "doi": a.get("doi", ""),
+        "url": a.get("url"),
+        "abstract": a.get("abstract", ""),
+        "paper_type": a.get("type", "研究"),
+        "tags": a.get("tags", []),
+        "is_new": a.get("is_new", True),
+    } for a in articles]
     r = requests.post(url, headers={
         "apikey": service_key,
         "Authorization": f"Bearer {service_key}",
         "Content-Type": "application/json",
         "Prefer": "resolution=merge-duplicates,return=minimal",
-    }, json=articles, timeout=30)
+    }, json=rows, timeout=60)
     r.raise_for_status()
     return len(articles)
 
