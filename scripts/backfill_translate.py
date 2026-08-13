@@ -193,7 +193,8 @@ def fetch_empty(supabase_url, service_key, limit=None, skip=0, oa_only=False):
     url = f"{supabase_url}/rest/v1/dental_papers"
     params = {
         "select": "pmid,title",
-        "title_zh": "is.null",
+        # tracker 写入时 title_zh 是空字符串 "" (不是 NULL), 所以用 eq. 而非 is.null
+        "title_zh": "eq.",
         "order": "published_on.desc",
     }
     if skip:

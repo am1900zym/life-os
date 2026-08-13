@@ -451,6 +451,21 @@ def main():
 
     supabase_url = os.environ.get("SUPABASE_URL")
     service_key = os.environ.get("SUPABASE_SERVICE_KEY")
+
+    # 兜底: 从项目根 .env.supabase 加载 (cron 环境无 env var 时使用)
+    if not supabase_url or not service_key:
+        env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env.supabase")
+        if os.path.exists(env_file):
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        if k == "SUPABASE_URL" and not supabase_url:
+                            supabase_url = v.strip()
+                        elif k == "SUPABASE_SERVICE_KEY" and not service_key:
+                            service_key = v.strip()
+
     if not (args.dry_run or args.as_json) and (not supabase_url or not service_key):
         print("ERROR: 需要环境变量 SUPABASE_URL 和 SUPABASE_SERVICE_KEY (dry-run/--json 除外)")
         sys.exit(1)
