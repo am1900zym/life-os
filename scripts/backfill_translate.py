@@ -140,6 +140,9 @@ def main():
     parser = argparse.ArgumentParser(description="DentaScope 中文标题回填翻译")
     parser.add_argument("--dry-run", action="store_true", help="只翻译不写库")
     parser.add_argument("--limit", type=int, default=None, help="最多处理 N 条 (默认全部)")
+    parser.add_argument("--skip", type=int, default=0, help="跳过前 N 条 (用于续跑)")
+    parser.add_argument("--oa-only", action="store_true", help="只翻译 is_oa=true 的文章")
+    parser.add_argument("--char-limit", type=int, default=4400, help="MyMemory 每日字符上限 (默认 4400, 安全留档)")
     args = parser.parse_args()
 
     if not SUPABASE_URL or not SERVICE_KEY:
@@ -148,15 +151,21 @@ def main():
 
     print(f"翻译后端: {'DeepL' if DEEPL_API_KEY else 'MyMemory (免费, 未设置 DEEPL_API_KEY)'}")
     print("拉取待翻译记录...")
-    rows = fetch_empty(SUPABASE_URL, SERVICE_KEY, args.limit)
+    rows = fetch_empty(SUPABASE_URL, SERVICE_KEY, args.limit, args.skip, args.oa_only)
     if not rows:
         print("✅ 没有 title_zh 为空的记录 (可能已全部翻译)")
         return
 
-    print(f"待翻译: {len(rows)} 条")
-    ok, fail = 0, 0
+    print(f"待翻译: {len(rows)} 条 | 字符上限: {args.char_limit}")
+    ok, fail, skipped = 0, 0, 0
+    chars_used = 0
     for i, row in enumerate(rows, 1):
         title = row.get("title", "")
+        char_cost = len(title[:500])
+        if chars_used + char_cost > args.char_limit:
+            skipped += 1
+            continue
+        chars_used += char_cost
         print(f"  [{i}/{len(rows)}] PMID {row.get('pmid')}: {title[:60]}...")
         zh = translate(title)
         if not zh:
@@ -174,7 +183,36 @@ def main():
         else:
             ok += 1
 
-    print(f"\n完成: 成功 {ok}, 失败 {fail}" + (" (dry-run 未写库)" if args.dry_run else ""))
+    print(f"\n完成: 成功 {ok}, 失败 {fail}, 跳过(字符超限) {skipped} | 字符耗用 {chars_used}/{args.char_limit}")
+
+
+def fetch_empty(supabase_url, service_key, limit=None, skip=0, oa_only=False):
+    """拉取 title_zh 为空的记录"""
+    if not service_key:
+        raise RuntimeError("Missing SUPABASE_SERVICE_KEY")
+    url = f"{supabase_url}/rest/v1/dental_papers"
+    params = {
+        "select": "pmid,title",
+        "title_zh": "is.null",
+        "order": "published_on.desc",
+    }
+    if skip:
+        params["offset"] = str(skip)
+    if limit:
+        params["limit"] = str(limit)
+    # is_oa filter 放在 params 字典 (requests 會正確 encoding)
+    if oa_only:
+        params["is_oa"] = "eq.true"
+    r = requests.get(url, headers={
+        "apikey": service_key,
+        "Authorization": f"Bearer {service_key}",
+    }, params=params, timeout=30)
+    if r.status_code == 206:
+        return r.json()
+    if r.status_code == 401:
+        raise RuntimeError("Supabase 認證失敗: 請確認 SUPABASE_SERVICE_KEY")
+    r.raise_for_status()
+    return r.json()
 
 
 if __name__ == "__main__":

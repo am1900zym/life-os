@@ -1,9 +1,22 @@
-/**
- * Astro configuration — Cloudflare Pages adapter
- */
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
+  site: 'https://life-os-3zx.pages.dev',
   output: 'static',
-  site: 'https://life-os-3zx.pages.dev'
+  adapter: cloudflare(),
+  env: {
+    schema: {
+      PUBLIC_SUPABASE_URL: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_SUPABASE_ANON_KEY: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+    },
+  },
 });
