@@ -2,7 +2,7 @@
 // src/pages/dental/papers.astro — 論文庫: 雙語顯示 + 期刊筛选 + 響應式分页
 // 客户端優先從 Supabase 加载真实数据；构建时用本地数据兜底渲染
 import DentalLayout from '../../layouts/DentalLayout.astro';
-import { papersByDate, dentalJournals } from '../../data/dentalData';
+import { papersByDate, dentalJournals, dentalJournalZh } from '../../data/dentalData';
 
 const PAGE_SIZE = 20; // 每頁 20 篇
 
@@ -24,14 +24,58 @@ const TAG_ZH_MAP = {
   "In Vitro": "体外研究", "Prospective": "前瞻性研究", "Retrospective": "回顾性研究",
   "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Follow-Up": "随访研究",
   "Randomized Controlled Trial": "随机对照试验", "Meta Analysis": "荟萃分析",
+  // ── MeSH 高频关键词 ──
+  "oral health": "口腔健康", "Oral Health": "口腔健康", "dental caries": "龋齿",
+  "periodontitis": "牙周炎", "periodontal disease": "牙周病", "gingivitis": "牙龈炎",
+  "dental anxiety": "牙科焦虑", "tooth loss": "牙齿缺失", "toothbrushing": "刷牙",
+  "brushing": "刷牙", "fluoride": "氟化物", "caries": "龋齿",
+  "children": "儿童", "adolescents": "青少年", "elderly": "老年人",
+  "older adults": "老年人", "nurses": "护士", "nursing students": "护生",
+  "nursing": "护理", "nurse": "护士", "patients": "患者",
+  "quality of life": "生活质量", "well-being": "幸福感", "depression": "抑郁",
+  "anxiety": "焦虑", "stress": "压力", "burnout": "职业倦怠",
+  "pain": "疼痛", "xerostomia": "口干症", "halitosis": "口臭",
+  "oral hygiene": "口腔卫生", "dental plaque": "牙菌斑", "biofilm": "生物膜",
+  "implants": "种植体", "dental implant": "种植体", "osseointegration": "骨结合",
+  "root canal": "根管", "endodontics": "牙髓病学", "pulp": "牙髓",
+  "restorative dentistry": "修复牙科", "composite": "复合树脂", "ceramics": "陶瓷",
+  "orthodontics": "正畸", "malocclusion": "错颌畸形", "TMJ": "颞下颌关节",
+  "systematic review": "系统评价", "meta-analysis": "荟萃分析",
+  "randomized controlled trial": "随机对照试验", "cross-sectional": "横断面研究",
+  "qualitative study": "质性研究", "qualitative research": "质性研究",
+  "patient satisfaction": "患者满意度", "patient safety": "患者安全",
+  "infection control": "感染控制", "COVID-19": "新冠", "SARS-CoV-2": "新冠病毒",
+  "education": "教育", "curriculum": "课程", "clinical competence": "临床能力",
+  "dentistry": "牙科学", "dental education": "牙科教育", "telehealth": "远程医疗",
+  "artificial intelligence": "人工智能", "machine learning": "机器学习",
+  "AI": "人工智能", "ChatGPT": "ChatGPT", "LLMs": "大语言模型",
+  "prevention": "预防", "screening": "筛查", "diagnosis": "诊断",
+  "treatment": "治疗", "management": "管理", "self-care": "自我护理",
+  "caregivers": "照护者", "family caregivers": "家庭照护者", "dementia": "痴呆",
+  "cancer": "癌症", "oral cancer": "口腔癌", "leukoplakia": "白斑",
+  "diabetes": "糖尿病", "hypertension": "高血压", "obesity": "肥胖",
+  "smoking": "吸烟", "tobacco": "烟草", "alcohol": "酒精",
+  "nutrition": "营养", "diet": "饮食", "dietary": "饮食",
+  "saliva": "唾液", "salivary": "唾液的", "microbiome": "微生物组",
+  "cytokines": "细胞因子", "inflammation": "炎症", "immune response": "免疫反应",
+  "bone regeneration": "骨再生", "bone graft": "骨移植", "GBR": "引导骨再生",
+  "periodontal therapy": "牙周治疗", "scaling": "洁治", "root planing": "根面平整",
+  "fixed orthodontic": "固定正畸", "clear aligners": "隐形矫治",
+  "temporomandibular": "颞下颌", "bruxism": "夜磨牙", "sleep apnea": "睡眠呼吸暂停",
 };
 ---
 
 <DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学 + 口腔护理论文 · 每日同步 PubMed · 20 大期刊 · OA 全文直达">
+  <script is:inline set:html={`window.__DENTAL_TAG_ZH_MAP__ = ${JSON.stringify(TAG_ZH_MAP)};`}></script>
   <!-- 筛选栏 -->
   <div class="meta-line">
     <button class="filter-btn" id="filter-toggle" type="button">☰ 筛选期刊</button>
     <span id="filter-status" style="font-size:12.5px;color:var(--muted)">全部 {dentalJournals.length} 本期刊</span>
+    <!-- 视图切换: 全部 / 今天 -->
+    <span style="margin-left:16px;display:inline-flex;gap:4px;border:1px solid var(--border);border-radius:10px;padding:2px;background:var(--card)">
+      <button class="view-toggle" data-view="all" style="border:none;background:var(--brand);color:#fff;padding:4px 14px;border-radius:8px;font-size:12px;cursor:pointer">全部</button>
+      <button class="view-toggle" data-view="today" style="border:none;background:transparent;color:var(--muted);padding:4px 14px;border-radius:8px;font-size:12px;cursor:pointer">今天</button>
+    </span>
     <!-- 分页資訊 -->
     <span id="pagination-info" style="font-size:12.5px;color:var(--muted);margin-left:16px">
       第 <span id="current-page">1</span> 页，共 <span id="total-pages">1</span> 页
@@ -157,17 +201,8 @@ const TAG_ZH_MAP = {
       return String(name || '').toLowerCase().replace(/&/g, ' and ').replace(/\s+/g, ' ').trim();
     }
     // PublicationType 中英映射 (与 tracker PUBTYPE_TAGS 一致)
-    const TAG_ZH_MAP = {
-      "Article": "期刊文章", "Review": "综述", "Systematic Review": "系统评价",
-      "Meta-Analysis": "荟萃分析", "RCT": "随机对照", "Clinical Trial": "临床试验",
-      "Multicenter": "多中心", "Comparative": "对比研究", "Observational": "观察性研究",
-      "Case Report": "病例报告", "Guideline": "指南", "Practice Guideline": "实践指南",
-      "Validation": "效度研究", "Evaluation": "评价研究", "Letter": "来信",
-      "Editorial": "社论", "Comment": "评论", "Retraction": "撤稿", "Erratum": "勘误",
-      "In Vitro": "体外研究", "Prospective": "前瞻性研究", "Retrospective": "回顾性研究",
-      "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Follow-Up": "随访研究",
-      "Randomized Controlled Trial": "随机对照试验", "Meta Analysis": "荟萃分析",
-    };
+    // 由 frontmatter TAG_ZH_MAP 注入 (见页面顶部)
+    const TAG_ZH_MAP = window.__DENTAL_TAG_ZH_MAP__ || {};
   </script>
 
   <!-- ===== 筛选 + 分页邏輯 ===== -->
@@ -178,7 +213,7 @@ const TAG_ZH_MAP = {
     let isClientSideFilter = false; // 是否在前端做筛选 (Supabase 路径下為 false)
 
     // 从 Supabase 加载 (分页靠 offset/limit)
-    async function loadFromSupabase(page = 1, journals = []) {
+    async function loadFromSupabase(page = 1, journals = [], view = 'all') {
       const mod = await import('../../lib/supabaseClient');
       if (!mod.supabase) return false;
 
@@ -188,9 +223,14 @@ const TAG_ZH_MAP = {
         .order('published_on', { ascending: false })
         .range(from, from + PAGE_SIZE - 1);
 
-      // 期刊篩選: 使用 in-filter (Supabase 原生)
-      if (isClientSideFilter && journals.length > 0 && journals.length < dentalJournals.length) {
+      // 期刊筛选: 始终生效 (in-filter)
+      if (journals.length > 0 && journals.length < dentalJournals.length) {
         query = query.in('journal', journals);
+      }
+      // 视图: 今天 → 只取今天的文章
+      if (view === 'today') {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        query = query.gte('published_on', todayStr + ' 00:00:00').lte('published_on', todayStr + ' 23:59:59');
       }
 
       const { data, error, count } = await query;
@@ -308,18 +348,24 @@ const TAG_ZH_MAP = {
       loadPage(next);
     }
 
+    let currentView = 'all'; // 视图: all / today
+
     async function loadPage(page) {
       const journals = [...document.querySelectorAll('#journal-checks input:checked')].map(cb => cb.value);
       if (isClientSideFilter) {
         // 本地篩選 → 本地分页
-        const all = window._allPapers.filter(p => journals.length === 0 || journals.includes(p.journal));
+        let all = window._allPapers.filter(p => journals.length === 0 || journals.includes(p.journal));
+        if (currentView === 'today') {
+          const todayStr = new Date().toISOString().slice(0, 10);
+          all = all.filter(p => (p.published_on || '').slice(0, 10) === todayStr);
+        }
         const from = (page - 1) * PAGE_SIZE;
         const pageData = all.slice(from, from + PAGE_SIZE);
         renderList(pageData);
         renderPager(page, all.length);
       } else {
         // Supabase 篩選 → 遠端分页
-        await loadFromSupabase(page, journals);
+        await loadFromSupabase(page, journals, currentView);
       }
     }
 
@@ -333,14 +379,30 @@ const TAG_ZH_MAP = {
           applyFilter();
         });
       });
+      // 视图切换: 全部 / 今天
+      document.querySelectorAll('.view-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentView = btn.getAttribute('data-view');
+          document.querySelectorAll('.view-toggle').forEach(b => {
+            const active = b === btn;
+            b.style.background = active ? 'var(--brand)' : 'transparent';
+            b.style.color = active ? '#fff' : 'var(--muted)';
+          });
+          applyFilter();
+        });
+      });
     }
 
     async function applyFilter() {
       const selected = [...document.querySelectorAll('#journal-checks input:checked')].map(cb => cb.value);
-      document.getElementById('filter-status').textContent = `已选 ${selected.length} / ${[...new Set(window._allPapers?.map(p=>p.journal))].length || 20} 本期刊`;
+      document.getElementById('filter-status').textContent = `已选 ${selected.length} / ${dentalJournals.length} 本期刊`;
 
       if (isClientSideFilter) {
-        const all = window._allPapers.filter(p => selected.length === 0 || selected.includes(p.journal));
+        let all = window._allPapers.filter(p => selected.length === 0 || selected.includes(p.journal));
+        if (currentView === 'today') {
+          const todayStr = new Date().toISOString().slice(0, 10);
+          all = all.filter(p => (p.published_on || '').slice(0, 10) === todayStr);
+        }
         window._filtered = all;
         const from = 0;
         const pageData = all.slice(from, from + PAGE_SIZE);
@@ -348,7 +410,7 @@ const TAG_ZH_MAP = {
         renderPager(1, all.length);
       } else {
         // Supabase 路徑: 重新查詢第一頁
-        await loadFromSupabase(1, selected);
+        await loadFromSupabase(1, selected, currentView);
       }
     }
 
