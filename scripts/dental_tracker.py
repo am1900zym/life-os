@@ -134,6 +134,45 @@ PUBTYPE_TAGS = {
     "Pregnancy": ("Pregnancy", "妊娠"),
 }
 
+# MeSH / Keyword 中文映射 (与前端 TAG_ZH_MAP 一致, 用于写入时预翻译 tags_zh)
+MESH_ZH = {
+    "epidemiology": "流行病学", "dental hygienists": "牙科卫生师", "dental hygienist": "牙科卫生师",
+    "nurses": "护士", "nursing": "护理", "dental implants": "种植体", "dental implant": "种植体",
+    "frailty": "衰弱", "digital health": "数字健康", "health services research": "卫生服务研究",
+    "aged": "老年人", "chlorhexidine": "氯己定", "3D printing": "3D打印", "artificial intelligence": "人工智能",
+    "concept analysis": "概念分析", "finite element analysis": "有限元分析", "fracture resistance": "抗折强度",
+    "critical care nursing": "重症护理", "dental health services": "牙科卫生服务", "child": "儿童",
+    "cell differentiation": "细胞分化", "health inequities": "健康不平等", "biomarkers": "生物标志物",
+    "dental care": "牙科诊疗", "health policy": "卫生政策", "dysphagia": "吞咽障碍", "anxiety": "焦虑",
+    "clinical decision-making": "临床决策", "attitude": "态度", "machine learning": "机器学习",
+    "emergency nurses": "急诊护士", "intensive care units": "重症监护病房", "family-centered care": "家庭中心照护",
+    "marginal bone loss": "边缘骨吸收", "longitudinal study": "纵向研究", "differential diagnosis": "鉴别诊断",
+    "preventive dentistry": "预防牙科", "dental public health": "公共牙科卫生", "extracellular matrix": "细胞外基质",
+    "access to care": "就医可及性", "calcium phosphates": "磷酸钙", "cellular senescence": "细胞衰老",
+    "dental informatics": "牙科信息学", "deep learning": "深度学习", "clinical trial": "临床试验",
+    "apical periodontitis": "根尖周炎", "molar incisor hypomineralization": "磨牙切牙矿化不全",
+    "dental insurance": "牙科保险", "chatbots": "聊天机器人", "cohort studies": "队列研究",
+    "diabetes mellitus": "糖尿病", "dental care team": "牙科诊疗团队", "covid-19": "新冠",
+    "oral health": "口腔健康", "cardiac surgical procedures": "心脏外科手术", "adolescent": "青少年",
+    "arch width": "牙弓宽度", "color stability": "颜色稳定性", "mechanical properties": "机械性能",
+    "minimally invasive surgery": "微创手术", "dental caries": "龋齿", "cross-sectional studies": "横断面研究",
+    "digital literacy": "数字素养", "compassion fatigue": "共情疲劳", "saudi arabia": "沙特阿拉伯",
+    "chlorhexidine gluconate": "葡萄糖酸氯己定", "intention to leave": "离职意向", "dental hygiene education": "牙科卫生教育",
+    "emotional intelligence": "情商", "multilevel analysis": "多水平分析", "dental care for aged": "老年牙科诊疗",
+    "icu nurses": "ICU护士", "clinical deterioration": "临床恶化", "latent profile analysis": "潜剖面分析",
+    "patient experience": "患者体验", "missed nursing care": "遗漏护理", "nurses' experiences": "护士体验",
+    "meta-analysis": "荟萃分析", "healthcare professionals": "医疗专业人员", "implementation": "实施",
+    "loneliness": "孤独", "walker and avant": "Walker-Avant法", "nursing education": "护理教育",
+    "knowledge": "知识", "evidence-based nursing": "循证护理", "cardiac rehabilitation": "心脏康复",
+    "nursing students": "护生", "qualitative research": "质性研究", "comparative": "对比研究",
+    "observational": "观察性研究", "letter": "来信", "validation": "效度研究", "editorial": "社论",
+    "caries": "龋齿", "caregivers": "照护者", "gingivitis": "牙龈炎", "periodontitis": "牙周炎",
+    "endodontics": "牙髓病学", "dental plaque": "牙菌斑", "inflammation": "炎症", "microbiome": "微生物组",
+    "dementia": "痴呆", "quality of life": "生活质量", "pain": "疼痛", "chatgpt": "ChatGPT",
+    "comparative study": "对比研究", "observational study": "观察性研究", "randomized controlled trial": "随机对照试验",
+    "systematic review": "系统评价", "meta analysis": "荟萃分析", "cross-sectional": "横断面研究",
+}
+
 NCBI_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 EUROPE_PMC_BASE = "https://www.ebi.ac.uk/europepmc/webservices/rest"
 TOOL = "DentaScopeTracker"
@@ -342,6 +381,9 @@ def parse_pubmed_xml(xml_text):
                 kw = text_of(k)
                 if kw and kw not in tags_en:
                     tags_en.append(kw)
+                    zh = MESH_ZH.get(kw.lower()) or MESH_ZH.get(kw) or ''
+                    if zh and zh not in tags_zh:
+                        tags_zh.append(zh)
         tags_en = tags_en[:5]
         tags_zh = tags_zh[:5]
 

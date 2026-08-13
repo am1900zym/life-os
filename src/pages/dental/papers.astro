@@ -62,11 +62,51 @@ const TAG_ZH_MAP = {
   "periodontal therapy": "牙周治疗", "scaling": "洁治", "root planing": "根面平整",
   "fixed orthodontic": "固定正畸", "clear aligners": "隐形矫治",
   "temporomandibular": "颞下颌", "bruxism": "夜磨牙", "sleep apnea": "睡眠呼吸暂停",
+  // ── 数据库真实高频 tags 补全 (含大小写变体) ──
+  "epidemiology": "流行病学", "dental hygienists": "牙科卫生师", "dental hygienist": "牙科卫生师",
+  "Nurses": "护士", "Nursing": "护理", "dental implants": "种植体", "Dental implants": "种植体",
+  "frailty": "衰弱", "digital health": "数字健康", "health services research": "卫生服务研究",
+  "aged": "老年人", "chlorhexidine": "氯己定", "3D printing": "3D打印",
+  "Artificial intelligence": "人工智能", "concept analysis": "概念分析",
+  "Finite element analysis": "有限元分析", "Fracture resistance": "抗折强度", "fracture resistance": "抗折强度",
+  "Critical care nursing": "重症护理", "dental health services": "牙科卫生服务",
+  "child": "儿童", "cell differentiation": "细胞分化", "health inequities": "健康不平等",
+  "Biomarkers": "生物标志物", "biomarkers": "生物标志物", "dental care": "牙科诊疗",
+  "health policy": "卫生政策", "dysphagia": "吞咽障碍", "Anxiety": "焦虑", "anxiety": "焦虑",
+  "Clinical decision-making": "临床决策", "Attitude": "态度", "attitude": "态度",
+  "Machine learning": "机器学习", "machine learning": "机器学习", "Emergency nurses": "急诊护士",
+  "Intensive care units": "重症监护病房", "family-centered care": "家庭中心照护",
+  "marginal bone loss": "边缘骨吸收", "longitudinal study": "纵向研究", "differential diagnosis": "鉴别诊断",
+  "preventive dentistry": "预防牙科", "dental public health": "公共牙科卫生",
+  "extracellular matrix": "细胞外基质", "access to care": "就医可及性", "calcium phosphates": "磷酸钙",
+  "cellular senescence": "细胞衰老", "dental informatics": "牙科信息学", "deep learning": "深度学习",
+  "clinical trial": "临床试验", "Clinical Trial": "临床试验", "apical periodontitis": "根尖周炎",
+  "Apical periodontitis": "根尖周炎", "molar incisor hypomineralization": "磨牙切牙矿化不全",
+  "dental insurance": "牙科保险", "Chatbots": "聊天机器人", "cohort studies": "队列研究",
+  "diabetes mellitus": "糖尿病", "dental care team": "牙科诊疗团队", "COVID-19": "新冠", "COVID‐19": "新冠",
+  "Oral health": "口腔健康", "cardiac surgical procedures": "心脏外科手术", "adolescent": "青少年",
+  "Arch width": "牙弓宽度", "Color stability": "颜色稳定性", "Mechanical properties": "机械性能",
+  "Minimally invasive surgery": "微创手术", "Dental caries": "龋齿", "Cross-sectional studies": "横断面研究",
+  "Digital literacy": "数字素养", "compassion fatigue": "共情疲劳", "Saudi Arabia": "沙特阿拉伯",
+  "chlorhexidine gluconate": "葡萄糖酸氯己定", "intention to leave": "离职意向",
+  "dental hygiene education": "牙科卫生教育", "emotional intelligence": "情商", "multilevel analysis": "多水平分析",
+  "dental care for aged": "老年牙科诊疗", "ICU nurses": "ICU护士", "clinical deterioration": "临床恶化",
+  "latent profile analysis": "潜剖面分析", "patient experience": "患者体验", "missed nursing care": "遗漏护理",
+  "nurses' experiences": "护士体验", "meta-analysis": "荟萃分析", "meta‐analysis": "荟萃分析",
+  "healthcare professionals": "医疗专业人员", "implementation": "实施", "loneliness": "孤独",
+  "Walker and Avant": "Walker-Avant法", "Nursing education": "护理教育", "Knowledge": "知识", "knowledge": "知识",
+  "Evidence-based nursing": "循证护理", "Cardiac rehabilitation": "心脏康复", "Nursing students": "护生",
+  "nursing students": "护生", "Qualitative research": "质性研究", "qualitative research": "质性研究",
+  "comparative": "对比研究", "Comparative": "对比研究", "observational": "观察性研究", "Observational": "观察性研究",
+  "letter": "来信", "Letter": "来信", "validation": "效度研究", "Validation": "效度研究",
+  "editorial": "社论", "Editorial": "社论", "caries": "龋齿", "caregivers": "照护者",
+  "gingivitis": "牙龈炎", "periodontitis": "牙周炎", "endodontics": "牙髓病学", "dental plaque": "牙菌斑",
+  "inflammation": "炎症", "microbiome": "微生物组", "dementia": "痴呆", "quality of life": "生活质量",
+  "pain": "疼痛", "ChatGPT": "ChatGPT",
 };
 ---
 
 <DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学 + 口腔护理论文 · 每日同步 PubMed · 20 大期刊 · OA 全文直达">
-  <script is:inline set:html={`window.__DENTAL_TAG_ZH_MAP__ = ${JSON.stringify(TAG_ZH_MAP)};`}></script>
   <!-- 筛选栏 -->
   <div class="meta-line">
     <button class="filter-btn" id="filter-toggle" type="button">☰ 筛选期刊</button>
@@ -103,8 +143,10 @@ const TAG_ZH_MAP = {
   <div class="papers-container" id="papers-container">
   {papersByDate.slice(0, 20).map(p => {
     const isToday = (p.published_on || '').slice(0, 10) === TODAY_STR;
+    // 大小写不敏感查找中文映射
+    const zhOf = (t) => TAG_ZH_MAP[t] || TAG_ZH_MAP[t.toLowerCase()] || TAG_ZH_MAP[t.charAt(0).toUpperCase() + t.slice(1)] || '';
     const tagsHtml = (p.tags || []).map(t => {
-      const zh = TAG_ZH_MAP[t] || '';
+      const zh = zhOf(t);
       const label = zh ? '<b>' + zh + '</b> · ' + t : t;
       return '<span class="paper-tag">' + label + '</span>';
     }).join('');
@@ -195,9 +237,94 @@ const TAG_ZH_MAP = {
     function normalizeJournal(name) {
       return String(name || '').toLowerCase().replace(/&/g, ' and ').replace(/\s+/g, ' ').trim();
     }
-    // PublicationType 中英映射 (与 tracker PUBTYPE_TAGS 一致)
-    // 由 frontmatter TAG_ZH_MAP 注入 (见页面顶部)
-    const TAG_ZH_MAP = window.__DENTAL_TAG_ZH_MAP__ || {};
+    // PublicationType + MeSH 中英映射 (与 frontmatter TAG_ZH_MAP 一致, 直接内联)
+    const TAG_ZH_MAP = {
+      "Article": "期刊文章", "Review": "综述", "Systematic Review": "系统评价",
+      "Meta-Analysis": "荟萃分析", "RCT": "随机对照", "Clinical Trial": "临床试验",
+      "Multicenter": "多中心", "Comparative": "对比研究", "Observational": "观察性研究",
+      "Case Report": "病例报告", "Guideline": "指南", "Practice Guideline": "实践指南",
+      "Validation": "效度研究", "Evaluation": "评价研究", "Letter": "来信",
+      "Editorial": "社论", "Comment": "评论", "Retraction": "撤稿", "Erratum": "勘误",
+      "In Vitro": "体外研究", "Prospective": "前瞻性研究", "Retrospective": "回顾性研究",
+      "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Follow-Up": "随访研究",
+      "Randomized Controlled Trial": "随机对照试验", "Meta Analysis": "荟萃分析",
+      "oral health": "口腔健康", "dental caries": "龋齿", "periodontitis": "牙周炎",
+      "periodontal disease": "牙周病", "gingivitis": "牙龈炎", "dental anxiety": "牙科焦虑",
+      "tooth loss": "牙齿缺失", "toothbrushing": "刷牙", "brushing": "刷牙",
+      "fluoride": "氟化物", "caries": "龋齿", "children": "儿童", "adolescents": "青少年",
+      "elderly": "老年人", "older adults": "老年人", "nurses": "护士", "nursing students": "护生",
+      "nursing": "护理", "nurse": "护士", "patients": "患者", "quality of life": "生活质量",
+      "well-being": "幸福感", "depression": "抑郁", "anxiety": "焦虑", "stress": "压力",
+      "burnout": "职业倦怠", "pain": "疼痛", "xerostomia": "口干症", "halitosis": "口臭",
+      "oral hygiene": "口腔卫生", "dental plaque": "牙菌斑", "biofilm": "生物膜",
+      "implants": "种植体", "dental implant": "种植体", "osseointegration": "骨结合",
+      "root canal": "根管", "endodontics": "牙髓病学", "pulp": "牙髓",
+      "restorative dentistry": "修复牙科", "composite": "复合树脂", "ceramics": "陶瓷",
+      "orthodontics": "正畸", "malocclusion": "错颌畸形", "TMJ": "颞下颌关节",
+      "systematic review": "系统评价", "meta-analysis": "荟萃分析",
+      "randomized controlled trial": "随机对照试验", "cross-sectional": "横断面研究",
+      "qualitative study": "质性研究", "qualitative research": "质性研究",
+      "patient satisfaction": "患者满意度", "patient safety": "患者安全",
+      "infection control": "感染控制", "COVID-19": "新冠", "SARS-CoV-2": "新冠病毒",
+      "education": "教育", "curriculum": "课程", "clinical competence": "临床能力",
+      "dentistry": "牙科学", "dental education": "牙科教育", "telehealth": "远程医疗",
+      "artificial intelligence": "人工智能", "machine learning": "机器学习",
+      "AI": "人工智能", "ChatGPT": "ChatGPT", "LLMs": "大语言模型",
+      "prevention": "预防", "screening": "筛查", "diagnosis": "诊断",
+      "treatment": "治疗", "management": "管理", "self-care": "自我护理",
+      "caregivers": "照护者", "family caregivers": "家庭照护者", "dementia": "痴呆",
+      "cancer": "癌症", "oral cancer": "口腔癌", "leukoplakia": "白斑",
+      "diabetes": "糖尿病", "hypertension": "高血压", "obesity": "肥胖",
+      "smoking": "吸烟", "tobacco": "烟草", "alcohol": "酒精",
+      "nutrition": "营养", "diet": "饮食", "dietary": "饮食",
+      "saliva": "唾液", "salivary": "唾液的", "microbiome": "微生物组",
+      "cytokines": "细胞因子", "inflammation": "炎症", "immune response": "免疫反应",
+      "bone regeneration": "骨再生", "bone graft": "骨移植", "GBR": "引导骨再生",
+      "periodontal therapy": "牙周治疗", "scaling": "洁治", "root planing": "根面平整",
+      "fixed orthodontic": "固定正畸", "clear aligners": "隐形矫治",
+      "temporomandibular": "颞下颌", "bruxism": "夜磨牙", "sleep apnea": "睡眠呼吸暂停",
+      // ── 数据库真实高频 tags 补全 (含大小写变体) ──
+      "epidemiology": "流行病学", "dental hygienists": "牙科卫生师", "dental hygienist": "牙科卫生师",
+      "Nurses": "护士", "Nursing": "护理", "dental implants": "种植体", "Dental implants": "种植体",
+      "frailty": "衰弱", "digital health": "数字健康", "health services research": "卫生服务研究",
+      "aged": "老年人", "chlorhexidine": "氯己定", "3D printing": "3D打印",
+      "Artificial intelligence": "人工智能", "concept analysis": "概念分析",
+      "Finite element analysis": "有限元分析", "Fracture resistance": "抗折强度", "fracture resistance": "抗折强度",
+      "Critical care nursing": "重症护理", "dental health services": "牙科卫生服务",
+      "child": "儿童", "cell differentiation": "细胞分化", "health inequities": "健康不平等",
+      "Biomarkers": "生物标志物", "biomarkers": "生物标志物", "dental care": "牙科诊疗",
+      "health policy": "卫生政策", "dysphagia": "吞咽障碍", "Anxiety": "焦虑", "anxiety": "焦虑",
+      "Clinical decision-making": "临床决策", "Attitude": "态度", "attitude": "态度",
+      "Machine learning": "机器学习", "machine learning": "机器学习", "Emergency nurses": "急诊护士",
+      "Intensive care units": "重症监护病房", "family-centered care": "家庭中心照护",
+      "marginal bone loss": "边缘骨吸收", "longitudinal study": "纵向研究", "differential diagnosis": "鉴别诊断",
+      "preventive dentistry": "预防牙科", "dental public health": "公共牙科卫生",
+      "extracellular matrix": "细胞外基质", "access to care": "就医可及性", "calcium phosphates": "磷酸钙",
+      "cellular senescence": "细胞衰老", "dental informatics": "牙科信息学", "deep learning": "深度学习",
+      "clinical trial": "临床试验", "Clinical Trial": "临床试验", "apical periodontitis": "根尖周炎",
+      "Apical periodontitis": "根尖周炎", "molar incisor hypomineralization": "磨牙切牙矿化不全",
+      "dental insurance": "牙科保险", "Chatbots": "聊天机器人", "cohort studies": "队列研究",
+      "diabetes mellitus": "糖尿病", "dental care team": "牙科诊疗团队", "COVID-19": "新冠", "COVID‐19": "新冠",
+      "Oral health": "口腔健康", "cardiac surgical procedures": "心脏外科手术", "adolescent": "青少年",
+      "Arch width": "牙弓宽度", "Color stability": "颜色稳定性", "Mechanical properties": "机械性能",
+      "Minimally invasive surgery": "微创手术", "Dental caries": "龋齿", "Cross-sectional studies": "横断面研究",
+      "Digital literacy": "数字素养", "compassion fatigue": "共情疲劳", "Saudi Arabia": "沙特阿拉伯",
+      "chlorhexidine gluconate": "葡萄糖酸氯己定", "intention to leave": "离职意向",
+      "dental hygiene education": "牙科卫生教育", "emotional intelligence": "情商", "multilevel analysis": "多水平分析",
+      "dental care for aged": "老年牙科诊疗", "ICU nurses": "ICU护士", "clinical deterioration": "临床恶化",
+      "latent profile analysis": "潜剖面分析", "patient experience": "患者体验", "missed nursing care": "遗漏护理",
+      "nurses' experiences": "护士体验", "meta-analysis": "荟萃分析", "meta‐analysis": "荟萃分析",
+      "healthcare professionals": "医疗专业人员", "implementation": "实施", "loneliness": "孤独",
+      "Walker and Avant": "Walker-Avant法", "Nursing education": "护理教育", "Knowledge": "知识", "knowledge": "知识",
+      "Evidence-based nursing": "循证护理", "Cardiac rehabilitation": "心脏康复", "Nursing students": "护生",
+      "nursing students": "护生", "Qualitative research": "质性研究", "qualitative research": "质性研究",
+      "comparative": "对比研究", "Comparative": "对比研究", "observational": "观察性研究", "Observational": "观察性研究",
+      "letter": "来信", "Letter": "来信", "validation": "效度研究", "Validation": "效度研究",
+      "editorial": "社论", "Editorial": "社论", "caries": "龋齿", "caregivers": "照护者",
+      "gingivitis": "牙龈炎", "periodontitis": "牙周炎", "endodontics": "牙髓病学", "dental plaque": "牙菌斑",
+      "inflammation": "炎症", "microbiome": "微生物组", "dementia": "痴呆", "quality of life": "生活质量",
+      "pain": "疼痛", "ChatGPT": "ChatGPT",
+    };
   </script>
 
   <!-- ===== 筛选 + 分页邏輯 ===== -->
@@ -264,10 +391,12 @@ const TAG_ZH_MAP = {
       const linkUrl = escapeHtml(p.full_text_url || p.url || '#');
       const linkText = p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文';
       const titleZh = p.title_zh ? `<div class="paper-title-zh">${escapeHtml(p.title_zh)}</div>` : '';
+      // 大小写不敏感查找中文映射
+      const zhOf = (t) => TAG_ZH_MAP[t] || TAG_ZH_MAP[t.toLowerCase()] || TAG_ZH_MAP[t.charAt(0).toUpperCase() + t.slice(1)] || '';
       // 双语标签: 有中文映射 → "中文 · English", 无映射 (MeSH 关键词) → 仅英文
       const tagsHtml = Array.isArray(p.tags) && p.tags.length
         ? p.tags.map(t => {
-            const zh = TAG_ZH_MAP[t] || '';
+            const zh = zhOf(t);
             const label = zh ? `${zh} · ${escapeHtml(t)}` : escapeHtml(t);
             return `<span class="paper-tag" ${zh ? 'style="background:rgba(79,124,247,.10);color:#4f7cf7;border:1px solid rgba(79,124,247,.3)"' : 'style="background:var(--card);border:1px solid var(--border);color:var(--muted)"'}>${label}</span>`;
           }).join('') : '';
