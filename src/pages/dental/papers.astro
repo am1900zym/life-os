@@ -71,11 +71,6 @@ const TAG_ZH_MAP = {
   <div class="meta-line">
     <button class="filter-btn" id="filter-toggle" type="button">☰ 筛选期刊</button>
     <span id="filter-status" style="font-size:12.5px;color:var(--muted)">全部 {dentalJournals.length} 本期刊</span>
-    <!-- 视图切换: 全部 / 今天 -->
-    <span style="margin-left:16px;display:inline-flex;gap:4px;border:1px solid var(--border);border-radius:10px;padding:2px;background:var(--card)">
-      <button class="view-toggle" data-view="all" style="border:none;background:var(--brand);color:#fff;padding:4px 14px;border-radius:8px;font-size:12px;cursor:pointer">全部</button>
-      <button class="view-toggle" data-view="today" style="border:none;background:transparent;color:var(--muted);padding:4px 14px;border-radius:8px;font-size:12px;cursor:pointer">今天</button>
-    </span>
     <!-- 分页資訊 -->
     <span id="pagination-info" style="font-size:12.5px;color:var(--muted);margin-left:16px">
       第 <span id="current-page">1</span> 页，共 <span id="total-pages">1</span> 页
@@ -213,7 +208,7 @@ const TAG_ZH_MAP = {
     let isClientSideFilter = false; // 是否在前端做筛选 (Supabase 路径下為 false)
 
     // 从 Supabase 加载 (分页靠 offset/limit)
-    async function loadFromSupabase(page = 1, journals = [], view = 'all') {
+    async function loadFromSupabase(page = 1, journals = []) {
       const mod = await import('../../lib/supabaseClient');
       if (!mod.supabase) return false;
 
@@ -226,11 +221,6 @@ const TAG_ZH_MAP = {
       // 期刊筛选: 始终生效 (in-filter)
       if (journals.length > 0 && journals.length < dentalJournals.length) {
         query = query.in('journal', journals);
-      }
-      // 视图: 今天 → 只取今天的文章
-      if (view === 'today') {
-        const todayStr = new Date().toISOString().slice(0, 10);
-        query = query.gte('published_on', todayStr + ' 00:00:00').lte('published_on', todayStr + ' 23:59:59');
       }
 
       const { data, error, count } = await query;
@@ -348,24 +338,18 @@ const TAG_ZH_MAP = {
       loadPage(next);
     }
 
-    let currentView = 'all'; // 视图: all / today
-
     async function loadPage(page) {
       const journals = [...document.querySelectorAll('#journal-checks input:checked')].map(cb => cb.value);
       if (isClientSideFilter) {
         // 本地篩選 → 本地分页
-        let all = window._allPapers.filter(p => journals.length === 0 || journals.includes(p.journal));
-        if (currentView === 'today') {
-          const todayStr = new Date().toISOString().slice(0, 10);
-          all = all.filter(p => (p.published_on || '').slice(0, 10) === todayStr);
-        }
+        const all = window._allPapers.filter(p => journals.length === 0 || journals.includes(p.journal));
         const from = (page - 1) * PAGE_SIZE;
         const pageData = all.slice(from, from + PAGE_SIZE);
         renderList(pageData);
         renderPager(page, all.length);
       } else {
         // Supabase 篩選 → 遠端分页
-        await loadFromSupabase(page, journals, currentView);
+        await loadFromSupabase(page, journals);
       }
     }
 
@@ -379,18 +363,6 @@ const TAG_ZH_MAP = {
           applyFilter();
         });
       });
-      // 视图切换: 全部 / 今天
-      document.querySelectorAll('.view-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-          currentView = btn.getAttribute('data-view');
-          document.querySelectorAll('.view-toggle').forEach(b => {
-            const active = b === btn;
-            b.style.background = active ? 'var(--brand)' : 'transparent';
-            b.style.color = active ? '#fff' : 'var(--muted)';
-          });
-          applyFilter();
-        });
-      });
     }
 
     async function applyFilter() {
@@ -398,11 +370,7 @@ const TAG_ZH_MAP = {
       document.getElementById('filter-status').textContent = `已选 ${selected.length} / ${dentalJournals.length} 本期刊`;
 
       if (isClientSideFilter) {
-        let all = window._allPapers.filter(p => selected.length === 0 || selected.includes(p.journal));
-        if (currentView === 'today') {
-          const todayStr = new Date().toISOString().slice(0, 10);
-          all = all.filter(p => (p.published_on || '').slice(0, 10) === todayStr);
-        }
+        const all = window._allPapers.filter(p => selected.length === 0 || selected.includes(p.journal));
         window._filtered = all;
         const from = 0;
         const pageData = all.slice(from, from + PAGE_SIZE);
@@ -410,7 +378,7 @@ const TAG_ZH_MAP = {
         renderPager(1, all.length);
       } else {
         // Supabase 路徑: 重新查詢第一頁
-        await loadFromSupabase(1, selected, currentView);
+        await loadFromSupabase(1, selected);
       }
     }
 

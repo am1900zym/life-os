@@ -1,14 +1,15 @@
 ---
-// src/pages/dental/index.astro — 口腔视界首页（今日 + 新论文 + 口腔塔罗）
+// src/pages/dental/index.astro — 今日口腔: 只显示当天文章 (Supabase 实时)
+// 未来其他板块 (病例/护理/视频) 的当天信息也汇入此页
 import DentalLayout from '../../layouts/DentalLayout.astro';
-import { papersByDate, dentalJournals } from '../../data/dentalData';
+import { dentalJournals } from '../../data/dentalData';
 ---
 
 <DentalLayout title="口腔视界 — 今日口腔" active="/dental" pageTitle="今日口腔" pageSub="口腔医学 · 口腔护理，每日更新。">
-  <!-- 统计条 -->
+  <!-- 统计条 (动态加载后更新) -->
   <section class="stat-bar">
     <div class="stat-card">
-      <div class="stat-num">{papersByDate.length}</div>
+      <div class="stat-num" id="stat-today">…</div>
       <div class="stat-label">今日收录论文</div>
     </div>
     <div class="stat-card">
@@ -38,27 +39,94 @@ import { papersByDate, dentalJournals } from '../../data/dentalData';
     <button class="tarot-shuffle" id="tarot-shuffle" type="button">洗牌重抽 →</button>
   </section>
 
-  <!-- 新论文 -->
+  <!-- 今日论文 (Supabase 实时: 仅当天) -->
   <section class="paper-section">
     <div class="date-group">
-      <span class="dg-date">New Papers</span>
-      <span class="dg-count">口腔论文 · 每日更新</span>
+      <span class="dg-date">Today's Papers</span>
+      <span class="dg-count">今日新论文 · 来自 PubMed</span>
     </div>
-
-    {papersByDate.slice(0, 8).map((paper) => (
-      <article class="paper-item">
-        <div class="paper-meta">
-          <span class="paper-journal j-blue">{paper.journal}</span>
-          <span class="new-badge">NEW</span>
-          <span style="margin-left:auto">{paper.date}</span>
-        </div>
-        <h3 class="paper-title"><a href={paper.url}>{paper.title}</a></h3>
-        <div class="paper-authors">{paper.authors}</div>
-        <p class="paper-abstract">{paper.abstract}</p>
-      </article>
-    ))}
+    <div class="papers-container" id="today-papers">
+      <p style="color:var(--muted);padding:12px">加载今日论文…</p>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px" id="today-empty" hidden>
+      今天暂无新论文（PubMed 出版可能有延迟，明早 08:00 自动同步）。
+    </p>
   </section>
 </DentalLayout>
+
+<script is:inline>
+  // 中文标签映射 (与论文页一致, 精简版)
+  const TAG_ZH = {
+    "Article": "期刊文章", "Review": "综述", "Systematic Review": "系统评价",
+    "Meta-Analysis": "荟萃分析", "RCT": "随机对照", "Clinical Trial": "临床试验",
+    "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Case Report": "病例报告",
+    "Guideline": "指南", "Editorial": "社论", "Letter": "来信",
+    "oral health": "口腔健康", "dental caries": "龋齿", "periodontitis": "牙周炎",
+    "nursing": "护理", "nurses": "护士", "children": "儿童", "adolescents": "青少年",
+    "quality of life": "生活质量", "pain": "疼痛", "prevention": "预防",
+    "randomized controlled trial": "随机对照试验", "qualitative study": "质性研究",
+    "systematic review": "系统评价", "meta-analysis": "荟萃分析", "dentistry": "牙科学",
+  };
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+  (async function () {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const start = todayStr + 'T00:00:00', end = todayStr + 'T23:59:59';
+    let papers = [];
+    try {
+      const mod = await import('../../lib/supabaseClient');
+      if (mod.supabase) {
+        const { data, error, count } = await mod.supabase
+          .from('dental_papers')
+          .select('*', { count: 'exact' })
+          .gte('published_on', start)
+          .lte('published_on', end)
+          .order('published_on', { ascending: false })
+          .limit(30);
+        if (!error) papers = data || [];
+      }
+    } catch (e) { /* 降级空列表 */ }
+
+    const stat = document.getElementById('stat-today');
+    if (stat) stat.textContent = papers.length;
+
+    const container = document.getElementById('today-papers');
+    const empty = document.getElementById('today-empty');
+    if (!container) return;
+
+    if (!papers.length) {
+      container.innerHTML = '';
+      if (empty) empty.hidden = false;
+      return;
+    }
+
+    container.innerHTML = papers.map(p => {
+      const journalZh = p.journal_zh ? `<span style="color:var(--muted);font-size:12px;margin-left:6px">/ ${esc(p.journal_zh)}</span>` : '';
+      const oa = p.is_oa ? `<span style="background:rgba(46,125,50,.10);color:#2e7d32;border:1px solid rgba(46,125,50,.3);padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-left:8px">● OA 全文</span>` : '';
+      const tags = (p.tags || []).map(t => {
+        const zh = TAG_ZH[t] || '';
+        const label = zh ? `<b>${esc(zh)}</b> · ${esc(t)}` : esc(t);
+        const style = zh ? 'background:rgba(79,124,247,.10);color:#4f7cf7;border:1px solid rgba(79,124,247,.3)' : 'background:var(--card);border:1px solid var(--border);color:var(--muted)';
+        return `<span style="display:inline-block;${style};padding:1px 8px;border-radius:999px;font-size:11px;margin-right:6px;margin-bottom:3px">${label}</span>`;
+      }).join('');
+      const titleZh = p.title_zh ? `<div style="font-size:14px;color:var(--muted);margin:4px 0 8px;font-weight:500">${esc(p.title_zh)}</div>` : '';
+      const link = esc(p.full_text_url || p.url || '#');
+      const linkText = p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文';
+      return `
+        <article class="paper-item" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px">
+          <div class="paper-meta">
+            <span style="color:var(--brand);font-weight:500">${esc(p.journal)}</span>${journalZh}${oa}
+            <span style="float:right;font-size:12px;color:var(--muted)">${esc((p.published_on||'').slice(5,10))}</span>
+          </div>
+          <h3 class="paper-title" style="margin:6px 0;font-size:16px;line-height:1.4"><a href="${link}" target="_blank" rel="noopener">${esc(p.title)}</a></h3>
+          ${titleZh}
+          <div style="font-size:13px;color:var(--muted)">${esc(p.authors||'')}</div>
+          <div class="paper-tags" style="margin:8px 0">${tags}</div>
+          <div><a href="${link}" target="_blank" rel="noopener" style="font-size:12.5px;font-weight:600;color:var(--brand,#4f7cf7)">${linkText}</a></div>
+        </article>`;
+    }).join('');
+  })();
+</script>
 
 <script is:inline>
   // ===== 口腔塔罗：抽卡即给答案 =====
