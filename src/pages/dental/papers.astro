@@ -5,6 +5,26 @@ import DentalLayout from '../../layouts/DentalLayout.astro';
 import { papersByDate, dentalJournals } from '../../data/dentalData';
 
 const PAGE_SIZE = 20; // 每頁 20 篇
+
+// 今天日期 (YYYY-MM-DD, 用本地时区)
+const TODAY_STR = [
+  String(new Date().getFullYear()).padStart(4, '0'),
+  String(new Date().getMonth() + 1).padStart(2, '0'),
+  String(new Date().getDate()).padStart(2, '0'),
+].join('-');
+
+// PublicationType 中英映射 (与 tracker PUBTYPE_TAGS 一致)
+const TAG_ZH_MAP = {
+  "Article": "期刊文章", "Review": "综述", "Systematic Review": "系统评价",
+  "Meta-Analysis": "荟萃分析", "RCT": "随机对照", "Clinical Trial": "临床试验",
+  "Multicenter": "多中心", "Comparative": "对比研究", "Observational": "观察性研究",
+  "Case Report": "病例报告", "Guideline": "指南", "Practice Guideline": "实践指南",
+  "Validation": "效度研究", "Evaluation": "评价研究", "Letter": "来信",
+  "Editorial": "社论", "Comment": "评论", "Retraction": "撤稿", "Erratum": "勘误",
+  "In Vitro": "体外研究", "Prospective": "前瞻性研究", "Retrospective": "回顾性研究",
+  "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Follow-Up": "随访研究",
+  "Randomized Controlled Trial": "随机对照试验", "Meta Analysis": "荟萃分析",
+};
 ---
 
 <DentalLayout title="论文库 — 口腔视界" active="/dental/papers" pageTitle="New Papers" pageSub="口腔医学 + 口腔护理论文 · 每日同步 PubMed · 20 大期刊 · OA 全文直达">
@@ -43,24 +63,26 @@ const PAGE_SIZE = 20; // 每頁 20 篇
   <!-- 論文列表 (初始渲染靜態, 之後用 JS 分页覆蓋) -->
   <div class="papers-container" id="papers-container">
   {papersByDate.slice(0, 20).map(p => {
-    const journalZh = p.journal_zh ? ` / ${p.journal_zh}` : '';
-    const oaBadge = p.is_oa ? `<span class="oa-badge">● OA 全文</span>` : '';
-    const tagsZh = (p.tags_zh || []).map(t => `<span class="paper-tag zh-tag">${t}</span>`).join('');
-    const tagsEn = (p.tags || []).map(t => `<span class="paper-tag en-tag">${t}</span>`).join('');
+    const isToday = (p.published_on || '').slice(0, 10) === TODAY_STR;
+    const tagsHtml = (p.tags || []).map(t => {
+      const zh = TAG_ZH_MAP[t] || '';
+      const label = zh ? '<b>' + zh + '</b> · ' + t : t;
+      return '<span class="paper-tag">' + label + '</span>';
+    }).join('');
     return (
       <article class="paper-item" data-journal={p.journal}>
         <div class="paper-meta">
           <span class="paper-journal" style="color:var(--brand);font-weight:500">{p.journal}</span>
-          <span class="paper-journal-zh">{journalZh}</span>
+          <span class="paper-journal-zh">{p.journal_zh ? ` / ${p.journal_zh}` : ''}</span>
           {p.is_oa && <span class="oa-badge">● OA 全文</span>}
-          <span class="new-badge">NEW</span>
+          {isToday && <span class="new-badge">NEW</span>}
           <span style="margin-left:auto">{p.published_on?.slice(5,10)}</span>
         </div>
         <h3 class="paper-title"><a href={p.full_text_url || p.url} target="_blank" rel="noopener" title="点击查看原文">{p.title}</a></h3>
         {p.title_zh && <div class="paper-title-zh">{p.title_zh}</div>}
         <div class="paper-authors">{p.authors}</div>
         {p.abstract && <p class="paper-abstract">{p.abstract.slice(0, 300)}{p.abstract.length > 300 ? '...' : ''}</p>}
-        <div class="paper-tags">{tagsZh}{tagsEn}</div>
+        <div class="paper-tags" set:html={tagsHtml}></div>
         <div class="paper-links">
           <a class="paper-link" href={p.full_text_url || p.url} target="_blank" rel="noopener">{p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文'}</a>
         </div>
@@ -112,6 +134,16 @@ const PAGE_SIZE = 20; // 每頁 20 篇
     }
     .paper-link:hover { text-decoration: underline; }
     .paper-doi { font-size: 11px; color: var(--muted); opacity: .8; }
+    .paper-tag {
+      display: inline-block; padding: 1px 8px; border-radius: 999px;
+      font-size: 11px; margin-right: 6px; margin-bottom: 3px;
+    }
+    .paper-tag b { font-weight: 600; }
+    .new-badge {
+      display: inline-block; font-size: 11px; color: #e65100;
+      border: 1px solid rgba(230,81,0,.3); background: rgba(230,81,0,.08);
+      padding: 1px 8px; border-radius: 999px; margin-left: 8px; font-weight: 600;
+    }
     .data-status { display: flex; align-items: center; gap: 6px; }
   </style>
 
@@ -124,6 +156,18 @@ const PAGE_SIZE = 20; // 每頁 20 篇
     function normalizeJournal(name) {
       return String(name || '').toLowerCase().replace(/&/g, ' and ').replace(/\s+/g, ' ').trim();
     }
+    // PublicationType 中英映射 (与 tracker PUBTYPE_TAGS 一致)
+    const TAG_ZH_MAP = {
+      "Article": "期刊文章", "Review": "综述", "Systematic Review": "系统评价",
+      "Meta-Analysis": "荟萃分析", "RCT": "随机对照", "Clinical Trial": "临床试验",
+      "Multicenter": "多中心", "Comparative": "对比研究", "Observational": "观察性研究",
+      "Case Report": "病例报告", "Guideline": "指南", "Practice Guideline": "实践指南",
+      "Validation": "效度研究", "Evaluation": "评价研究", "Letter": "来信",
+      "Editorial": "社论", "Comment": "评论", "Retraction": "撤稿", "Erratum": "勘误",
+      "In Vitro": "体外研究", "Prospective": "前瞻性研究", "Retrospective": "回顾性研究",
+      "Cross-Sectional": "横断面研究", "Cohort": "队列研究", "Follow-Up": "随访研究",
+      "Randomized Controlled Trial": "随机对照试验", "Meta Analysis": "荟萃分析",
+    };
   </script>
 
   <!-- ===== 筛选 + 分页邏輯 ===== -->
@@ -190,18 +234,25 @@ const PAGE_SIZE = 20; // 每頁 20 篇
       const linkUrl = escapeHtml(p.full_text_url || p.url || '#');
       const linkText = p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文';
       const titleZh = p.title_zh ? `<div class="paper-title-zh">${escapeHtml(p.title_zh)}</div>` : '';
-      const tagsZh = Array.isArray(p.tags_zh) && p.tags_zh.length
-        ? p.tags_zh.map(t => `<span style="background:rgba(79,124,247,.10);color:#4f7cf7;border:1px solid rgba(79,124,247,.3);padding:1px 8px;border-radius:999px;font-size:11px;margin-right:6px;">${escapeHtml(t)}</span>`).join('') : '';
-      const tagsEn = Array.isArray(p.tags) && p.tags.length
-        ? p.tags.map(t => `<span style="background:var(--card);border:1px solid var(--border);padding:1px 8px;border-radius:999px;font-size:11px;color:var(--muted);margin-right:6px;">${escapeHtml(t)}</span>`).join('') : '';
+      // 双语标签: 有中文映射 → "中文 · English", 无映射 (MeSH 关键词) → 仅英文
+      const tagsHtml = Array.isArray(p.tags) && p.tags.length
+        ? p.tags.map(t => {
+            const zh = TAG_ZH_MAP[t] || '';
+            const label = zh ? `${zh} · ${escapeHtml(t)}` : escapeHtml(t);
+            return `<span class="paper-tag" ${zh ? 'style="background:rgba(79,124,247,.10);color:#4f7cf7;border:1px solid rgba(79,124,247,.3)"' : 'style="background:var(--card);border:1px solid var(--border);color:var(--muted)"'}>${label}</span>`;
+          }).join('') : '';
       const doi = p.doi ? `<span class="paper-doi">doi: ${escapeHtml(p.doi)}</span>` : '';
+      // NEW 标签: 仅今天的文章
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const isToday = (p.published_on || '').slice(0, 10) === todayStr;
+      const newBadge = isToday ? `<span class="new-badge" style="font-size:11px;color:#e65100;border:1px solid rgba(230,81,0,.3);background:rgba(230,81,0,.08);padding:1px 8px;border-radius:999px;margin-left:8px;font-weight:600">NEW</span>` : '';
       return `
         <article class="paper-item" data-journal="${escapeHtml(p.journal)}" data-tags="${escapeHtml((p.tags||[]).join(','))}">
           <div class="paper-meta">
             <span class="paper-journal" style="color:var(--brand);font-weight:500">${escapeHtml(p.journal)}</span>
             ${journalZh}
             ${oaBadge}
-            <span class="new-badge" style="font-size:11px;color:var(--muted);margin-left:8px">NEW</span>
+            ${newBadge}
             <span style="margin-left:auto;font-size:12px;color:var(--muted)">${escapeHtml((p.published_on || '').slice(5,10))}</span>
           </div>
           <h3 class="paper-title" style="margin:6px 0;font-family:'Crimson Pro',serif;font-size:16px;line-height:1.4">
@@ -210,7 +261,7 @@ const PAGE_SIZE = 20; // 每頁 20 篇
           ${titleZh}
           <div class="paper-authors" style="font-size:13px;color:var(--muted);margin:4px 0">${escapeHtml(p.authors || '')}</div>
           ${p.abstract ? `<p class="paper-abstract" style="font-size:13px;color:var(--fg);margin:6px 0;line-height:1.5">${escapeHtml(p.abstract.slice(0,300))}${p.abstract.length>300?'...':''}</p>` : ''}
-          <div class="paper-tags" style="margin:8px 0">${tagsZh}${tagsEn}</div>
+          <div class="paper-tags" style="margin:8px 0">${tagsHtml}</div>
           <div class="paper-links">
             <a class="paper-link" href="${linkUrl}" target="_blank" rel="noopener">${linkText}</a>
             ${doi}
