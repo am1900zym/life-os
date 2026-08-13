@@ -6,6 +6,17 @@ import { papersByDate, dentalJournals, dentalJournalZh } from '../../data/dental
 
 const PAGE_SIZE = 20; // 每頁 20 篇
 
+// 按日期 (MM-DD) 分组 (frontmatter 预计算, 供 SSR 渲染)
+const dateGroups = (() => {
+  const map = new Map();
+  papersByDate.forEach(p => {
+    const d = (p.published_on || p.date || '').slice(5, 10);
+    if (!map.has(d)) map.set(d, []);
+    map.get(d).push(p);
+  });
+  return [...map.entries()].map(([date, items]) => ({ date, items }));
+})();
+
 // 今天日期 (YYYY-MM-DD, 用本地时区)
 const TODAY_STR = [
   String(new Date().getFullYear()).padStart(4, '0'),
@@ -139,37 +150,47 @@ const TAG_ZH_MAP = {
     </div>
   </div>
 
-  <!-- 論文列表 (初始渲染靜態, 之後用 JS 分页覆蓋) -->
-  <div class="papers-container" id="papers-container">
-  {papersByDate.slice(0, 20).map(p => {
-    const isToday = (p.published_on || '').slice(0, 10) === TODAY_STR;
-    // 大小写不敏感查找中文映射
-    const zhOf = (t) => TAG_ZH_MAP[t] || TAG_ZH_MAP[t.toLowerCase()] || TAG_ZH_MAP[t.charAt(0).toUpperCase() + t.slice(1)] || '';
-    const tagsHtml = (p.tags || []).map(t => {
-      const zh = zhOf(t);
-      const label = zh ? '<b>' + zh + '</b> · ' + t : t;
-      return '<span class="paper-tag">' + label + '</span>';
-    }).join('');
-    return (
-      <article class="paper-item" data-journal={p.journal}>
-        <div class="paper-meta">
-          <span class="paper-journal" style="color:var(--brand);font-weight:500">{p.journal}</span>
-          <span class="paper-journal-zh">{p.journal_zh ? ` / ${p.journal_zh}` : ''}</span>
-          {p.is_oa && <span class="oa-badge">● OA 全文</span>}
-          {isToday && <span class="new-badge">NEW</span>}
-          <span style="margin-left:auto">{p.published_on?.slice(5,10)}</span>
+  <!-- 論文列表 (按收录日期分组, 可折叠) -->
+  <div class="papers-groups" id="papers-groups">
+    {dateGroups.map(g => (
+      <section class="date-group-block">
+        <button class="date-group-head" type="button">
+          <span class="dg-arrow">▾</span>
+          <span class="dg-date">{g.date}</span>
+          <span class="dg-count">{g.items.length} 篇</span>
+        </button>
+        <div class="date-group-body">
+          {g.items.slice(0, 20).map(p => {
+            const journalZh = p.journal_zh ? <span class="paper-journal-zh"> / {p.journal_zh}</span> : null;
+            const oa = p.is_oa ? <span class="oa-badge">● OA 全文</span> : null;
+            const isToday = (p.published_on || '').slice(0,10) === TODAY_STR;
+            const newB = isToday ? <span class="new-badge">NEW</span> : null;
+            const zhOf = (t) => TAG_ZH_MAP[t] || TAG_ZH_MAP[t.toLowerCase()] || TAG_ZH_MAP[t.charAt(0).toUpperCase() + t.slice(1)] || '';
+            const tags = (p.tags || []).map(t => {
+              const zh = zhOf(t);
+              return <span class="paper-tag">{zh ? <b>{zh}</b> : null}{zh ? ' · ' : null}{t}</span>;
+            });
+            const titleZh = p.title_zh ? <div class="paper-title-zh">{p.title_zh}</div> : null;
+            const link = p.full_text_url || p.url;
+            return (
+              <article class="paper-item" data-journal={p.journal}>
+                <div class="paper-meta">
+                  <span class="paper-journal" style="color:var(--brand);font-weight:500">{p.journal}</span>
+                  {journalZh}{oa}{newB}
+                  <span style="margin-left:auto">{(p.published_on||'').slice(5,10)}</span>
+                </div>
+                <h3 class="paper-title"><a href={link} target="_blank" rel="noopener">{p.title}</a></h3>
+                {titleZh}
+                <div class="paper-authors">{p.authors||''}</div>
+                {p.abstract ? <p class="paper-abstract">{p.abstract.slice(0,300)}{p.abstract.length>300?'...':''}</p> : null}
+                <div class="paper-tags">{tags}</div>
+                <div class="paper-links"><a class="paper-link" href={link} target="_blank" rel="noopener">{p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文'}</a></div>
+              </article>
+            );
+          })}
         </div>
-        <h3 class="paper-title"><a href={p.full_text_url || p.url} target="_blank" rel="noopener" title="点击查看原文">{p.title}</a></h3>
-        {p.title_zh && <div class="paper-title-zh">{p.title_zh}</div>}
-        <div class="paper-authors">{p.authors}</div>
-        {p.abstract && <p class="paper-abstract">{p.abstract.slice(0, 300)}{p.abstract.length > 300 ? '...' : ''}</p>}
-        <div class="paper-tags" set:html={tagsHtml}></div>
-        <div class="paper-links">
-          <a class="paper-link" href={p.full_text_url || p.url} target="_blank" rel="noopener">{p.is_oa ? '📄 阅读 OA 全文' : '🔗 PubMed 原文'}</a>
-        </div>
-      </article>
-    );
-  })}
+      </section>
+    ))}
   </div>
 
   <!-- 分页控件 (底部居中) -->
@@ -220,9 +241,21 @@ const TAG_ZH_MAP = {
       font-size: 11px; margin-right: 6px; margin-bottom: 3px;
     }
     .paper-tag b { font-weight: 600; }
+    .papers-groups { margin-top: 16px; }
+    .date-group-block { margin-bottom: 22px; }
+    .date-group-head {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      background: transparent; border: none; cursor: pointer; padding: 6px 0;
+      border-bottom: 2px solid var(--brand); margin-bottom: 14px;
+    }
+    .dg-arrow { color: var(--brand); font-size: 12px; transition: transform .15s; }
+    .date-group-block.collapsed .dg-arrow { transform: rotate(-90deg); }
+    .dg-date { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 600; color: var(--brand); }
+    .dg-count { font-size: 12.5px; color: var(--muted); }
+    .date-group-block.collapsed .date-group-body { display: none; }
     .new-badge {
-      display: inline-block; font-size: 11px; color: #e65100;
-      border: 1px solid rgba(230,81,0,.3); background: rgba(230,81,0,.08);
+      display: inline-block; font-size: 11px; color: #d32f2f;
+      border: 1px solid rgba(211,47,47,.3); background: rgba(211,47,47,.10);
       padding: 1px 8px; border-radius: 999px; margin-left: 8px; font-weight: 600;
     }
     .data-status { display: flex; align-items: center; gap: 6px; }
@@ -334,16 +367,15 @@ const TAG_ZH_MAP = {
     let filteredPapers = [];     // 经过期刊筛选后 (前端) 或分页查询后 (Supabase) 的全部结果
     let isClientSideFilter = false; // 是否在前端做筛选 (Supabase 路径下為 false)
 
-    // 从 Supabase 加载 (分页靠 offset/limit)
+    // 从 Supabase 加载 (按日期分组, 一次取前 120 篇)
     async function loadFromSupabase(page = 1, journals = []) {
       const mod = await import('../../lib/supabaseClient');
       if (!mod.supabase) return false;
 
-      const from = (page - 1) * PAGE_SIZE;
       let query = mod.supabase.from('dental_papers')
         .select('*', { count: 'exact' })
         .order('published_on', { ascending: false })
-        .range(from, from + PAGE_SIZE - 1);
+        .limit(120);
 
       // 期刊筛选: 始终生效 (in-filter)
       if (journals.length > 0 && journals.length < dentalJournals.length) {
@@ -355,7 +387,9 @@ const TAG_ZH_MAP = {
 
       filteredPapers = data || [];
       renderList(filteredPapers);
-      renderPager(page, count || 0);
+      const nav = document.getElementById('pager-nav');
+      if (nav) nav.style.display = 'none';
+      document.getElementById('papers-status').innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#2e7d32"></span>● 实时数据 · PubMed 追踪 · ${count || filteredPapers.length} 篇`;
       return true;
     }
 
@@ -379,10 +413,34 @@ const TAG_ZH_MAP = {
     }
 
     function renderList(items) {
-      const container = document.getElementById('papers-container');
+      const container = document.getElementById('papers-groups');
       if (!container) return;
-      container.innerHTML = items.map(p => renderPaperToHtml(p)).join('');
-      bindPaperLinks();
+      container.innerHTML = groupPapers(items);
+      bindGroupToggle();
+    }
+
+    function groupPapers(list) {
+      const map = new Map();
+      list.forEach(p => {
+        const d = (p.published_on || '').slice(5, 10);
+        if (!map.has(d)) map.set(d, []);
+        map.get(d).push(p);
+      });
+      return [...map.entries()].map(([date, items]) => `
+        <section class="date-group-block">
+          <button class="date-group-head" type="button">
+            <span class="dg-arrow">▾</span>
+            <span class="dg-date">${date}</span>
+            <span class="dg-count">${items.length} 篇</span>
+          </button>
+          <div class="date-group-body">${items.map(p => renderPaperToHtml(p)).join('')}</div>
+        </section>`).join('');
+    }
+
+    function bindGroupToggle() {
+      document.querySelectorAll('.date-group-head').forEach(head => {
+        head.addEventListener('click', () => head.closest('.date-group-block').classList.toggle('collapsed'));
+      });
     }
 
     function renderPaperToHtml(p) {

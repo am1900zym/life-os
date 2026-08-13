@@ -52,7 +52,59 @@ import { dentalJournals } from '../../data/dentalData';
       今天暂无新论文（PubMed 出版可能有延迟，明早 08:00 自动同步）。
     </p>
   </section>
+
+  <!-- 今日医疗新闻 (权威来源整理) -->
+  <section class="paper-section">
+    <div class="date-group">
+      <span class="dg-date">今日医疗新闻</span>
+      <span class="dg-count">口腔医学 · 护理前沿动态</span>
+    </div>
+    <div class="news-grid">
+      <a class="news-card" href="https://hxkq.org/Html/News/Articles/11682.html" target="_blank" rel="noopener">
+        <span class="news-tag">临床突破</span>
+        <h3 class="news-title">全球首个牙囊干细胞治疗牙周病临床研究启动</h3>
+        <p class="news-desc">针对牙周病导致的牙周组织丧失，外源性干细胞局部移植有望促进牙周软组织与骨再生、防止牙齿脱落，颠覆传统治疗路径。</p>
+        <span class="news-src">来源：华西口腔 · 权威新闻</span>
+      </a>
+      <a class="news-card" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12549362/" target="_blank" rel="noopener">
+        <span class="news-tag">流行病学</span>
+        <h3 class="news-title">第四次全国口腔健康流行病学调查：12 岁恒牙患龋率 38.5%</h3>
+        <p class="news-desc">较十年前上升 9.6 个百分点，农村上升更明显；龋病与牙周病仍是我国口腔疾病防控核心挑战。</p>
+        <span class="news-src">来源：中华口腔医学会 · PMC</span>
+      </a>
+      <a class="news-card" href="https://www.gjkqyxzz.cn/CN/1673-5749/current.shtml" target="_blank" rel="noopener">
+        <span class="news-tag">研究进展</span>
+        <h3 class="news-title">植物乳杆菌-SLH 显著缓解实验性牙周炎</h3>
+        <p class="news-desc">HE 染色显示干预组牙周组织炎症明显减轻，具辅助治疗牙周炎的潜力，为微生态调控提供新证据。</p>
+        <span class="news-src">来源：国际口腔医学杂志</span>
+      </a>
+      <a class="news-card" href="https://zh-cn.iaomt.org/%E8%B5%84%E6%BA%90/%E7%AB%8B%E5%9C%BA%E6%96%87%E4%BB%B6/%E6%A0%B9%E7%AE%A1%E6%B2%BB%E7%96%97%E7%89%99%E9%BD%BF%E7%9A%84%E6%9C%80%E6%96%B0%E7%A7%91%E5%AD%A6%E8%BF%9B%E5%B1%95/" target="_blank" rel="noopener">
+        <span class="news-tag">共识</span>
+        <h3 class="news-title">EFP/ORCA 联合共识：龋病与牙周病的交互作用</h3>
+        <p class="news-desc">生活方式、行为及全身疾病与龋病、牙周疾病的相互作用被系统梳理，强调口腔-全身健康一体化管理。</p>
+        <span class="news-src">来源：IAOMT · EFP/ORCA 共识</span>
+      </a>
+    </div>
+  </section>
 </DentalLayout>
+
+<style>
+  .news-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-top:6px; }
+  .news-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; text-decoration:none; color:var(--fg); display:flex; flex-direction:column; gap:6px;
+    transition:box-shadow .2s,border-color .2s;
+  }
+  .news-card:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); border-color:var(--brand); }
+  .news-tag {
+    align-self:flex-start; font-size:11px; font-weight:600; color:var(--brand);
+    background:rgba(79,124,247,.10); border:1px solid rgba(79,124,247,.3);
+    padding:1px 9px; border-radius:999px;
+  }
+  .news-title { font-family:'Crimson Pro',serif; font-size:16px; font-weight:600; line-height:1.4; margin:2px 0; }
+  .news-desc { font-size:13px; color:var(--muted); line-height:1.6; margin:0; }
+  .news-src { font-size:11.5px; color:var(--brand); margin-top:auto; }
+</style>
 
 <script is:inline>
   // 中文标签映射 (与论文页一致, 精简版)
