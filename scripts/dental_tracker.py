@@ -302,6 +302,12 @@ def parse_pubmed_xml(xml_text):
             aid = art.find(".//ArticleId[@IdType='doi']")
             doi = text_of(aid)
 
+        # PMCID (PubMed XML 自带, 免费批量获取 OA 标识)
+        pmcid = ""
+        for pid in art.findall(".//ArticleId[@IdType='pmc']"):
+            pmcid = text_of(pid)
+            break
+
         # 摘要
         abstract_parts = []
         for ab in article.findall(".//AbstractText"):
@@ -353,18 +359,33 @@ def parse_pubmed_xml(xml_text):
             "type": paper_type,
             "tags": tags_en,
             "tags_zh": tags_zh,
+            "pmcid": pmcid,  # 有值 = PMC 收录, 可读全文
             "is_new": True,
         })
     return articles
 
 
+def _sb_request(method, url, key, **kw):
+    """Supabase 请求带重试 (对抗本机网络抖动 SSL EOF / HTTP 000)"""
+    headers = kw.pop("headers", {})
+    headers.setdefault("apikey", key)
+    headers.setdefault("Authorization", f"Bearer {key}")
+    last_err = None
+    for attempt in range(4):
+        try:
+            return requests.request(method, url, headers=headers, timeout=45, **kw)
+        except (requests.exceptions.ConnectionError, requests.exceptions.SSLError,
+                requests.exceptions.Timeout) as e:
+            last_err = e
+            print(f"  ⚠️ 网络抖动 (attempt {attempt+1}/4): {type(e).__name__}")
+            time.sleep(3 * (attempt + 1))
+    raise last_err
+
+
 def fetch_existing_pmids(supabase_url, service_key):
     """从 Supabase 读取已入库的 PMID (去重用)"""
     url = f"{supabase_url}/rest/v1/dental_papers?select=pmid"
-    r = requests.get(url, headers={
-        "apikey": service_key,
-        "Authorization": f"Bearer {service_key}",
-    }, timeout=30)
+    r = _sb_request("GET", url, service_key)
     if r.status_code in (401, 404):
         return set()
     r.raise_for_status()
@@ -374,22 +395,23 @@ def fetch_existing_pmids(supabase_url, service_key):
 def ensure_tables(supabase_url, service_key):
     """自检: dental_papers 表是否存在"""
     url = f"{supabase_url}/rest/v1/dental_papers?select=count"
-    r = requests.get(url, headers={
-        "apikey": service_key,
-        "Authorization": f"Bearer {service_key}",
-        "Prefer": "count=exact",
-    }, timeout=30)
-    return r.status_code == 200
+    r = _sb_request("GET", url, service_key, params={"select": "count"},
+                    headers={"Prefer": "count=exact"})
+    # PostgREST 对 count 请求返回 206 Partial Content (表存在); 404/405 = 不存在或无权
+    return r.status_code in (200, 206)
 
 
 def upsert_articles(supabase_url, service_key, articles):
-    """批量写入 Supabase (upsert on pmid) — v1.2 新增 OA/双语字段"""
+    """批量写入 Supabase (upsert on pmid) — v1.2 新增 OA/双语字段
+    OA 判断: PubMed XML 自带 pmcid, 有值即 PMC 收录 → 可读全文 (零额外请求)"""
     if not articles:
         return 0
-    url = f"{supabase_url}/rest/v1/dental_papers"
+    url = f"{supabase_url}/rest/v1/dental_papers?on_conflict=pmid"
     rows = []
     for a in articles:
-        oa = europe_pmc_oa_lookup(a.get("doi", ""))
+        pmcid = a.get("pmcid", "")
+        is_oa = bool(pmcid)
+        full_text_url = f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmcid}/" if pmcid else None
         rows.append({
             "pmid": a.get("pmid"),
             "title": a.get("title"),
@@ -405,17 +427,13 @@ def upsert_articles(supabase_url, service_key, articles):
             "tags": a.get("tags", []),
             "tags_zh": a.get("tags_zh", []),
             "is_new": a.get("is_new", True),
-            "pmc_id": oa.get("pmc_id"),
-            "is_oa": oa.get("is_oa", False),
-            "full_text_url": oa.get("full_text_url"),
+            "pmc_id": pmcid,
+            "is_oa": is_oa,
+            "full_text_url": full_text_url,
         })
-        time.sleep(0.15)  # Europe PMC 限速
-    r = requests.post(url, headers={
-        "apikey": service_key,
-        "Authorization": f"Bearer {service_key}",
-        "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates,return=minimal",
-    }, json=rows, timeout=90)
+    r = _sb_request("POST", url, service_key, json=rows,
+                    headers={"Content-Type": "application/json",
+                             "Prefer": "resolution=merge-duplicates,return=minimal"})
     r.raise_for_status()
     return len(articles)
 
